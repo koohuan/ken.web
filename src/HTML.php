@@ -31,30 +31,7 @@ class HTML
    static $api;
    static $host = ''; 
    static $output = [];
-   /**
-	   	HTML::api( F::get('API')->post('widget',[
-			'name'=>'jwplayer',
-			'id'=>'ss',
-			'par'=>['test'=>1]
-		]) );
-		
-		HTML::api();
-   
-   */
-   static function api($data = null){
-   	    if($data){
-	   		$arr = json_decode($data,true);
-	   		static::$api[] = $arr; 
-	   		return ;
-   		}
-   		if(static::$api){
-   			foreach(static::$api as $v){
-   				static::$code = $v['code'];
-   				static::$obj = $v['obj']; 
-   				static::output(); 
-   			}
-   		}
-   }
+  
    /**
    	输出
    */

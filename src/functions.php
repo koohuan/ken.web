@@ -1,4 +1,5 @@
 <?php
+use Ken\Web\F;
 /**
   ÅÐ¶ÏÊÇ·ñAjaxÇëÇó
 */
@@ -54,4 +55,7 @@ function dump($str){
 }   
 function ip() {
     return $_SERVER['REMOTE_ADDR'];
+}
+function widget($name , $par = []){ 
+	return F::get('widget')->push("widget\$name\$name",$par);
 }

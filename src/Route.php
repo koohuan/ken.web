@@ -69,6 +69,7 @@ class Route{
 	static $app = [];
 	//相对URL
 	static $index;
+	static $r = 'Modules'; //默认路由模块
  	/** 
 	get('aa',function(){});
 	*/
@@ -233,7 +234,7 @@ class Route{
 	 	try{
 	 		$action = trim(str_replace('/',' ',$action));
 		 	$a = explode(' ',$action);
-		 	$class = "app\\".$a[0]."\\".$a[1];
+		 	$class = static::$r."\\".$a[0]."\\".$a[1];
 		 	$ac = $a[2]?:'index'; 
 		 	$this->class = [$class,$ac]; 
 		 	$this->class_exists($class,$ac);
