@@ -21,7 +21,7 @@
 	"imagine/imagine": "v0.5.0"
     },
     "autoload": { 
-	"files": ["src/alias.php"],
+	"files": ["src/functions.php"],
         "psr-4":{
             "Ken\\Web\\": "src/"
         } 
