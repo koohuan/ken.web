@@ -1,0 +1,32 @@
+{
+    "name": "ken/web",
+    "type": "library",
+    "description": "php5.4 MVC library ",
+    "keywords": [
+        "small php library" 
+    ],
+    "homepage": "https://github.com/nonetaichi/ken.web",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Kang Sun",
+            "email": "68103403@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"   
+    },
+    "suggest":{
+	"swiftmailer/swiftmailer": "5.1.*@dev", 
+	"imagine/imagine": "v0.5.0"
+    },
+    "autoload": { 
+	"files": ["src/alias.php"],
+        "psr-4":{
+            "Ken\\Web\\": "src/"
+        } 
+    },
+    "extra": {
+         
+    }
+}
