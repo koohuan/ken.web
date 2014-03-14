@@ -17,7 +17,9 @@ Ken\Web 使用说明
 
     curl -sS https://getcomposer.org/installer | php
 
- 
+#### 安装完整项目代码
+
+    php composer.phar create-project --prefer-dist --stability=dev ken/web_skeleton  /path/to/application
     
 
  
