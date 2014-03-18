@@ -69,7 +69,7 @@ class Route{
 	static $app = [];
 	//相对URL
 	static $index;
-	static $r = 'Modules'; //默认路由模块
+	static $r = 'module'; //默认路由模块
  	/** 
 	get('aa',function(){});
 	*/
