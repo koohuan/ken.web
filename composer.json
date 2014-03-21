@@ -6,7 +6,7 @@
         "small php library" 
     ],
     "homepage": "https://github.com/nonetaichi/ken.web",
-    "license": "BSD-2-Clause",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Kang Sun",
@@ -14,16 +14,17 @@
         }
     ],
     "require": {
-        "php": ">=5.4"   
+        "php": ">=5.4",
+	"phpseclib/phpseclib": "dev-php5"  
     },
     "suggest":{
-	"swiftmailer/swiftmailer": "5.1.*@dev", 
+	"swiftmailer/swiftmailer": "v5.1.0", 
 	"imagine/imagine": "v0.5.0"
     },
     "autoload": { 
 	"files": ["src/functions.php"],
         "psr-4":{
-            "Ken\\Web\\": "src/"
+            "Ken\\Web\\": ""
         } 
     },
     "extra": {
