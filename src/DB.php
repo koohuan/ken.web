@@ -153,9 +153,10 @@ class DB{
 	/**
 		$db->delete('posts','id=?',[1]); 
 	*/
-	function delete($table,$condition,$value=[]){ 
+	function delete($table,$condition=null,$value=[]){ 
 		$this->sql = "DELETE FROM $table ";
-		$this->sql .= "WHERE $condition ";
+		if($condition)
+			$this->sql .= "WHERE $condition ";
 		if($value){
 			$this->_to_sql($value); 
 		}   
@@ -170,10 +171,11 @@ class DB{
 	   $value 数组 如 [1] 
 	   
 	*/
-	function update($table,$set = [] ,$condition,$value=[]){
+	function update($table,$set = [] ,$condition=null,$value=[]){
 		$this->_to_sql($set);
 		$this->sql = "UPDATE $table SET ".$this->key;
-		$this->sql .= "WHERE $condition ";
+		if($condition)
+			$this->sql .= "WHERE $condition ";
 		if($value){
 			$this->value = array_merge($this->value,$value);
 		}  
