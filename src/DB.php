@@ -80,6 +80,8 @@ class DB{
 	protected $user;
 	protected $pwd;
 	public $connect;
+	public $cache_time;
+	public $cache_id;
   	/**
 		$dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 		$user = 'dbuser';
@@ -119,6 +121,7 @@ class DB{
 		$this->ar['SELECT'] = $str;
 		return $this;
 	}
+	
 	/**
 		统计 
 	*/
@@ -181,24 +184,56 @@ class DB{
 		$this->ar['TABLE'] = $table; 
 		return $this;
 	}
- 
+ 	function cache($time=0){ 
+		$this->cache_time = $time;
+		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->cache_time;
+		return $this;
+	}
+	
+	protected function _one(){
+		$this->_query();
+		return $this->query->fetch(\PDO::FETCH_OBJ);
+	}
  	/**
 		$db->table('posts')
 			->where('name=?',['abc'])  
 			->one(); 
 	*/
-	function one(){
-		$this->_query();
-		return $this->query->fetch(\PDO::FETCH_OBJ);
+	function one(){  
+		if(isset($this->cache_time)){
+			$id = md5($this->cache_id.'one');
+			$value = F::get('cache')->get($id); 
+			if(!$value){
+				$value = $this->_one();
+				F::get('cache')->set($id,$value);  
+			}
+		} else{
+			$value = $this->_one();
+		}
+	 
+		return $value; 
+	}
+	protected function _all(){
+		$this->_query(); 
+		return $this->query->fetchAll(); 
 	}
 	/**
 		$db->table('posts')
 			->where('name=?',['abc'])  
 			->all(); 
 	*/
-	function all(){
-		$this->_query();
-		return $this->query->fetchAll();
+	function all(){  
+		if(isset($this->cache_time)){
+			$id = md5($this->cache_id.'all');
+			$value = F::get('cache')->get($id); 
+			if(!$value){ 
+				$value = $this->_all(); 
+				F::get('cache')->set($id,$value);  
+			}
+		}else{
+			$value = $this->_all(); 
+		}
+		return $value;
 	}
 	/**
 		支持纯SQL

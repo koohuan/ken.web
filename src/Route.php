@@ -184,6 +184,7 @@ class Route{
 		$this->_value = static::$router[$this->method][$action]; 
 		$data = [];
 		if($this->_value) goto TODO; 
+		if(!static::$router[$this->method]) goto NEXT;
 		foreach(static::$router[$this->method] as $pre=>$class){  
 			if(preg_match_all($this->match, $pre, $out)){
 				//转成正则   
@@ -193,6 +194,7 @@ class Route{
                 $pregs[$pre] = ['class'=>$class,'par'=>$out[1]]; 
 			} 
 		}
+		NEXT:
 		/**
 			匹配当前URL是否存在路由
 		*/ 

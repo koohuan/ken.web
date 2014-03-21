@@ -20,17 +20,24 @@ abstract class AdminController extends Controller
  	protected $auth;
  	//默认使用 public/themes/admin 
  	public $theme = 'admin';
+ 	public $allow = [];
+ 	public $allow_guest = false;
  	/**
  		判断是否有权限
  	*/
-	function __construct(){
- 		 parent::__construct();
- 		 $this->auth = F::get('auth');
+	function init(){
+ 		 parent::init();
+ 		 $this->auth = F::get('auth'); 
+ 		 if(true === $this->allow_guest) goto NEXT;
+ 		 if( $this->allow && in_array($this->id,$this->allow )){
+ 		 	
+ 		 }
  		 if(!$this->auth->is_logined()){
  		 	$this->redirect(url('admin/login/index'));
  		 	
  		 }
  		 $this->auth->logined = $this->auth->get(); 
+ 		 NEXT:
  		 $this->_boot();
  	}
 	
@@ -38,7 +45,8 @@ abstract class AdminController extends Controller
 		bootstrap.php
 	*/
 	protected function _boot(){
-		$dir = base_path().'/app/';
+		$route = F::get('route');
+		$dir = base_path().'/'.$route::$r.'/';
 		$list = scandir($dir);
 		foreach($list as $v){ 
 			if($v== '.gitignore' || $v=='.' || $v=='..' || $v=='.svn' || $v=='.git') continue; 

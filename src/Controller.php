@@ -50,20 +50,22 @@ abstract class Controller
 	public $theme = 'default';
 	public $active;
 	public $title;
+	public $module;
 	function __construct(){ 
- 		 $ar = F::get('route')->class;
- 		 $this->id= str_replace('\\','/',$ar[0]);
- 		 $this->action= $ar[1];
+		 $route = F::get('route');
+ 		 $ar = $route->class;  
+ 		 $id= str_replace('\\','/',$ar[0]); 
+ 		 $this->action= $ar[1]; 
+ 		 $arr = explode('/',str_replace($route::$r.'/','',$id));
+ 		 $this->module = $arr[0];
+ 		 $this->id = $arr[1];  
  		 /**
  		 	设置当前控制器的VIEW目录
  		 	如 app/admin 的 view目录直接在 app/admin/view 下
  		 	theme对应的目录在 public/themes/default/admin/
- 		 */
- 		 $id = $this->id;
- 		  
+ 		 */ 
  		 F::get('view')->view_dir = base_path().'/'.
- 		 				substr($id,0,strrpos($id,'/')).'/view';
- 		  
+ 		 				substr($id,0,strrpos($id,'/')).'/view'; 
  		 $dir = F::get('view')->theme_dir; 
  		 $t = substr($id,strpos($id,'/')+1);
  		 $t = substr($t,0,strrpos($t,'/'));
