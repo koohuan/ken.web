@@ -14,15 +14,10 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-	"phpseclib/phpseclib": "dev-php5"  
-    },
-    "suggest":{
-	"swiftmailer/swiftmailer": "v5.1.0", 
-	"imagine/imagine": "v0.5.0"
-    },
+        "php": ">=5.4"
+    },    
     "autoload": { 
-	"files": ["src/functions.php"],
+	"files": ["./functions.php"],
         "psr-4":{
             "Ken\\Web\\": ""
         } 

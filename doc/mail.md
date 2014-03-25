@@ -1,19 +1,22 @@
 发送邮件 
 ========
   
-官方 http://swiftmailer.org/docs/messages.html
+  http://swiftmailer.org/docs/messages.html
    
-   composer.json 的 require 需要包含
-  
-	"swiftmailer/swiftmailer": "*"  
+ 
 
     
 使用方法
-    
+    	use Ken\Web\Mail;
+	//配置
 	$smtp = "smtp address";
 	$user = 'yourname';
 	$pwd = 'yourpassword';
-	$mail = new \Mail($smtp,$user,$pwd);
+	//或使用
+	$smtp = "/usr/sbin/sendmail -bs";
+
+
+	$mail = new Mail($smtp,$user,$pwd);
 	$mail->from(['youraddress@a.com'=>'yourname'])
 		->to(['youaddress@a.com'=>'user'])
 		->title('标题')

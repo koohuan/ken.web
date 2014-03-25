@@ -59,3 +59,12 @@ function ip() {
 function widget($name , $par = []){ 
 	return F::get('widget')->push("widget\\".$name."\\".$name,$par);
 }
+
+function import($file){
+	static $statics;
+	if(!isset($statics[$file])){
+		include $file;
+		$statics[$file] = true;
+	}
+		
+}
