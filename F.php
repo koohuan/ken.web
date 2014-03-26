@@ -17,8 +17,9 @@ class F{
 		$new = $key.'.closure';
 		$r = static::$app[$new];
 		if(!isset(static::$app[$new])){ 
-			$v = static::$app[$key];
-			static::$app[$new] = $v();
+			$v = static::$app[$key]; 
+			if($v)
+				static::$app[$new] = $v();
 		}
 		return static::$app[$new];
 	}

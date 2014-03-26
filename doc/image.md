@@ -14,7 +14,7 @@ http://www.fuelphp.com/docs/classes/image.html
 	
 	watermark_alpha 75
 	bgcolor
-	driver           gd
+	driver           gd, imagemagick , imagick
 	quality          100
 	temp_dir         /tmp/
 	imagemagick_dir  /usr/bin/

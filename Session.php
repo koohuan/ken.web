@@ -48,7 +48,7 @@ class Session
  		设置SESSION
 	*/
 	static function set($name,$value){  
-		$value = F::get('crypt')->set($value);
+		$value = Crypt::encode($value);
 		$_SESSION[$name] = $value;
 	}
 	/**
@@ -57,7 +57,7 @@ class Session
 	static function get($name){ 
 		$value = $_SESSION[$name];
 		if($value)
-			return trim(F::get('crypt')->get($value));		 
+			return trim(Crypt::decode($value));		 
 	}
 	/**
 		 删除SESSION，只能删除一个SESSION

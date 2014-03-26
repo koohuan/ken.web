@@ -20,24 +20,25 @@ abstract class AdminController extends Controller
  	protected $auth;
  	//默认使用 public/themes/admin 
  	public $theme = 'admin';
- 	public $allow = [];
- 	public $allow_guest = false;
+ 	// ['admin.admin.login']
+ 	public $allow = []; 
+  
  	/**
  		判断是否有权限
  	*/
 	function init(){
  		 parent::init();
  		 $this->auth = F::get('auth'); 
- 		 if(true === $this->allow_guest) goto NEXT;
- 		 if( $this->allow && in_array($this->id,$this->allow )){
- 		 	
+ 	 
+ 		 if( $this->allow && in_array($this->module.'.'.$this->id.'.'.$this->action,$this->allow )){
+ 		 	goto NEXT;
  		 }
  		 if(!$this->auth->is_logined()){
- 		 	$this->redirect(url('admin/login/index'));
+ 		 	$this->redirect(url('admin/admin/login'));
  		 	
  		 }
  		 $this->auth->logined = $this->auth->get(); 
- 		 NEXT:
+ 	 	 NEXT:
  		 $this->_boot();
  	}
 	
