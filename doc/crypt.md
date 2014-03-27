@@ -11,4 +11,10 @@ WIDGET
 
     echo Crypt::encode('abc');
 	
-    echo Crypt::decode(value);
+    echo Crypt::decode($value);
+
+如果是数组
+
+	Crypt::encode(serialize['abc']);
+
+	unserialize(Crypt::decode($value));
