@@ -189,8 +189,7 @@ config.php 如存在 config.local.php 将使用 `config.local.php`
 	$log = __DIR__.'/temp/logs';
 
 	//加密解密KEY
-	$crypt_type = "AES";
-	$crypt_key = 'ken.web';
+	Crypt::key('abc');
 	 
 	//是否合并VIEW html代码
 	$minify = false;

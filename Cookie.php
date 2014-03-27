@@ -22,7 +22,7 @@ class Cookie
 		浏览器关闭就会自动失效
 	*/
 	static function set($name,$value,$expire=0,$path='/',$secure=null){ 
-		$value = F::get('crypt')->set($value);
+		$value = Crypt::encode($value);
 		setcookie($name,$value,$expire,$path,$domain,$secure);
 		if($value)
 			$_COOKIE[$name] = $value;
@@ -40,7 +40,7 @@ class Cookie
 	static function get($name){
 		$value = $_COOKIE[$name]; 
 		if($value)
-			return trim(F::get('crypt')->get($value));		 
+			return trim(Crypt::decode($value));		 
 	}
 	/**
 	 	删除COOKIE，只能删除一个COOKIE
