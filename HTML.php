@@ -31,7 +31,10 @@ class HTML
    static $api;
    static $host = ''; 
    static $output = [];
-  
+   
+   static function xss($str){ 
+   		return \Ken\Web\Vendor\XSS::xss_clean($str);
+   }
    /**
    	输出
    */

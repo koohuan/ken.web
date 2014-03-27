@@ -22,7 +22,7 @@ abstract class AdminController extends Controller
  	public $theme = 'admin';
  	// ['admin.admin.login']
  	public $allow = []; 
-  
+  	public $db;
  	/**
  		判断是否有权限
  	*/
@@ -39,6 +39,7 @@ abstract class AdminController extends Controller
  		 }
  		 $this->auth->logined = $this->auth->get(); 
  	 	 NEXT:
+ 	 	 $this->db = \F::get('db');
  		 $this->_boot();
  	}
 	
