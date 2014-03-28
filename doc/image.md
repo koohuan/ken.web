@@ -6,8 +6,7 @@ http://www.fuelphp.com/docs/classes/image.html
 	$a = public_path().'/upload/1.png';
 	$b = public_path().'/upload/2.png';
 	$op = ['quality'=>75];
-	Image::init($op)->load($a)->output($b);
-	
+ 
 	Image::init($op)->load($a)->save($b);
 
 可选设置

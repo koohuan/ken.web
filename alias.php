@@ -4,6 +4,7 @@ $alias = [
  	'Ken\Web\Helper'=>'Helper',
 	'Ken\Web\Lang'=>'Lang',
 	'Ken\Web\Arr'=>'Arr',
+	'Ken\Web\Image'=>'Image',
 	'Ken\Web\User'=>'User',
 	'Ken\Web\Auth'=>'Auth',
 	'Ken\Web\Mail'=>'Mail',
