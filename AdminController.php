@@ -23,6 +23,7 @@ abstract class AdminController extends Controller
  	// ['admin.admin.login']
  	public $allow = []; 
   	public $db;
+  	public $login_url = 'admin/admin/login';
  	/**
  		判断是否有权限
  	*/
@@ -34,7 +35,7 @@ abstract class AdminController extends Controller
  		 	goto NEXT;
  		 }
  		 if(!$this->auth->is_logined()){
- 		 	$this->redirect(url('admin/admin/login'));
+ 		 	$this->redirect(url($this->login_url));
  		 	
  		 }
  		 $this->auth->logined = $this->auth->get(); 

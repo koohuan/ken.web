@@ -35,6 +35,8 @@ class Paginate{
  	public $count;
  	public $limit;
  	public $offset;
+ 	//不保留参数
+ 	public $get = [];
 	function __construct($count,$size=10){ 
 		$this->count = $count;
 		$this->size = $size;
@@ -92,6 +94,12 @@ class Paginate{
 				$pages['e'] = "...";
 		}
 	 	$p = $_GET;   
+	 	if($this->get){
+	 		foreach($this->get as $d){
+	 			unset($p[$d]);
+	 		}
+	 	}
+	 		
 		foreach($pages as $j){
 			$active = null;
 			if($j==$this->page)

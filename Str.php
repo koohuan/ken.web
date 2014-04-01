@@ -10,16 +10,15 @@ namespace Ken\Web;
 class Str
 { 
  	//生成不重复的ID
-	function uuid($suffix_len=3)
+	function uuid()
 	{
-		$being_timestamp = 1206576000;
-	    $time = explode(' ', microtime());
-	    $id = ($time[1] - $being_timestamp) . sprintf('%06u', substr($time[0], 2, 6));
-	    if ($suffix_len > 0)
-	    {
-	        $id .= substr(sprintf('%010u', mt_rand()), 0, $suffix_len);
-	    }
-	    return $id;
+	 	return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+			mt_rand( 0, 0xffff ),
+			mt_rand( 0, 0x0fff ) | 0x4000,
+			mt_rand( 0, 0x3fff ) | 0x8000,
+			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+		);
 	}
 	
 	/**
