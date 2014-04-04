@@ -2,6 +2,8 @@
 /**  
     Form 
     
+    echo \Form::select('a',['option'=>$widget]);
+    
  	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014 

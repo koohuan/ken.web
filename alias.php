@@ -30,6 +30,7 @@ $alias = [
 	'Ken\Web\Str'=>'Str',
 	'Ken\Web\Tree'=>'Tree',
 	'Ken\Web\UserController'=>'UserController',
+	'Ken\Web\AdminController'=>'AdminController',
 	'Ken\Web\Validate'=>'Validate',
 	'Ken\Web\View'=>'View',
 	'Ken\Web\Widget'=>'Widget', 
