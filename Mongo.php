@@ -22,16 +22,17 @@ class Mongo{
 	public $connect;
 	public $cache_time;
 	public $cache_id;  
-	public function __construct($connection = 'mongodb://localhost:27017'){ 
+	public function __construct($connection = 'mongodb://localhost:27017' ,$db , $arr = []){ 
 		try {
 			$this->dsn = $connection; 
- 		    $this->pdo = new \MongoClient($connection, ['replicaSet' => true]); 
+ 		    $this->pdo = new \MongoClient($connection,$arr); 
 		    $this->active = true; 
 		} catch ( Exception $e) {  
 			$this->active = false;
 		    return false;
 		}
-		 
+		$this->db = $this->pdo->$db;
+		return $this;
 	} 
 	
 	/**
@@ -76,26 +77,12 @@ class Mongo{
 		$this->ar['SELECT'] = $str;
 		return $this;
 	}
-	/**
-	 将 ['username'=>'admin','email'=>'test@msn.com'] 
-	 转换成 "username = ? ,email = ? " ,['admin' , 'test@msn.com']
-	*/
-	protected function _to_sql($arr){
-		foreach($arr as $k=>$v){
-			$key[] = "`".$k."`=? "; 
-		} 
-		$key = implode(",",$key);  
-		$value = array_values($arr); 
-		$this->key = $key;
-		$this->value = $value;
-	}
+ 
 	/**
 	 	insert('user',['username'=>'admin','email'=>'test@msn.com'])
 	*/
-	function insert($table,$arr = []){ 
-		$this->_to_sql($arr);
-		$this->sql = "INSERT INTO $table SET ".$this->key; 
-		return $this->exec(true);
+	function insert($table,$arr = []){  
+		return $this->db->$table->insert($arr);  
 	} 
 	/**
 		$db->delete('posts','id=?',[1]); 
@@ -110,7 +97,7 @@ class Mongo{
 		return $this->exec();
 	}
 	/**
-	   $db->update('posts',['name'=>'abc2'],'id=?',[1]); 
+	   $db->update('posts',['name'=>'abc2'],'id=?',[1]);
 		
 	   $table 数据库表名
 	   $set 数组，需要更新的 [字段=>值]
