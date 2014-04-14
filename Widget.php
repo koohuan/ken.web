@@ -1,10 +1,8 @@
 <?php  
 /** 
 	依赖 File 类
-	使用F加载 
-	F::set('widget',function(){ 
-		 return new Widget(__DIR__.'/assets' ,base_url().'assets');
-	});
+	必须定义 base_path  public_path 这两个函数
+	
 	composer.json 如下 对应 widget 目录
 	
 	"autoload": {  
@@ -29,11 +27,11 @@ class Widget
 	public $base;
 	static $_url;
 	public $r;
-	function __construct($publish_asset = null ,$url = null){
+	function __construct(){ 
 		if(!isset(static::$to))
-			static::$to = $publish_asset; 
+			static::$to = public_path().'/assets'; 
 		if(!isset(static::$_url))
-			static::$_url = $url; 
+			static::$_url = base_url().'assets'; 
 		
 	}
 	/**

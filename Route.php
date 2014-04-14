@@ -14,29 +14,29 @@
  	$route->all('paypal','app\pay\paypal@index');
  	
  	use PHP\Classes\Route;
-	$route = new Route;
+ 
 	
-	$route->get('/',function(){
+	Route::get('/',function(){
 		echo 1;
 	});
 	
-	$route->all('login/<name:\w+>','app\login\$name@index','login');  
+	Route::all('login/<name:\w+>','app\login\$name@index','login');  
 	
 	//aa 为url地址，home为生成url链接所用的名称 	
-	$route->get('aa',"app\controller\index@index",'home'); 
+	Route::get('aa',"app\controller\index@index",'home'); 
 	
-	$route->get('post/<id:\d+>/<g:\d+>',"app\controller\index@test",'post');
+	Route::get('post/<id:\d+>/<g:\d+>',"app\controller\index@test",'post');
 	
-	$route->get('payadmin','app\pay\admin@list');
-	$route->get('payadmin/<page:\d+>','app\pay\admin@list');
+	Route::get('payadmin','app\pay\admin@list');
+	Route::get('payadmin/<page:\d+>','app\pay\admin@list');
 
 	生成URL
-	echo $route->url('post',['id'=>1,'d'=>3]);
+	echo Route::url('post',['id'=>1,'d'=>3]);
 	
 	//执行路由
 	
 	try { 
-		$route->run(); 
+		Route::run(); 
 	}catch (Exception $e) { 
 		if($e->getCode() == 404) {
 	     	throw new \Exception('404 page not find');
@@ -77,6 +77,12 @@ class Route{
 	protected $_value; //当前URL的function 如 function(){}  
 	public $host;
 	public $class = [];
+	static $obj;
+	function init(){
+		if(!isset(static::$obj))
+			static::$obj = new Static;
+		return static::$obj;
+	}
 	function __construct(){
 		//请求方式 GET POST
  		$this->method = $_SERVER['REQUEST_METHOD'];  
@@ -86,6 +92,22 @@ class Route{
  		$this->host = $top."://".$_SERVER['SERVER_NAME']; 
  	 
  	}  
+ 	/**
+ 	* 取得控制器的 model id action
+ 	[_id] => module/admin/admin
+    [action] => login
+    [module] => admin
+    [id] => admin
+ 	*/
+ 	static function controller(){
+ 	 	 $ar = static::init()->class; 
+ 		 $vo['_id'] = $id = str_replace('\\','/',$ar[0]); 
+ 		 $vo['action'] = $ar[1];  
+ 		 $arr = explode('/',str_replace(static::$r.'/','',$id));
+ 		 $vo['module'] = $arr[0];
+ 		 $vo['id'] = $arr[1];   
+ 		 return $vo;
+ 	}
  	/**
   		对GET POST all 设置router
  	*/
@@ -105,10 +127,13 @@ class Route{
 			static::$router['__#named#__'][$name] = $url;
 		 
 	}
+	static function url($url,$par = []){
+		return static::init()->create_url($url,$par);
+	}
 	/**
 		自动生成URL
 	*/
-	function url($url,$par = []){
+	protected function create_url($url,$par = []){
 		$id = 'route_url'.$url.json_encode($par);
 		if(static::$app[$id]) return static::$app[$id];
 		$r = static::$router['__#named#__'][$url]; 
@@ -134,40 +159,39 @@ class Route{
 			$r = $r."?".http_build_query($par);  
  		$url = $this->base_url.$r;
  		$url = str_replace("//",'/',$url);
- 		static::$app[$id] = $url;
+ 		static::$app[$id] = $url; 
 	 	return $url;	 
 	}
- 
+  
 	// get request
-	function get($url,$do,$name=null){
-		$this->set_router($url,$do,'GET',$name);
-		return $this;
+	static function get($url,$do,$name=null){
+		static::init()->set_router($url,$do,'GET',$name); 
 	}
+
 	// post request
-	function post($url,$do,$name=null){
-		$this->set_router($url,$do,'POST',$name);
-		return $this;
+	static function post($url,$do,$name=null){
+		static::init()->set_router($url,$do,'POST',$name); 
 	}
 	// put request
-	function put($url,$do,$name=null){
-		$this->set_router($url,$do,'PUT',$name);
-		return $this;
+	static function put($url,$do,$name=null){
+		static::init()->set_router($url,$do,'PUT',$name); 
 	}
 	// put request
-	function delete($url,$do,$name=null){
-		$this->set_router($url,$do,'DELETE',$name);
-		return $this;
+	static function delete($url,$do,$name=null){
+		static::init()->set_router($url,$do,'DELETE',$name); 
 	}
 	// get/post request
-	function all($url,$do,$name=null){
-		$this->set_router($url,$do,'POST',$name); 
-		$this->set_router($url,$do,'GET',$name); 
-		return $this;
+	static function all($url,$do,$name=null){
+		static::init()->set_router($url,$do,'POST',$name); 
+		static::init()->set_router($url,$do,'GET',$name);  
+	}
+	static function run(){
+		return static::init()->exec();
 	}
 	/**
 		执行解析URL 到对应namespace 或 closure 
 	*/
-	function run(){  
+	protected function exec(){  
 		//解析URL $uri 返回 /app/public/ 或  / 
 		$uri = $_SERVER['REQUEST_URI']; 
 		$uri = str_replace($this->host,'',$uri);

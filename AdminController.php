@@ -30,7 +30,7 @@ abstract class AdminController extends Controller
 	function init(){
  		 parent::init();
  		 $this->auth = F::get('auth'); 
- 	 
+ 	 dump($this);exit;
  		 if( $this->allow && in_array($this->module.'.'.$this->id.'.'.$this->action,$this->allow )){
  		 	goto NEXT;
  		 }

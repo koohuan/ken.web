@@ -23,20 +23,20 @@ function refresh(){
 	创建URL
 */
 function url($url , $par = []){
-	return F::get('route')->url($url,$par);
+	return Route::url($url,$par);
 }
 /**
 	取得当前HOST http://yuetaichi.com 
 */
 function host(){
-	return F::get('route')->host;
+	return Route::init()->host;
 }
 /**
 	URL是对public 的而言
 	返回URL 如 / 或 web/public/
 */
 function base_url(){ 
-	return F::get('route')->base_url; 
+	return Route::init()->base_url; 
 } 
 /**
   翻译

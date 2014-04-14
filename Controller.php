@@ -51,38 +51,41 @@ abstract class Controller
 	public $active;
 	public $title;
 	public $module;
+	static $_view;
+	protected $_id;
 	function __construct(){ 
-		 $route = F::get('route');
- 		 $ar = $route->class;  
- 		 $id= str_replace('\\','/',$ar[0]); 
- 		 $this->action= $ar[1]; 
- 		 $arr = explode('/',str_replace($route::$r.'/','',$id));
- 		 $this->module = $arr[0];
- 		 $this->id = $arr[1];  
- 		 /**
- 		 	设置当前控制器的VIEW目录
- 		 	如 app/admin 的 view目录直接在 app/admin/view 下
- 		 	theme对应的目录在 public/themes/default/admin/
- 		 */ 
- 		 F::get('view')->view_dir = base_path().'/'.
- 		 				substr($id,0,strrpos($id,'/')).'/view'; 
- 		 $dir = F::get('view')->theme_dir; 
- 		 $t = substr($id,strpos($id,'/')+1);
- 		 $t = substr($t,0,strrpos($t,'/'));
- 		 F::get('view')->theme_dir = substr($dir,0,strrpos($dir,'/')+1)
- 		 							.$this->theme."/".
- 		 							$t;  
- 		 //设置theme url,这样在View中可用$this->theme()取得当前URL
- 	 	 F::get('view')->theme = $this->theme; 
+		 $arr = Route::controller();  
+ 		 $this->module = $arr['module'];
+ 		 $this->id = $arr['id'];   
+ 		 $this->action= $arr['action'];
+ 		 $this->_id = $arr['_id']; 
  	 	 $this->init(); 
  	}
  	/**
  		渲染视图
  	*/
- 	protected function  view($view,$data = []){ 
- 		F::get('view')->active = $this->active;
- 		F::get('view')->title = $this->title;
- 		return F::get('view')->make($view,$data);
+ 	protected function  view($view,$data = []){  
+ 		if(!isset(static::$_view)){ 
+ 			/**
+	 		 	设置当前控制器的VIEW目录
+	 		 	如 app/admin 的 view目录直接在 app/admin/view 下
+	 		 	theme对应的目录在 public/themes/default/admin/
+	 		 */  
+	 		 static::$_view  = new View;
+	 		 static::$_view->view_dir = base_path().'/'.
+	 		 				substr($this->_id,0,strrpos($this->_id,'/')).'/view'; 
+	 		 $dir = static::$_view->theme_dir; 
+	 		 $t = substr($this->_id,strpos($this->_id,'/')+1);
+	 		 $t = substr($t,0,strrpos($t,'/'));
+	 		 static::$_view->theme_dir = substr($dir,0,strrpos($dir,'/')+1)
+	 		 							.$this->theme."/".
+	 		 							$t;  
+	 		 //设置theme url,这样在View中可用$this->theme()取得当前URL
+	 	 	 static::$_view->theme = $this->theme;   
+ 		}   
+  		static::$_view->active = $this->active;
+ 		static::$_view->title = $this->title;
+ 		return static::$_view->render($view,$data); 
  	}
 	
 	function redirect($url){

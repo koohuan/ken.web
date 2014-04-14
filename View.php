@@ -1,6 +1,7 @@
 <?php 
 /** 
 	依赖 Route.php
+	必须定义 base_path  public_path 这两个函数
     View 视图
     layout举例  文件名为default.layout.php
     
@@ -15,13 +16,9 @@
 	<?php echo $this->end();?>
 
     
-    通过F加载View
     
-    F::set('view',function(){
-		 $view_dir = base_path().'/view';
-		 $theme_dir = public_path().'/themes/default';
-		 return new View($view_dir , $theme_dir);
-	});
+    
+     
 
     
  	@auth Kang Sun <68103403@qq.com>
@@ -47,12 +44,14 @@ class View
 	//展示VIEW在LAYOUT中
 	public $view;
 	public $title;
-	static $default;
-	function __construct($view_dir,$theme_dir = null){ 
-		$this->view_dir = $view_dir;
-		$this->theme_dir = $theme_dir.'/'.$this->theme; 
+	static $default; 
+	static $obj; 
+	function __construct(){    
+		$this->view_dir = base_path().'/view'; 
+		$this->theme_dir = public_path().'/themes/default';  
 		static::$default = ['view'=>$this->view_dir,'theme'=>$this->theme_dir];
 	}
+	
 	/**
 		加载layout 同级文件
 	*/
@@ -99,11 +98,17 @@ class View
 			$this->theme_file = $this->theme_dir.'/'.$name.'.php';
 		} 
 	}
+	static function make($name, $par = [])
+	{ 
+		$view = new Static;
+		return $view->render($name, $par); 
+	}
 	/**
 		渲染视图
 	*/
-	function make($name, $par = [])
+	function render($name, $par = [])
 	{ 
+	 
 		if(substr($name,0,1)=='/'){
 			$this->view_dir = static::$default['view'];
 			$this->theme_dir = static::$default['theme'];
