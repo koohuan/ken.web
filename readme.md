@@ -35,7 +35,7 @@ composer.json
 	            "module\\": "module/",  
 	 	    "widget\\": "widget/",
 	 	    "tool\\": "tool/",
-	 	    "third\\": "third/", 
+	 	    "third\\": "third/"
 	        } 
 	    }  
 	}
