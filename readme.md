@@ -22,10 +22,31 @@ Ken\Web 使用说明
     php composer.phar create-project --prefer-dist --stability=dev ken/web_skeleton  /path/to/application
     
 
+
+composer.json
+
+	{ 
+	    "require": {
+	        "php": ">=5.4",
+		"ken/web": "dev-master"  
+	    },    
+	    "autoload": {  
+	        "psr-4":{
+	            "module\\": "module/",  
+	 	    "widget\\": "widget/",
+	 	    "tool\\": "tool/",
+	 	    "third\\": "third/", 
+	        } 
+	    }  
+	}
+
  
 ----------
 
 
 UNDER BSD LICENSE
+
+
+
 
     
