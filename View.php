@@ -32,8 +32,7 @@ class View
 	public $theme = 'default';
 	//BLOCK
  	public $block;
-	public $block_id;  
-	public $minify = true;
+	public $block_id;   
 	//theme dir 
 	public $theme_dir;
 	//view dir
@@ -45,7 +44,7 @@ class View
 	public $view;
 	public $title;
 	static $default; 
-	static $obj; 
+	static $obj;  
 	function __construct(){    
 		$this->view_dir = base_path().'/view'; 
 		$this->theme_dir = public_path().'/themes/default';  
@@ -77,7 +76,7 @@ class View
 	
 	//返回theme所在的url
 	function theme(){
-		return F::get('route')->base_url.'themes/'.$this->theme.'/';
+		return Route::init()->base_url.'themes/'.$this->theme.'/';
 	}
 	function set_theme($theme){
 		$this->theme_dir = $theme_dir.'/'.$theme; 
@@ -124,7 +123,7 @@ class View
   		}
 		$data = trim(ob_get_contents());   
 		ob_end_clean();
-		if(true === $this->minify)
+		if(true === Config::get('app.minify'))
 			$data =  preg_replace(array('/ {2,}/','/<!--.*?-->|\t|(?:\r?\n[\t]*)+/s'),array(' ',''),$data);  
 		echo $data;  
 	}

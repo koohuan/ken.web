@@ -1,41 +1,20 @@
 <?php
-/**
- 	å¯ä½¿ç”¨Fæ³¨å†Œ
+/** 
+	Êý¾Ý¿âÉèÖÃ£¬µÚÒ»¸öÎªÖ÷¿â
+	config/database.php
 	
-	æ•°æ®åº“è®¾ç½®ï¼Œç¬¬ä¸€ä¸ªä¸ºä¸»åº“
-
-	$db = [
+	return [
 		["mysql:dbname=wei;host=127.0.0.1","test","test"],
 		["mysql:dbname=wei2;host=127.0.0.1","test","test"],
-	];
-	
-	F::set('db',function() use ($db){
-		$config = $db[0];
-		return new DB($config[0],$config[1],$config[2]);  
-	});
-	F::set('db2',function() use ($db){
-		if(count($db)>1){
-			unset($db[0]);
-			$i = array_rand ($db , 1);
-			$config = $db[$i];
-		}else{
-			$config = $db[0];
-		}
-		return new DB($config[0],$config[1],$config[2]); 
-	}); 
-
-
-	$one = F::get('db')
- 				->table('oauth_config')
- 				->one();
- 	
- 	ä»¥ä¸‹ä¸ºéžFæ“ä½œ			
- 	æ•°æ®åº“æ“ä½œ,å¦‚æžœæœ‰è¿”å›žå€¼ å…¨ä¸ºå¯¹è±¡ã€‚
- 	æ”¯æŒmysql æ•°æ®åº“ã€‚å¦‚order by ,è¯·åœ¨ $db->table('table')->order_by('id desc');
- 	å…¶ä»–æ–¹æ³•ä¾æ¬¡ç±»æŽ¨
- 	
- 	$db = new DB("mysql:dbname=debug;host=127.0.0.1",'test','test');
- 	
+	]; 
+ 	ÒÔÏÂÎª·ÇF²Ù×÷			
+ 	Êý¾Ý¿â²Ù×÷,Èç¹ûÓÐ·µ»ØÖµ È«Îª¶ÔÏó¡£
+ 	Ö§³Ömysql Êý¾Ý¿â¡£Èçorder by ,ÇëÔÚ $db->table('table')->order_by('id desc');
+ 	ÆäËû·½·¨ÒÀ´ÎÀàÍÆ
+ 	//Ö÷¿â
+ 	$db = DB::w();
+ 	//´Ó¿â
+ 	$db = DB::r();
  	echo $db->insert('posts',['name'=>'test']);
  	
  	$db->update('posts',['name'=>'abcaaa'],'id=?',[1]);
@@ -51,7 +30,7 @@
 		->where('name=?',['abc'])  
 		->one();  
 	
-	$connect å±žæ€§ [
+	$connect ÊôÐÔ [
 	    	'dsn'=>$dsn,
 	    	'user'=>$user,
 	    	'pwd'=>$pwd,
@@ -68,7 +47,7 @@ class DB{
 	public $pdo; 
 	protected $query;
 	protected $ar;
-	// sql debug é»˜è®¤å…³é—­
+	// sql debug Ä¬ÈÏ¹Ø±Õ
 	public $debug = false;
 	static $log;
 	protected $sql;
@@ -82,6 +61,9 @@ class DB{
 	public $connect;
 	public $cache_time;
 	public $cache_id;
+	//Ö÷´Ó
+	protected $read;
+	protected $write;
   	/**
 		$dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 		$user = 'dbuser';
@@ -107,15 +89,35 @@ class DB{
 		} catch (\PDOException $e) {  
 			$this->active = false;
 		    return false;
-		}
-		 
+		} 
 	} 
-	//è¿”å›žSQL ä¿¡æ¯
+	
+	//Êý¾Ý¿â ´Ó¿â
+	static function r(){
+		$db = Config::load('database');  
+		if(count($db)>1){
+			unset($db[0]);
+			$i = array_rand ($db , 1);
+			$config = $db[$i];
+		}else{
+			$config = $db[0];
+		}
+		return new Static($config[0],$config[1],$config[2]); 
+	}
+	
+	static function w(){
+		$db = Config::load('database'); 
+		$config = $db[0];
+		return new Static($config[0],$config[1],$config[2]);  
+	}
+	
+	
+	//·µ»ØSQL ÐÅÏ¢
 	function log(){
 		 return static::$log;
 	}
 	/**
-		select æŸ¥å¯»å­—æ®µ
+		select ²éÑ°×Ö¶Î
 	*/
 	function select($str = "*"){
 		$this->ar['SELECT'] = $str;
@@ -123,15 +125,15 @@ class DB{
 	}
 	
 	/**
-		ç»Ÿè®¡ 
+		Í³¼Æ 
 	*/
 	function count($str = "count(*) num"){
 		$this->ar['SELECT'] = $str;
 		return $this;
 	}
 	/**
-	 å°† ['username'=>'admin','email'=>'test@msn.com'] 
-	 è½¬æ¢æˆ "username = ? ,email = ? " ,['admin' , 'test@msn.com']
+	 ½« ['username'=>'admin','email'=>'test@msn.com'] 
+	 ×ª»»³É "username = ? ,email = ? " ,['admin' , 'test@msn.com']
 	*/
 	protected function _to_sql($arr){
 		foreach($arr as $k=>$v){
@@ -165,10 +167,10 @@ class DB{
 	/**
 	   $db->update('posts',['name'=>'abc2'],'id=?',[1]); 
 		
-	   $table æ•°æ®åº“è¡¨å
-	   $set æ•°ç»„ï¼Œéœ€è¦æ›´æ–°çš„ [å­—æ®µ=>å€¼]
-	   $condition å­—ç¬¦ä¸²   å¿…é¡»ä½¿ç”¨å ä½ç¬¦ `?` å¦‚ 'id = ?'
-	   $value æ•°ç»„ å¦‚ [1] 
+	   $table Êý¾Ý¿â±íÃû
+	   $set Êý×é£¬ÐèÒª¸üÐÂµÄ [×Ö¶Î=>Öµ]
+	   $condition ×Ö·û´®   ±ØÐëÊ¹ÓÃÕ¼Î»·û `?` Èç 'id = ?'
+	   $value Êý×é Èç [1] 
 	   
 	*/
 	function update($table,$set = [] ,$condition=null,$value=[]){
@@ -238,7 +240,7 @@ class DB{
 		return $value;
 	}
 	/**
-		æ”¯æŒçº¯SQL
+		Ö§³Ö´¿SQL
 	*/
 	function query($sql,$value=[]){
 		$this->sql = $sql;
@@ -267,7 +269,7 @@ class DB{
 			 	}
 			}
 		}  
-		//ä½¿ç”¨åŽè¦åˆ é™¤ $this->ar
+		//Ê¹ÓÃºóÒªÉ¾³ý $this->ar
 		unset($this->ar,$this->where);
 		$this->sql = $sql;
 		$this->value = $value;  
@@ -282,7 +284,7 @@ class DB{
 		execute sql
 	*/
 	protected function exec($insert = false){
-		//è®°å½•æ—¥å¿—
+		//¼ÇÂ¼ÈÕÖ¾
 		if($this->debug === true){
 			$log = ['sql'=>$this->sql,'value'=>$this->value];
 		} 

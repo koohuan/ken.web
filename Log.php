@@ -3,7 +3,9 @@
   	Log
  	
  	 
-	Log::start(__DIR__.'/../temp/logs');
+	//启用日志
+	Log::init(); 
+
 	Log::info('test');
  	Log::error('test');
  	Log::read();
@@ -18,13 +20,10 @@ class Log{
 	static $path;  
 	//是否开启日志 ，默认开启
 	static $log = true;
-	function __construct($path){ 
- 		$this->path = $path;  
- 	}
- 	static function start($path){
- 		static::$path = $path;
- 		if(!is_dir($path)) mkdir($path , 777 ,true);
- 		 
+ 
+ 	static function init(){
+ 		static::$path = Config::get('app.log'); 
+ 		if(!is_dir(static::$path)) mkdir($path , 777 ,true); 
  	}  
  	//读取所有日志
  	static function read(){

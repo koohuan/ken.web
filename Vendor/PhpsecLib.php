@@ -10,25 +10,16 @@
 */
 namespace Ken\Web\Vendor;
 class PhpsecLib{   
-	static $_obj;
-	static $type;
-	static $key;
-	static function type($type){
-		self::$type = $type;
-	}
-	static function key($key){
-		self::$key = $key;
-	}
+	static $_obj; 
+
 	static function init() {  
 		if (self::$_obj === null) { 
-			if(!self::$type) self::$type = "AES";
-			if(!self::$key) self::$key = "AES";  
-			import(__DIR__.'/PhpsecLib/Crypt/'.self::$type.'.php');  
-			$cls = "Crypt_".self::$type;
-			$ecb = "CRYPT_".self::$type."_MODE_ECB";
+			$type = Config::get('app.crypt_type')?:"AES";
+			import(__DIR__.'/PhpsecLib/Crypt/'.$type.'.php');  
+			$cls = "Crypt_".$type;
+			$ecb = "CRYPT_".$type."_MODE_ECB";
 			self::$_obj = new $cls ($ecb);
-			self::$_obj->setKey(self::$key);
-             
+			self::$_obj->setKey(Config::get('app.crypt_key')?:'abc');
         } 
 		return self::$_obj;
 	} 
