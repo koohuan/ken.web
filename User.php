@@ -30,11 +30,19 @@
  */
 namespace Ken\Web;
  
-class User extends Auth
+class User
 { 
-	public $table = 'users';
-	//是否使用COOKIE，默认使用SESSION
-	public $cookie = true;
+	
+	static $obj; 
+    public static function __callStatic($name, $arguments) 
+    {   
+    	if ( ! static::$obj)
+    		 static::$obj = new \Ken\Web\Auth_Class;   
+    	static::$obj->table = 'users';
+    	static::$obj->cookie = true;
+    	return call_user_func_array( array(static::$obj , $name) , $arguments);  
+    }  
+   
   
     
  

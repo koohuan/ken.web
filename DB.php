@@ -62,8 +62,8 @@ class DB{
 	public $cache_time;
 	public $cache_id;
 	//主从
-	protected $read;
-	protected $write;
+	static $read;
+	static $write;
   	/**
 		$dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 		$user = 'dbuser';
@@ -94,21 +94,27 @@ class DB{
 	
 	//数据库 从库
 	static function r(){
-		$db = Config::load('database');  
-		if(count($db)>1){
-			unset($db[0]);
-			$i = array_rand ($db , 1);
-			$config = $db[$i];
-		}else{
-			$config = $db[0];
+		if(!isset(static::$read)){
+			$db = Config::load('database');  
+			if(count($db)>1){
+				unset($db[0]);
+				$i = array_rand ($db , 1);
+				$config = $db[$i];
+			}else{
+				$config = $db[0];
+			}
+			static::$read = new Static($config[0],$config[1],$config[2]); 
 		}
-		return new Static($config[0],$config[1],$config[2]); 
+		return static::$read;
 	}
 	
 	static function w(){
-		$db = Config::load('database'); 
-		$config = $db[0];
-		return new Static($config[0],$config[1],$config[2]);  
+		if(!isset(static::$write)){
+			$db = Config::load('database'); 
+			$config = $db[0];
+			static::$write = new Static($config[0],$config[1],$config[2]);  
+		}
+		return static::$write;
 	}
 	
 	
