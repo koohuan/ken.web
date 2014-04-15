@@ -30,7 +30,7 @@ abstract class AdminController extends Controller
 	function init(){
  		 parent::init();
  		 $this->auth = F::get('auth'); 
- 	 dump($this);exit;
+  	 
  		 if( $this->allow && in_array($this->module.'.'.$this->id.'.'.$this->action,$this->allow )){
  		 	goto NEXT;
  		 }
@@ -47,9 +47,8 @@ abstract class AdminController extends Controller
 	/**
 		bootstrap.php
 	*/
-	protected function _boot(){
-		$route = F::get('route');
-		$dir = base_path().'/'.$route::$r.'/';
+	protected function _boot(){ 
+		$dir = base_path().'/'.Route::$r.'/'; 
 		$list = scandir($dir);
 		foreach($list as $v){ 
 			if($v== '.gitignore' || $v=='.' || $v=='..' || $v=='.svn' || $v=='.git') continue; 

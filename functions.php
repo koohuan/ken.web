@@ -42,7 +42,7 @@ function base_url(){
   З­вы
 */
 function __($key,$alias='app'){ 
-	return F::get('lang')->get($key,$alias); 
+	return Lang::get($key,$alias); 
 }  
 function redirect($url){
 	header("location:$url"); 
@@ -64,7 +64,7 @@ function ip() {
     return $ip;
 }
 function widget($name , $par = []){ 
-	return F::get('widget')->push("widget\\".$name."\\".$name,$par);
+	return Widget::init("widget\\".$name."\\".$name,$par);
 }
 
 function import($file){

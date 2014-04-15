@@ -26,13 +26,7 @@
 	});
 	
 	通过F加载View
-    
-    F::set('view',function(){
-		 $view_dir = base_path().'/view';
-		 $theme_dir = public_path().'/themes/default';
-		 return new View($view_dir , $theme_dir);
-	});
-
+ 
 
     基础控制器
     

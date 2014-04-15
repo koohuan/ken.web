@@ -3,7 +3,7 @@
  	可使用F注册
  	Cache 仅支持memcache 或 memcached 如果存在 memecached 将优先使用
  	
- 	use PHP\Classes\Cache;
+ 	 
  	$cache = new Cache([['host'=>'127.0.0.1','port'=>11211,'weight'=>60]]);
  	$cache->get($key);
 	$cache->set($key,$data = []);

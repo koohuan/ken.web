@@ -62,7 +62,7 @@ class Widget
     /**
     	显示widget
     */
-    function push($class,$par = []){ 
+    static function init($class,$par = []){ 
     	$obj  = new $class();
     	if($par){
     		foreach($par as $k=>$v)

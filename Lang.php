@@ -1,14 +1,10 @@
 <?php  
 /** 
 	 
-	F::set('lang',function(){ 
-		 $lang =  new Lang(__DIR__.'/../messages');
-		 $lang->load();
-		 return $lang;
-	});
+	Lang::init()->load('app');
 	
 	function __($key,$alias='app'){ 
-		return F::get('lang')->get($key,$alias); 
+		return Lang::get($key,$alias); 
 	} 
    
 	@auth Kang Sun <68103403@qq.com>
@@ -19,27 +15,34 @@ namespace Ken\Web;
 class Lang
 { 
  	public $dir;
- 	public $lang = 'zh_CN';
+ 	static $lang = 'zh_CN';
  	static $obj;
-	function __construct($dir){
-	 	$this->dir = $dir;			
+ 	static $init;
+	function __construct(){
+	 	$this->dir = public_path().'/../messages';			
 	}
 	/**
 		加载文件
 	*/
 	function load($alias='app'){
-		if(!static::$obj[$this->lang][$alias]){
-			$file = $this->dir.'/'.$this->lang.'/'.$alias.'.php';
+		if(!static::$obj[static::$lang][$alias]){
+			$file = $this->dir.'/'.static::$lang.'/'.$alias.'.php';
 			if(file_exists($file)){
-				static::$obj[$this->lang][$alias] = include $file;
+				static::$obj[static::$lang][$alias] = include $file;
 			}
 		}
+	}
+	function init(){
+		if(!isset(static::$init)){
+			static::$init = new Static;
+		}
+		return static::$init;
 	}
 	/**
 	 	取得翻译
 	*/
-	function get($key , $alias = 'app'){
-		return static::$obj[$this->lang][$alias][$key]?:$key;
+	static function get($key , $alias = 'app'){
+		return static::$obj[static::$lang][$alias][$key]?:$key;
 	}
 	
 	
