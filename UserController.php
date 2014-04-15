@@ -25,15 +25,11 @@ abstract class UserController extends Controller
  		判断是否有权限
  	*/
 	function __construct(){
- 		 parent::__construct();
- 		 $this->auth = F::get('user');
- 		 //以COOKIE形式保存数据
- 		 $this->auth->cookie = true;
- 		 $this->auth->table = 'users';
- 		 if(!$this->auth->is_logined()){
+ 		 parent::__construct(); 
+ 		 if(true !== User::is_logined()){
  		 	throw new \Exception('Access Deny',403);
  		 }
- 		 $this->auth->logined = $this->auth->get();  
+ 		 $this->auth = User::get();  
  	}
 	
  

@@ -28,14 +28,14 @@ composer.json
 	{ 
 	    "require": {
 	        "php": ">=5.4",
-		"ken/web": "dev-master"  
+		 "ken/web": "dev-master"  
 	    },    
 	    "autoload": {  
 	        "psr-4":{
 	            "module\\": "module/",  
-	 	    "widget\\": "widget/",
-	 	    "tool\\": "tool/",
-	 	    "third\\": "third/"
+	 	     "widget\\": "widget/",
+	 	     "tool\\": "tool/",
+	 	     "third\\": "third/"
 	        } 
 	    }  
 	}

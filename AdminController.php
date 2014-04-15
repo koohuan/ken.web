@@ -28,19 +28,17 @@ abstract class AdminController extends Controller
  		判断是否有权限
  	*/
 	function init(){
- 		 parent::init();
- 		 $this->auth = F::get('auth'); 
-  	 
+ 		 parent::init(); 
  		 if( $this->allow && in_array($this->module.'.'.$this->id.'.'.$this->action,$this->allow )){
  		 	goto NEXT;
  		 }
- 		 if(!$this->auth->is_logined()){
+ 		 if(true !== Auth::is_logined()){
  		 	$this->redirect(url($this->login_url));
  		 	
  		 }
- 		 $this->auth->logined = $this->auth->get(); 
+ 		 $this->auth = Auth::get(); 
  	 	 NEXT:
- 	 	 $this->db = \F::get('db');
+ 	 	 $this->db = DB::w();
  		 $this->_boot();
  	}
 	
