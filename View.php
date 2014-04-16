@@ -134,12 +134,17 @@ class View
 	* 加载layout
 	*/
 	function layout($name , $par = [] ){  
-		$name = str_replace('.','/',$name);
+		$d = $name = str_replace('.','/',$name); 
+		if(strpos($name,'/')!==false)
+			$name = substr($name,strrpos($name,'/')+1);
+	 
 		$view = $this->view_dir.'/'.$name.'.layout.php';
 		$theme = $this->theme_dir.'/'.$name.'.layout.php';
 		//上一层是否存在layout,目的是多个模块共用同一个theme下的laout
 		$pre = substr($this->theme_dir,0,strrpos($this->theme_dir,'/')).'/'.$name.'.layout.php';
-		$this->block['layout'] = $this->find([$theme,$view,$pre]);
+		//加载view下的layout
+		$default_layout = base_path().'/view/'.$this->theme.'/'.$d.'.layout.php';   
+		$this->block['layout'] = $this->find([$theme,$view,$pre,$default_layout]);
 	}
 	
 	/**
