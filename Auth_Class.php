@@ -19,6 +19,7 @@
 	  `email` varchar(50) NOT NULL,
 	  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	  `uid` varchar(64) NOT NULL,
 	  PRIMARY KEY (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 	
@@ -181,7 +182,7 @@ class Auth_Class
 	function create($username=null,$email,$password){
 		$arr = [ 
 				$this->email => trim($email),
-				'uid' => Str::uuid(),
+				'uid' => Str::id(),
 				$this->password => static::passwordHash(trim($password)),
 				$this->create_at => date('Y-m-d H:i:s'), 
 			];
