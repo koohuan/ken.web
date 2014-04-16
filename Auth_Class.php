@@ -173,6 +173,10 @@ class Auth_Class
 	/**
 		创建用户
 		如果是 false 说明 用户已存在
+		判断以 $c = Auth::create($user,$email,$pwd);
+		if($c['id']){ //成功
+			
+		}
 	*/
 	function create($username=null,$email,$password){
 		$arr = [ 
@@ -181,9 +185,19 @@ class Auth_Class
 				$this->password => static::passwordHash(trim($password)),
 				$this->create_at => date('Y-m-d H:i:s'), 
 			];
+		Validate::set($this->email,[
+				['email','message'=>'必须是正确的邮件地址'], 
+		],$email); 
 		if($this->username!=null){
+			Validate::set($this->username,[
+				['alnumu','message'=>'字母数字下划线'], 
+			],$username); 
+			$vali = Validate::message();
+			if($vali) {
+				return ['msg'=>$vali];
+			} 
 			$a = $this->username."=? OR ".$this->email."=?";
-			$b = [$username,$username];
+			$b = [$username,$email];
 			$arr[$this->username] = trim($username);
 		}else{
 			$a = $this->email."=?";
@@ -194,12 +208,12 @@ class Auth_Class
 			->where($a,$b)
 			->one();
 		if($one){
-			return false; 
+			return ['msg'=>'用户已存在']; 
 		}
 		if(!$one){ 
 			$id = DB::w()->insert($this->table,$arr);
 		}
-		return $id; 
+		return ['id'=>$id]; 
 	}
 	/**
 		以下代码来源yii2.0

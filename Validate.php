@@ -16,6 +16,7 @@
 		Validate::set('username',[
 			['not_empty','message'=>'not empty'], 
 		]);
+		
 		Validate::set('password',[
 			['not_empty','message'=>'not empty'], 
 		]); 
@@ -124,17 +125,17 @@ class Validate{
 	public static function vali($value,$validate = []){
 		return static::set($name,$validate,true);
 	}
-	public static function set($name,$validate = [],$fl = false){
+	public static function set($name,$validate = [],$_val = null){
 		if(is_array($name)){
 			foreach($name as $new_name){ 
 				static::set($new_name,$validate);
 			}
 			return;
-		}
-		if($fl==false)
-	  		$value = trim($_POST[$name]); 
+		} 
+	  	if($_val)
+	  		$value = $_val;
 	  	else
-	  		$value = $name;
+	  		$value = trim($_POST[$name]); 
 	  	foreach($validate as $v){
 	  		$message = $v['message'];
 	  		unset($v['message']);
