@@ -19,4 +19,12 @@ class Input
    		return trim($_POST[trim($key)])?:null;
    }
    
+   public static function put($key = null){
+   	   	parse_str(file_get_contents("php://input"),$post_vars);
+   	   	if($key)
+   	   		return $post_vars[$key];
+   		return $post_vars;
+   }
+   
+   
 }
