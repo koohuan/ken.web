@@ -38,25 +38,10 @@ abstract class AdminController extends Controller
  		 }
  		 $this->auth = Auth::get(); 
  	 	 NEXT:
- 	 	 $this->db = DB::w();
- 		 $this->_boot();
+ 	 	 $this->db = DB::w(); 
  	}
 	
-	/**
-		bootstrap.php
-	*/
-	protected function _boot(){ 
-		$dir = base_path().'/'.Route::$r.'/'; 
-		$list = scandir($dir);
-		foreach($list as $v){ 
-			if($v== '.gitignore' || $v=='.' || $v=='..' || $v=='.svn' || $v=='.git') continue; 
-			if(is_dir($dir.$v)){
-				$boot = $dir.$v.'/bootstrap.php';
-				if(file_exists($boot))
-					include $boot;
-			} 
-		}
-	}
+	 
  
 	
  
