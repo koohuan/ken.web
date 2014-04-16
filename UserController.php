@@ -26,7 +26,7 @@ abstract class UserController extends Controller
  	*/
 	function __construct(){
  		 parent::__construct(); 
- 		 if(true !== User::is_logined()){
+ 		 if(true !== User::is_login()){
  		 	throw new \Exception('Access Deny',403);
  		 }
  		 $this->auth = User::get();  

@@ -32,7 +32,7 @@ abstract class AdminController extends Controller
  		 if( $this->allow && in_array($this->module.'.'.$this->id.'.'.$this->action,$this->allow )){
  		 	goto NEXT;
  		 }
- 		 if(true !== Auth::is_logined()){
+ 		 if(true !== Auth::is_login()){
  		 	$this->redirect(url($this->login_url));
  		 	
  		 }

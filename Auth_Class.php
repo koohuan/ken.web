@@ -44,11 +44,11 @@ class Auth_Class
 	/**
 		判断是否登录
 	*/
-	function is_logined(){
+	function is_login(){
 		if(true === $this->cookie){
-			return Cookie::get('id'); 
+			return Cookie::get('id')?true:false; 
 		}else{
-			return Session::get('id'); 
+			return Session::get('id')?true:false; 
 		} 
 	}
 	/**
