@@ -4,11 +4,9 @@
   
     使用方法
     
-    $smtp = "smtp.163.com";
-	$user = 'yourname';
-	$pwd = 'yourpassword';
- 	$mail = new \Mail($smtp,$user,$pwd);
-    $mail->from(['youraddress@a.com'=>'yourname'])
+  
+  
+    Mail::init()->from(['youraddress@a.com'=>'yourname'])
     	->to(['youaddress@a.com'=>'user'])
     	->title('标题')
     	->body("content内容<hr>不错")
@@ -20,10 +18,17 @@
 	@date 2014 
 */
 namespace Ken\Web\Vendor;
+use Ken\Web\Config;
 class Swift{
 	public $transport;
 	public $message;
 	public $mailer;
+	static $obj;
+	static function init(){
+		if(!isset(static::$obj))
+			static::$obj = new Static;
+		return static::$obj;
+	}
 	function smtp($smtp,$user,$pwd,$port=25){
 		$this->transport = \Swift_SmtpTransport::newInstance($smtp, $port)
 			  ->setUsername($user)
@@ -47,14 +52,25 @@ class Swift{
 		return true;
  	} 
 	
-	function __construct($smtp=null,$user=null,$pwd=null) {
+	function __construct() {
 		import(__DIR__.'/Swift/swift_required.php'); 
-		if($pwd) { $this->smtp($smtp,$user,$pwd);}
-		else if(strpos($smtp,'sendmail')!==false){ $this->sendmail($smtp);}
-		else $this->mail();
+		$type = Config::get('mail.type');
+		switch($type){
+			case "smtp":
+				$this->smtp(Config::get('mail.smtp'),Config::get('mail.user'),Config::get('mail.pwd'));
+				break;
+			case "sendmail":
+				$this->sendmail(Config::get('mail.smtp'));
+				break;
+			case "mail":
+				$this->mail();
+				break;
+		} 
 		$this->mailer = \Swift_Mailer::newInstance($this->transport); 
 		$this->message = \Swift_Message::newInstance(); 
+		return $this;
 	}
+	
 	
 	function title($title){
 		$this->message->setSubject($title);

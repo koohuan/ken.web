@@ -9,6 +9,7 @@
 	@date 2014 
 */
 namespace Ken\Web\Vendor;
+use Ken\Web\Config;
 class PhpsecLib{   
 	static $_obj; 
 
