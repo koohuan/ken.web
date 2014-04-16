@@ -154,15 +154,15 @@ class Auth_Class
 		3 原密码是错误的
 	*/
 	function update($id,$old_password,$par=[]){
-		if(!$old_password || !$id) return 1;
+		if(!$old_password || !$id) return  "原密码不能为空";
 		$one = DB::w()->table($this->table)
 			->where("id=?",[$id])
 			->one();
 		if(!$one){
-			return 2;
+			return "用户不存在";
 		} 
 		if(!static::validatePassword($old_password , $one->password)){
-			return 3;
+			return "原密码不存在";
 		}
 		if($par['password']){
 			$par['password'] = static::passwordHash($par['password']);
