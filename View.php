@@ -66,6 +66,7 @@ class View
 		加载view 同级内容
 	*/
 	function extend($name,$par = []){ 
+		$name = str_replace('.','/',$name);
 		$this->__ex($name); 
 		$file = $this->find([$this->theme_file,$this->view_file]); 
 		if(file_exists($file)){
