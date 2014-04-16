@@ -107,7 +107,7 @@ class View
 	*/
 	function render($name, $par = [])
 	{ 
-	 
+	 	$name = str_replace('.','/',$name);
 		if(substr($name,0,1)=='/'){
 			$this->view_dir = static::$default['view'];
 			$this->theme_dir = static::$default['theme'];
