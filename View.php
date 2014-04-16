@@ -55,6 +55,7 @@ class View
 		加载layout 同级文件
 	*/
 	function extend_layout($name,$par = []){
+		$name = str_replace('.','/',$name);
 		$dir = substr($this->block['layout'],0,strrpos($this->block['layout'],'/')+1);
 		$file = $dir."$name.php";
 		if(file_exists($file)){
@@ -133,6 +134,7 @@ class View
 	* 加载layout
 	*/
 	function layout($name , $par = [] ){  
+		$name = str_replace('.','/',$name);
 		$view = $this->view_dir.'/'.$name.'.layout.php';
 		$theme = $this->theme_dir.'/'.$name.'.layout.php';
 		//上一层是否存在layout,目的是多个模块共用同一个theme下的laout
