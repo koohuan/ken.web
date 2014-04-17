@@ -82,5 +82,58 @@ class Img
 		return $img[0]; 
 	} 
 	
+	
+	/**
+	 * 
+	 * 判断一个图片是否是包含alpha通道的png
+	 * @param string $file
+	 * 方法来自 
+	 http://www.welefen.com/how-to-detect-png-has-alpha-transparent.html
+	 */
+	static function is_alpha_png($file) {
+	    if (! file_exists ( $file )) {
+	        return false;
+	    }
+	    $f = @fopen ( $file, 'r' );
+	    if (! $f) {
+	        return false;
+	    }
+	    $bin = fread ( $f, 29 );
+	    fclose ( $f );
+	    $info = @unpack ( "C8c/C8char/C4width/C4height/Cdepth/Ccolortype", $bin );
+	    $png = array (
+	        137, 
+	        80, 
+	        78, 
+	        71, 
+	        13, 
+	        10, 
+	        26, 
+	        10 
+	    );
+	    //判断头是否是png文件
+	    for($i = 0; $i < 8; $i ++) {
+	        if ($png [$i] != $info ['c' . ($i + 1)]) {
+	            return false;
+	        }
+	    }
+	    list ( $width, $height ) = getimagesize ( $file );
+	    //这里用width3和4就可以了
+	    $w = $info ['width3'] * 256 + $info ['width4'];
+	    $h = $info ['height3'] * 256 + $info ['height4'];
+	    //判断当前获取跟系统获取的值是否相同
+	    if ($width != $w || $height != $h) {
+	        return false;
+	    }
+	    $depth = $info ['depth'];
+	    $colorType = $info ['colortype'];
+	    if ($depth == 8 || $depth == 16) {
+	        if ($colorType == 6) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
  
 }
