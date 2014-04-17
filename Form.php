@@ -49,7 +49,7 @@ class Form
 	 				static::$par['value'] =  $_POST[$name];
 	 		 	if(!static::$par['value'])
 	 				static::$par['value'] =  $_GET[$name]; 
-		} 
+		} dump(static::$par);
 		$value = static::$par['value'];
  		switch($method){
  			case 'open':
@@ -88,6 +88,10 @@ class Form
  					$str .= "<option value='".$v."' $selected >".$label."</option>";
  				}
  				return static::element($name,'select',true,$str);
+ 				break;
+ 			case 'checkbox':   
+ 			 	static::$par['type'] = 'checkbox';
+ 				return static::element($name,'input',false);
  				break;
  		}
  		 
