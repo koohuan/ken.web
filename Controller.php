@@ -42,8 +42,7 @@ abstract class Controller
 	public $id;
 	public $action;
 	public $theme = 'default';
-	public $active;
-	public $title;
+ 	public $title;
 	public $module;
 	static $_view;
 	protected $_id;
@@ -76,9 +75,8 @@ abstract class Controller
 	 		 							$t;  
 	 		 //设置theme url,这样在View中可用$this->theme()取得当前URL
 	 	 	 static::$_view->theme = $this->theme;   
- 		}   
-  		static::$_view->active = $this->active;
- 		static::$_view->title = $this->title;
+ 		}    
+ 		static::$_view->info = $this->info;
  		return static::$_view->render($view,$data); 
  	}
 	

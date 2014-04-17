@@ -38,11 +38,10 @@ class View
 	//view dir
 	public $view_dir;
 	public $view_file;
-	public $theme_file;
-	public $active = [];
+	public $theme_file; 
 	//展示VIEW在LAYOUT中
 	public $view;
-	public $title;
+	public $info;
 	static $default; 
 	static $obj;  
 	function __construct(){    
