@@ -42,7 +42,7 @@ abstract class Controller
 	public $id;
 	public $action;
 	public $theme = 'default';
- 	public $title;
+ 	public $info = [];
 	public $module;
 	static $_view;
 	protected $_id;
