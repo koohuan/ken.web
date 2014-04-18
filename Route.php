@@ -134,6 +134,7 @@ class Route{
 		自动生成URL
 	*/
 	protected function create_url($url,$par = []){
+		$url = str_replace('.','/',$url);
 		$id = 'route_url'.$url.json_encode($par);
 		if(static::$app[$id]) return static::$app[$id];
 		$r = static::$router['__#named#__'][$url]; 
