@@ -10,6 +10,7 @@ $alias = [
 	'Ken\Web\Auth'=>'Auth',
 	'Ken\Web\Mail'=>'Mail',
 	'Ken\Web\Cache'=>'Cache',
+	'Ken\Web\Menu'=>'Menu',
 	'Ken\Web\CleanVendor'=>'CleanVendor',
 	'Ken\Web\Controller'=>'Controller',
 	'Ken\Web\Cookie'=>'Cookie',
