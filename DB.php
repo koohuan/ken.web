@@ -71,6 +71,17 @@ class DB{
 	static function in($name){
 		return str_repeat ('?, ',  count ($name) - 1) . '?';
 	}
+	/**
+	* 与table 方法相同
+	*/
+	function from($table){
+		$this->table($table);
+		return $this;
+	}
+	//直接返回主键一行对象
+	function pk($id){
+		return $this->where('id=?',[$id])->one();
+	}
   	/**
 		$dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 		$user = 'dbuser';
