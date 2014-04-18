@@ -49,7 +49,7 @@ class Form
 	 				static::$par['value'] =  $_POST[$name];
 	 		 	if(!static::$par['value'])
 	 				static::$par['value'] =  $_GET[$name]; 
-		} dump(static::$par);
+		} 
 		$value = static::$par['value'];
  		switch($method){
  			case 'open':

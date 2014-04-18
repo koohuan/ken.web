@@ -64,6 +64,13 @@ class DB{
 	//Ö÷´Ó
 	static $read;
 	static $write;
+	/**
+	* ÈçIn (?,?)
+	*
+	*/
+	static function in($name){
+		return str_repeat ('?, ',  count ($name) - 1) . '?';
+	}
   	/**
 		$dsn = 'mysql:dbname=testdb;host=127.0.0.1';
 		$user = 'dbuser';
