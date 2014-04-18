@@ -268,17 +268,19 @@ class DB{
 		$value = [];
 		if(!$this->ar['TABLE']) return $this;
 		$sql = "select ".($this->ar['SELECT']?:'*')." FROM ".$this->ar['TABLE'];
-		unset($this->ar['SELECT'],$this->ar['TABLE']);
-		$sql .= " WHERE 1=1 "; 
+		unset($this->ar['SELECT'],$this->ar['TABLE']); 
  		if($this->ar){
 			foreach($this->ar AS $key=>$condition){
+				if(strpos($key,'WHERE')!==false){
+					$sql .= " WHERE 1=1 "; 
+				}
 				if(is_array($condition)){
 					foreach($condition as $str=>$vo){
-				 		$sql .= $k." ".$str." "; 
+				 		$sql .= " ". $k." ".$str." "; 
 				 	 	$value = array_merge($value,$vo);
 				 	}
 				}else{
-					$sql .= $key." ". $condition." ";
+					$sql .= " ".$key." ". $condition." ";
 			 	}
 			}
 		}  
