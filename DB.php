@@ -283,6 +283,7 @@ class DB{
 	* exec sql 
 	*/
 	protected function _query(){  
+		static::$_set_where = false;
 		$value = [];
 		if(!$this->ar['TABLE']) return $this;
 		$sql = "select ".($this->ar['SELECT']?:'*')." FROM ".$this->ar['TABLE'];
@@ -307,8 +308,7 @@ class DB{
 			}
 		}   
 		//使用后要删除 $this->ar
-		unset($this->ar,$this->where);
-		static::$_set_where = false;
+		unset($this->ar,$this->where); 
 		$this->sql = $sql;
 		$this->value = $value;  
 		try { 
