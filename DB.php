@@ -64,6 +64,9 @@ class DB{
 	//主从
 	static $read;
 	static $write;
+	//where 条件 
+	static $_set_where;
+	static $_cache_key;
 	/**
 	* 如In (?,?)
 	*
@@ -216,8 +219,7 @@ class DB{
 		$this->cache_time = $time;
 		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->cache_time;
 		return $this;
-	}
-	
+	}  
 	protected function _one(){
 		$this->_query();
 		return $this->query->fetch(\PDO::FETCH_OBJ);
@@ -230,16 +232,20 @@ class DB{
 	function one(){  
 		if(isset($this->cache_time)){
 			$id = md5($this->cache_id.'one');
-			$value = F::get('cache')->get($id); 
+			static::$_cache_key[$id] = true;
+			$value = Cache::get($id); 
 			if(!$value){
 				$value = $this->_one();
-				F::get('cache')->set($id,$value);  
+				Cache::set($id,$value);  
 			}
 		} else{
 			$value = $this->_one();
 		}
 	 
 		return $value; 
+	}
+	function cache_key(){
+		return static::$_cache_key;
 	}
 	protected function _all(){
 		$this->_query(); 
@@ -253,10 +259,11 @@ class DB{
 	function all(){  
 		if(isset($this->cache_time)){
 			$id = md5($this->cache_id.'all');
-			$value = F::get('cache')->get($id); 
+			static::$_cache_key[$id] = true;
+			$value = Cache::get($id); 
 			if(!$value){ 
 				$value = $this->_all(); 
-				F::get('cache')->set($id,$value);  
+				Cache::set($id,$value);  
 			}
 		}else{
 			$value = $this->_all(); 
@@ -282,8 +289,9 @@ class DB{
 		unset($this->ar['SELECT'],$this->ar['TABLE']); 
  		if($this->ar){
 			foreach($this->ar AS $key=>$condition){
-				if(strpos($key,'WHERE')!==false){
-					$sql .= " WHERE 1=1 "; 
+				if(strpos($key,'WHERE')!==false && static::$_set_where===false){
+					$sql .= " WHERE 1=1  "; 
+					static::$_set_where = true;
 				}
 				if(is_array($condition)){
 					foreach($condition as $str=>$vo){

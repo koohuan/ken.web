@@ -4,10 +4,12 @@
  	Cache 仅支持memcache 或 memcached 如果存在 memecached 将优先使用
  	
  	 
- 	$cache = new Cache([['host'=>'127.0.0.1','port'=>11211,'weight'=>60]]);
- 	$cache->get($key);
-	$cache->set($key,$data = []);
-	$cache->increment($key,$data = []);
+ 	
+ 	Cache::get($key);
+	Cache::set($key,$data = []);
+	Cache::increment($key,1);
+	Cache::decrement($key,1);
+	Cache::delete($key = null);
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014 
