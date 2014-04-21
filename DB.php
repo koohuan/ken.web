@@ -308,6 +308,7 @@ class DB{
 		}   
 		//使用后要删除 $this->ar
 		unset($this->ar,$this->where);
+		static::$_set_where = false;
 		$this->sql = $sql;
 		$this->value = $value;  
 		try { 
