@@ -299,10 +299,13 @@ class DB{
 				 	 	$value = array_merge($value,$vo);
 				 	}
 				}else{
-					$sql .= " ".$key." ". $condition." ";
+					if(strpos($key,'WHERE')!==false)
+						 $sql .= " ". $condition." ";
+					else
+						$sql .= " ".$key." ". $condition." ";
 			 	}
 			}
-		}  
+		}   
 		//使用后要删除 $this->ar
 		unset($this->ar,$this->where);
 		$this->sql = $sql;
