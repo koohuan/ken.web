@@ -325,6 +325,7 @@ class DB{
 		//¼ÇÂ¼ÈÕÖ¾
 		if($this->debug === true){
 			$log = ['sql'=>$this->sql,'value'=>$this->value];
+			static::$log[] = $log;
 		} 
 		try {  
 			$this->query = $this->pdo->prepare($this->sql , [\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY]);  
@@ -338,8 +339,7 @@ class DB{
 	     	$this->pdo->commit();   
 	    } catch(PDOExecption $e) {   
  	        $this->pdo->rollback();  
-	    } 
-	    static::$log[] = $log; 
+	    }  
 	    return $id?:false; 
 	}
 	

@@ -4,11 +4,7 @@
   
     使用方法
     
-    $smtp = "smtp.163.com";
-	$user = 'yourname';
-	$pwd = 'yourpassword';
- 	$mail = new \Mail($smtp,$user,$pwd);
-    $mail->from(['youraddress@a.com'=>'yourname'])
+     Mail::init()->from(['youraddress@a.com'=>'yourname'])
     	->to(['youaddress@a.com'=>'user'])
     	->title('标题')
     	->body("content内容<hr>不错")
