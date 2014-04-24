@@ -56,6 +56,13 @@ class Log{
  	}
  	//写文件
  	static function write($type = 'info',$str){
+ 		if(is_array($str)) {
+ 			unset($new);
+ 			foreach($str as $k=>$v){
+ 				$new .= $k."=".$v."\n";
+ 			}
+ 			$str = $new;
+ 		}
  		if(static::$log !== true) return ;
  		if(!$str) return;
  		$str = "$type: ".$str."   ".date('H:i:s',time())."\n";

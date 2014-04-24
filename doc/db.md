@@ -5,7 +5,15 @@
 
 连接数据库
 	
- 	$db = new DB("mysql:dbname=debug;host=127.0.0.1",'test','test');
+ 	$db = DB::w(); 主库
+	$db = DB::r(); 从库
+查寻
+
+	\DB::w()->table('pay_order')->all(); 
+
+	while($r =  \DB::w()->table('pay_order')->query->fetch()){
+	 
+	}
 
 写数据
 	

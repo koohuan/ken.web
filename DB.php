@@ -45,7 +45,7 @@ namespace Ken\Web;
  
 class DB{ 
 	public $pdo; 
-	protected $query;
+	public $query;
 	protected $ar;
 	// sql debug Ä¬ÈÏ¹Ø±Õ
 	public $debug = false;
@@ -214,7 +214,7 @@ class DB{
 	function table($table){ 
 		$this->ar['TABLE'] = $table; 
 		return $this;
-	}
+	} 
  	function cache($time=0){ 
 		$this->cache_time = $time;
 		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->cache_time;

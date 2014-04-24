@@ -24,7 +24,9 @@ class Cookie
 	static function set($name,$value,$expire=0,$path='/',$secure=null){ 
 		//设置跨域COOKIE
 		header('P3P: CP="NOI DEV PSA PSD IVA PVD OTP OUR OTR IND OTC"');
-		$value = Crypt::encode($value);
+		if(false !== $value){
+			$value = Crypt::encode($value);
+		}
 		setcookie($name,$value,$expire,$path,$domain,$secure);
 		if($value)
 			$_COOKIE[$name] = $value;
