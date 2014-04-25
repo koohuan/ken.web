@@ -17,28 +17,37 @@ Ken\Web 使用说明
 
     curl -sS https://getcomposer.org/installer | php
 
-#### 安装完整项目代码
+#### 项目生成【方法一】
 
     php composer.phar create-project --prefer-dist --stability=dev ken/web_skeleton  /path/to/application
-    
 
+#### 项目生成【方法二】 
+  
+直接复制项目到core目录，创建自己的`composer.json`，
+
+`public/index.php` 代码请看 `https://github.com/nonetaichi/ken.web_skeleton`
 
 composer.json
 
 	{ 
 	    "require": {
-	        "php": ">=5.4",
-		 "ken/web": "dev-master"  
+	        "php": ">=5.4" ,
+		"alfaproject/omnipay-skrill": "dev-master",
+		"omnipay/paypal": "2.x",
+		"omnipay/common":"2.x"
 	    },    
 	    "autoload": {  
+		"files": ["core/alias.php","core/functions.php"],
 	        "psr-4":{
+		    "Ken\\Web\\":"core/",
 	            "module\\": "module/",  
-	 	     "widget\\": "widget/",
-	 	     "tool\\": "tool/",
-	 	     "third\\": "third/"
+	 	    "widget\\": "widget/",
+	 	    "classes\\": "classes/",
+	 	    "third\\": "third/"
 	        } 
 	    }  
 	}
+
 
  
 ----------

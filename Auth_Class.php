@@ -1,29 +1,6 @@
 <?php 
-/**
-    
- 	
- 	$db = [
-		["mysql:dbname=wei;host=127.0.0.1","test","test"],
-		["mysql:dbname=wei2;host=127.0.0.1","test","test"],
-	];
- 	F::set('db',function() use ($db){
-		$config = $db[0];
-		return new DB($config[0],$config[1],$config[2]);  
-	});
- 	
- 	
- 	CREATE TABLE IF NOT EXISTS `admin` (
-	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-	  `username` varchar(50) NOT NULL,
-	  `password` varchar(64) NOT NULL,
-	  `email` varchar(50) NOT NULL,
-	  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-	  `uid` varchar(64) NOT NULL,
-	  PRIMARY KEY (`id`)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-	
-
+/** 
+	Common Auth class
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014 
@@ -56,12 +33,20 @@ class Auth_Class
 	*/
 	function get(){
 		if(true === $this->cookie){  
-			return [
-				'id'=>Cookie::get('id'),
-				'username'=>Cookie::get('username'),
-				'email'=>Cookie::get('email'),
-				'uid'=>Cookie::get('uid'),
-			];
+			if(Cookie::get('username')){ 
+				return [
+					'id'=>Cookie::get('id'),
+					'username'=>Cookie::get('username'),
+					'email'=>Cookie::get('email'),
+					'uid'=>Cookie::get('uid'),
+				];
+			}else{
+				return [
+					'id'=>Cookie::get('id'), 
+					'email'=>Cookie::get('email'),
+					'uid'=>Cookie::get('uid'),
+				];
+			}
 		}else{
 			return [
 				'id'=>Session::get('id'),
@@ -77,12 +62,14 @@ class Auth_Class
 	protected function set($one){
 		if(true === $this->cookie){
 			Cookie::set('id',$one->id,0);
-			Cookie::set('username',$one->username,0);
+			if($one->username)
+				Cookie::set('username',$one->username,0);
 			Cookie::set('email',$one->email,0);
 			Cookie::set('uid',$one->uid,0);
 		}else{
 			Session::set('id',$one->id);
-			Session::set('username',$one->username);
+			if($one->username)
+				Session::set('username',$one->username);
 			Session::set('email',$one->email);
 			Session::set('uid',$one->uid);
 		}
@@ -110,6 +97,7 @@ class Auth_Class
 		2 password is error
 	*/
 	function login($username , $password){
+		if(!$username || !$password) return __('login fields requied');
 		if($this->username!=null){
 			$a = $this->username."=? OR ".$this->email."=?";
 			$b = [$username,$username];
@@ -179,7 +167,11 @@ class Auth_Class
 			
 		}
 	*/
+	function create_email($email,$password){
+		return $this->create(null,$email,$password);
+	}
 	function create($username=null,$email,$password){
+		if(!$email || !$password) return __('create fields requied');
 		$arr = [ 
 				$this->email => trim($email),
 				'uid' => Str::id(),
