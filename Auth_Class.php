@@ -32,29 +32,23 @@ class Auth_Class
 		取得当前用户登录的信息
 	*/
 	function get(){
+		$out = null;
 		if(true === $this->cookie){  
-			if(Cookie::get('username')){ 
-				return [
-					'id'=>Cookie::get('id'),
-					'username'=>Cookie::get('username'),
-					'email'=>Cookie::get('email'),
-					'uid'=>Cookie::get('uid'),
-				];
-			}else{
-				return [
-					'id'=>Cookie::get('id'), 
-					'email'=>Cookie::get('email'),
-					'uid'=>Cookie::get('uid'),
-				];
-			}
-		}else{
-			return [
-				'id'=>Session::get('id'),
-				'username'=>Session::get('username'),
-				'email'=>Session::get('email'),
-				'uid'=>Session::get('uid'),
-			];
+			$id = Cookie::get('id');
+			$username = Cookie::get('username');
+			$email = Cookie::get('email');
+			$uid = Cookie::get('uid'); 
+		}else{ 
+			$id = Session::get('id');
+			$username = Session::get('username');
+			$email = Session::get('email');
+			$uid = Session::get('uid'); 
 		} 
+		if($id) $out['id'] = $id;
+	 	if($username) $out['username'] = $username;
+	 	if($email) $out['email'] = $email;
+	 	if($uid) $out['uid'] = $uid;
+	    return $out;
 	}
 	/**
 		设置登录的COOKIE 或 SESSION
@@ -96,8 +90,16 @@ class Auth_Class
 		1 not exists username;
 		2 password is error
 	*/
-	function login($username , $password){
-		if(!$username || !$password) return __('login fields requied');
+	function login($username , $password){ 
+		$e = [
+			__('login fields requied'),
+			__('user not exists'),
+			__('password error')
+		];
+		if(!$username || !$password) {
+			Response::status(500 , $e[0]);
+			return $e[0];
+		}
 		if($this->username!=null){
 			$a = $this->username."=? OR ".$this->email."=?";
 			$b = [$username,$username];
@@ -109,11 +111,14 @@ class Auth_Class
 			->where($a,$b)
 			->one();
 		if(!$one){
-			return 'user not exists';
+			Response::status(500 ,$e[1]);
+			return $e[1];
 		}
 		if(!static::validatePassword($password , $one->password)){
-			return 'password error';
+			Response::status(500 ,$e[2]);
+			return $e[2];
 		}
+		Response::status(200);
 		$this->set($one);
 		return true; 
 	}
@@ -127,12 +132,14 @@ class Auth_Class
 			->where("id=?",[$id])
 			->one();
 		if(!$one){
+			Response::status(500,__('Update user not exists'));
 			return false;
 		}
 		if($par['password']){
 			$par['password'] = static::passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
+		Response::status(200);
 		return true;
 	}
 	/**
@@ -143,17 +150,28 @@ class Auth_Class
 		3 原密码是错误的
 	*/
 	function update($id,$old_password,$par=[]){
-		if(!$old_password || !$id) return  "原密码不能为空";
+		$e = [
+			__("userID and Old password required"),
+			__("user not exists"),
+			__("Old password not right")
+		];
+		if(!$old_password || !$id) {
+			Response::status(500 ,$e[0]);
+			return  $e[0];
+		}
 		$one = DB::w()->table($this->table)
 			->where("id=?",[$id])
 			->one();
 		if(!$one){
-			return "用户不存在";
+			Response::status(500 , $e[1]);
+			return $e[1];
 		} 
 		if(!static::validatePassword($old_password , $one->password)){
-			return "原密码不存在";
+			Response::status(500 , $e[2]);
+			return $e[2];
 		}
 		if($par['password']){
+			Response::status(200);
 			$par['password'] = static::passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
@@ -171,7 +189,14 @@ class Auth_Class
 		return $this->create(null,$email,$password);
 	}
 	function create($username=null,$email,$password){
-		if(!$email || !$password) return __('create fields requied');
+		$e = [
+			__('create fields requied'),
+			__('user had exists'),
+		];
+		if(!$email || !$password) {
+			Response::status(500 , $e[0]);
+			return $e[0];
+		}
 		$arr = [ 
 				$this->email => trim($email),
 				'uid' => Str::id(),
@@ -179,11 +204,11 @@ class Auth_Class
 				$this->create_at => date('Y-m-d H:i:s'), 
 			];
 		Validate::set($this->email,[
-				['email','message'=>'必须是正确的邮件地址'], 
+				['email','message'=>__('Must be email address')], 
 		],$email); 
 		if($this->username!=null){
 			Validate::set($this->username,[
-				['alnumu','message'=>'字母数字下划线'], 
+				['alnumu','message'=>'abc num and _'], 
 			],$username); 
 			$vali = Validate::message();
 			if($vali) {
@@ -201,12 +226,14 @@ class Auth_Class
 			->where($a,$b)
 			->one();
 		if($one){
-			return ['msg'=>'用户已存在']; 
+			Response::status(500 ,$e[1]);
+			return ['msg'=>$e[1]]; 
 		}
 		if(!$one){ 
+			Response::status(200);
 			$id = DB::w()->insert($this->table,$arr);
 		}
-		return ['id'=>$id]; 
+		return $id; 
 	}
 	/**
 		以下代码来源yii2.0
