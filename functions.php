@@ -57,21 +57,29 @@ function ip() {
 	if(!empty($_SERVER['HTTP_CLIENT_IP'])){
 	   $ip = $_SERVER['HTTP_CLIENT_IP'];
 	}else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
-	   $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		$arr    =   explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $pos    =   array_search('unknown',$arr);
+        if(false !== $pos) unset($arr[$pos]);
+        $ip     =   trim($arr[0]);  
 	}else{
 	   $ip= $_SERVER['REMOTE_ADDR'];
 	}
     return $ip;
 }
+
 function widget($name , $par = []){ 
 	return Widget::init("widget\\".$name."\\".$name,$par);
 }
 
-function import($file){
+function import($file){ 
 	static $statics;
 	if(!isset($statics[$file])){
 		include $file;
 		$statics[$file] = true;
-	}
-		
+	} 
+}
+//从项目目录加载文件
+function load($file){
+	$file = base_path().'/'.str_replace('.','/',$file).".php";
+	import($file);
 }
