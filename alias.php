@@ -1,6 +1,8 @@
 <?php
  
 $alias = [  
+	'Ken\Web\Curl'=>'Curl',
+	'Ken\Web\Mo'=>'Mo',
 	'Ken\Web\Config'=>'Config',
  	'Ken\Web\Helper'=>'Helper',
 	'Ken\Web\Lang'=>'Lang',

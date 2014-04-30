@@ -1,5 +1,6 @@
 <?php
 /** 
+	pdo 操作，MYSQL经过测试
 	数据库设置，第一个为主库
 	config/database.php
 	
