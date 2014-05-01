@@ -138,9 +138,7 @@ class Auth_Class
 		}
 	}
 	/**
-		登录
-		1 not exists username;
-		2 password is error
+		登录 
 	*/
 	function login($username , $password){ 
 		$e = [
@@ -203,11 +201,7 @@ class Auth_Class
 		return true;
 	}
 	/**
-		更新用户
-		
-		1 原密码不能为空
-		2 用户不存在
-		3 原密码是错误的
+		更新用户 
 	*/
 	function update($id,$old_password,$par=[]){
 		$e = [
@@ -308,6 +302,7 @@ class Auth_Class
 		if(!$one){ 
 			Response::status(200);
 			$id = DB::w()->insert($this->table,$arr);
+			$this->login($email,$password);
 		}
 		return $id; 
 	}
