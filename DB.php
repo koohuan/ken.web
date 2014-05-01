@@ -21,11 +21,28 @@
  	$db->update('posts',['name'=>'abcaaa'],'id=?',[1]);
  	
  	$db->delete('posts','id=?',[1]);
- 	
+ 	$db->debug = true;
 	$r = $db->table('posts')
-		->where('name=?',['abc']) 
-		->order_by('id asc')
+		->select('a.id,a.name')
+		->left_join('aa as b')
+		->on('b.id=a.id')
+		->where('a.name=?',['abc']) 
+		->or_where('a.name=?',['abc'])
+		->limit(10)
+		->offset(1)
+		->order_by('a.id asc')
 		->all(); 
+		
+		select a.id ,a.name from posts
+		left join aa as b 
+		on b.id = a.id
+		where a.name=?
+		or a.name = ?
+		limit 10
+		offset 1
+		order by a.id asc
+		
+	dump($db->log());
 		
 	$r = $db->table('posts')
 		->where('name=?',['abc'])  

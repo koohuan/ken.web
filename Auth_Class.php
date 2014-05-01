@@ -1,5 +1,57 @@
 <?php 
 /** 
+	登录
+	Auth::login(\Input::post('username'),\Input::post('password'));
+	
+	修改密码
+	$t = Auth::update($id,\Input::post('old_password'),$par=['password'=>\Input::post('password')]);
+	if(true === $t){
+	    \Session::flash('success','change password success!');
+	    $this->redirect(url('admin/user/index'));
+	}else{
+	    $error =  'old password is failed!'; 
+	}
+	
+	创建管理员
+	$id = Auth::create(
+        \Input::post('username'),
+        \Input::post('email'),
+        \Input::post('password'));
+
+	$id = Auth::create_email(\Input::post('email'),\Input::post('password'));
+	
+	
+	$id = Auth::create(\Input::post('name'),\Input::post('email'),\Input::post('password'));
+	
+	
+	纯AJAX 方法
+	
+	$.ajax({
+		  type: "POST",
+		  url: "/user/create",
+		  data:  {'email' : email},
+		  success: function (d){ 
+			//window.location.reload(); 
+		 },
+		 error:function(e, txt){  
+			alert(e.statusText); 
+        }
+	});   
+	
+	ajaxForm 方法
+	HTML::code("
+    var queryString = $('#form').formSerialize();
+    $('#form').ajaxForm({ 
+	        error:function(d,txt,e){  
+	            alert(e); 
+	        }, 
+	        success:function(d){  
+	            alert('Login success'); 
+	        }
+	    });
+	");
+
+
 	Common Auth class
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
@@ -136,6 +188,14 @@ class Auth_Class
 			return false;
 		}
 		if($par['password']){
+			Validate::set($this->password,[
+					['min_length',6,'message'=>__('Password min lenght 6')], 
+			],$par['password']);  
+			$vali = Validate::message();
+			if($vali) {
+				Response::status(500 , $vali[0]);
+				return ['msg'=>$vali];
+			} 
 			$par['password'] = static::passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
@@ -171,6 +231,15 @@ class Auth_Class
 			return $e[2];
 		}
 		if($par['password']){
+			Validate::set($this->password,[
+					['min_length',6,'message'=>__('Password min lenght 6')], 
+			],$par['password']);  
+			$vali = Validate::message();
+			if($vali) {
+				Response::status(500 , $vali[0]);
+				return ['msg'=>$vali];
+			} 
+			
 			Response::status(200);
 			$par['password'] = static::passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
@@ -206,14 +275,15 @@ class Auth_Class
 		Validate::set($this->email,[
 				['email','message'=>__('Must be email address')], 
 		],$email); 
+		
+		Validate::set($this->password,[
+				['min_length',6,'message'=>__('Password min lenght 6')], 
+		],$password); 
+		
 		if($this->username!=null){
 			Validate::set($this->username,[
 				['alnumu','message'=>'abc num and _'], 
-			],$username); 
-			$vali = Validate::message();
-			if($vali) {
-				return ['msg'=>$vali];
-			} 
+			],$username);  
 			$a = $this->username."=? OR ".$this->email."=?";
 			$b = [$username,$email];
 			$arr[$this->username] = trim($username);
@@ -221,7 +291,13 @@ class Auth_Class
 			$a = $this->email."=?";
 			$b = [$email];
 			
+		}  
+		$vali = Validate::message();
+		if($vali) {
+			Response::status(500 , $vali[0]);
+			return ['msg'=>$vali];
 		} 
+		
 		$one = DB::w()->table($this->table)
 			->where($a,$b)
 			->one();

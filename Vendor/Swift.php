@@ -79,7 +79,10 @@ class Swift{
 	/**
 		['john@doe.com' => 'John Doe']
 	*/
-	function from($arr = []){
+	function from($arr = null){
+		if(!$arr){
+			$arr = [Config::get('mail.user')=>Config::get('mail.name')?:'mailer'];
+		}
 		$this->message->setFrom($arr) ;
 		return $this;
 	}
