@@ -1,5 +1,4 @@
-<?php
-use Ken\Web\F;
+<?php 
 /**
   ÅÐ¶ÏÊÇ·ñAjaxÇëÇó
 */
