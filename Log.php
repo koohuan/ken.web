@@ -2,8 +2,22 @@
 /**
   	Log
  	
+ 	系统级别重要日志
+ 	
+ 	\Log::system([
+		'uri' =>$_SERVER['REQUEST_URI'], 
+		'create_at' => date('Y-m-d H:i:s')
+	],'request');
+	
+	\Log::system([
+		'order_id' => $this->order_id,
+		'payment_method'  => $this->id,
+		'amount'			=> $this->amount,
+		'create_at'	    => date('Y-m-d H:i:s'),
+	],"payment");
+	
  	 
-	//启用日志
+	//普通文本日志
 	Log::init(); 
 
 	Log::info('test');
@@ -20,7 +34,10 @@ class Log{
 	static $path;  
 	//是否开启日志 ，默认开启
 	static $log = true;
- 
+	//系统级日志，记录到Mongo DB中
+ 	static function system( $arr = [] , $leavel = 0){
+ 		Mo::w()->insert('log_'.$leavel , $arr);
+ 	}
  	static function init(){
  		static::$path = Config::get('app.log'); 
  		if(!is_dir(static::$path)) mkdir($path , 777 ,true); 

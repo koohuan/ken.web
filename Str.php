@@ -20,7 +20,7 @@ class Str
 	 * @link http://docs.mongodb.org/manual/reference/object-id/
 	 * @return string 24 hexidecimal characters
 	 */
-	function id()
+	static function id()
 	{
 	    static $i = 0;
 	    $i OR $i = mt_rand(1, 0x7FFFFF);
@@ -54,15 +54,19 @@ class Str
  
 
  	//生成不重复的ID
-	function uuid()
+	static function uuid($flag="-")
 	{
-	 	return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+	 	return sprintf( '%04x%04x'.$flag.'%04x'.$flag.'%04x'.$flag.'%04x'.$flag.'%04x%04x%04x',
 			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
 			mt_rand( 0, 0xffff ),
 			mt_rand( 0, 0x0fff ) | 0x4000,
 			mt_rand( 0, 0x3fff ) | 0x8000,
 			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
 		);
+	}
+	static function order_id()
+	{
+	 	return static::uuid(null);
 	}
 	
 	/**

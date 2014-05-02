@@ -26,6 +26,25 @@ function url($url , $par = []){
 	return Route::url($url,$par);
 }
 /**
+   生成加载参数的URL，接受参数需要使用 url_decode
+*/
+function eurl($url , $par = []){
+	if($par){
+		$u['e'] = url_encode($par);
+	}
+	return Route::url($url,$u);
+}
+function url_encode($par = []){
+	return urlencode(Crypt::encode(json_encode($par)));
+}
+function url_decode($string){
+	$obj = json_decode(Crypt::decode(urldecode($string)));
+	if(!$obj){
+		 throw new \Exception(__('URI params is error,maybe something wrong.please contact us!'));
+	}
+	return $obj;
+}
+/**
 	取得当前HOST http://yuetaichi.com 
 */
 function host(){
