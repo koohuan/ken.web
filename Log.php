@@ -36,7 +36,8 @@ class Log{
 	static $log = true;
 	//系统级日志，记录到Mongo DB中
  	static function system( $arr = [] , $leavel = 0){
- 		Mo::w('log')->insert('log_'.$leavel , $arr);
+ 		if(true === Mo::w('log')->active)
+ 			Mo::w('log')->insert('log_'.$leavel , $arr);
  	}
  	static function init(){
  		static::$path = Config::get('app.log'); 
@@ -73,6 +74,7 @@ class Log{
  	}
  	//写文件
  	static function write($type = 'info',$str){
+ 		$type = ucfirst($type);
  		if(is_array($str)) {
  			unset($new);
  			foreach($str as $k=>$v){
@@ -82,8 +84,10 @@ class Log{
  		}
  		if(static::$log !== true) return ;
  		if(!$str) return;
- 		$str = "$type: ".$str."   ".date('H:i:s',time())."\n";
- 		$filename = static::$path.'/'.$type.'-'.date("Y-m-d").".log";
+ 		$str = $str."   ".date('H:i:s',time())."\n";
+ 		$dir = static::$path.'/'.$type.'/'.date("Y").'/'.date('m');
+ 		if(!is_dir($dir)) mkdir($dir,0775,true);
+  		$filename = $dir.'/'.date("dH").".log";
  		try{
  			$fh = fopen($filename, "a+");
 			fwrite($fh, $str);
@@ -93,5 +97,10 @@ class Log{
 		} 
 		 
  	}
+ 	
+ 	static function __callStatic ($name ,$arg = [] ){
+ 		 $str = implode("\n",$arg); 
+ 		 static::write($name , $str);
+	}
  	  
 }

@@ -30,18 +30,18 @@ class Mo{
 	protected $key;
 	public $active = false;
 	public $where; 
-	protected $dsn;
+ 
 	public $connect;
 	public $cache_time;
 	public $cache_id;  
 	static $write;
 	public function __construct($connection = 'mongodb://localhost:27017' ,$db = 'user' , $arr = []){ 
-		try {
-			$this->dsn = $connection; 
- 		    $this->pdo = new \MongoClient($connection,$arr); 
+		try { 
+ 		    $this->pdo = new \MongoClient($connection,$arr);  
 		    $this->active = true; 
-		} catch ( Exception $e) {  
+		} catch ( \MongoConnectionException $e) { 
 			$this->active = false;
+			Log::MongoClient("MongoClient failed:".$connection);
 		    return false;
 		}
 		$this->db = $this->pdo->$db;
