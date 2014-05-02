@@ -36,7 +36,7 @@ class Log{
 	static $log = true;
 	//系统级日志，记录到Mongo DB中
  	static function system( $arr = [] , $leavel = 0){
- 		Mo::w()->insert('log_'.$leavel , $arr);
+ 		Mo::w('log')->insert('log_'.$leavel , $arr);
  	}
  	static function init(){
  		static::$path = Config::get('app.log'); 

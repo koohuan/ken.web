@@ -2,6 +2,17 @@
 /** 
  	Mongo DB
  	
+ 	
+ 	配置 文件在config/mongo.php
+ 	
+ 	return  [
+	
+		["mongodb://localhost:27017","api-teebik-com" ,[]],
+		'log'=> ["mongodb://localhost:27017","teebik-log" ,[]],
+	];
+	
+	其中 log 为记录日志所用。如没有将默认使用第一个
+
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014
@@ -36,10 +47,11 @@ class Mo{
 		$this->db = $this->pdo->$db;
 		return $this;
 	}  
-	static function w(){
+	static function w($default = 0){
 		if(!isset(static::$write)){
 			$db = Config::load('mongo'); 
-			$config = $db[0];
+			$config = $db[$default];
+			if(!$config) $config = $db[0];
 			static::$write = new Static($config[0],$config[1],$config[2]);  
 		}
 		return static::$write;
