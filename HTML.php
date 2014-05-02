@@ -59,9 +59,9 @@ class HTML
 			return ;   	   
    	   }
 	   	static::link('css'); 
-		static::code('css');
-		static::code('js');
+		static::code('css'); 
 		static::link('js');
+		static::code('js');
    }
    static function _http($str){
    		if(strpos($str,'http://') !== false || strpos($str,'https://') !== false || substr($str,0,2)=='//'){
