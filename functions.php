@@ -38,6 +38,9 @@ function url_encode($par = []){
 	return urlencode(Crypt::encode(json_encode($par)));
 }
 function url_decode($string){
+	if(!$string){
+		throw new \Exception(__('URI string not exists,maybe something wrong.please contact us!'));
+	}
 	$obj = json_decode(Crypt::decode(urldecode($string)));
 	if(!$obj){
 		 throw new \Exception(__('URI params is error,maybe something wrong.please contact us!'));
