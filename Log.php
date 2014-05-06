@@ -35,13 +35,13 @@ class Log{
 	//是否开启日志 ，默认开启
 	static $log = true;
 	//系统级日志，记录到Mongo DB中
- 	static function system( $arr = [] , $leavel = 0){
+ 	static function mo( $arr = [] , $leavel = 0){
  		if(true === Mo::w('log')->active)
  			Mo::w('log')->insert('log_'.$leavel , $arr);
  	}
  	static function init(){
- 		static::$path = Config::get('app.log'); 
- 		if(!is_dir(static::$path)) mkdir($path , 777 ,true); 
+ 		static::$path = Config::get('app.log');  
+ 		if(!is_dir(static::$path)) mkdir(static::$path , 777 ,true); 
  	}  
  	//读取所有日志
  	static function read(){

@@ -101,6 +101,8 @@ function import($file){
 }
 //从项目目录加载文件
 function load($file){
-	$file = base_path().'/'.str_replace('.','/',$file).".php";
+	$file = str_replace('.','/',$file);
+	$file = str_replace('\\','/',$file);
+	$file = base_path().'/'.$file.".php";
 	import($file);
 }
