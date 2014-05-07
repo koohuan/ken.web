@@ -1,4 +1,13 @@
 <?php 
+function query_one(){  
+	return call_user_func_array(['\classes\query','one'],func_get_args() ); 
+}
+function query_all(){  
+	return call_user_func_array(['\classes\query','all'],func_get_args() ); 
+}
+function query_page(){  
+	return call_user_func_array(['\classes\query','page'],func_get_args() ); 
+}
 /**
   ÅÐ¶ÏÊÇ·ñAjaxÇëÇó
 */
