@@ -86,6 +86,29 @@ class DB{
 	static $_set_where;
 	static $_cache_key;
 	/**
+	* 分页
+	*/
+	function page($url ,$per_page = 10 ,$count = "count(*) num"){ 
+		$this->count($count); 
+		$this->_query(true);  
+		$row = $this->query->fetch(\PDO::FETCH_OBJ);  
+		$paginate = new Paginate($row->num,$per_page); 
+		$paginate->url = $url;
+		$limit = $paginate->limit;
+		$offset = $paginate->offset;  
+		//显示分页条，直接输出 $paginate
+		$pages = $paginate->show();    
+	 	$this->limit($limit);
+		$this->offset($offset);  
+		$this->_query(true);
+		$posts = $this->query->fetchAll();
+		unset($this->ar,$this->where);  
+		return [
+			'posts'=>$posts,
+			'pages'=>$pages
+		];
+	}
+	/**
 	* 如In (?,?)
 	*
 	*/
@@ -147,13 +170,13 @@ class DB{
 		return static::$read;
 	}
 	
-	static function w(){
-		if(!isset(static::$write)){
+	static function w($default=0){
+		if(!isset(static::$write[$default])){
 			$db = Config::load('database'); 
-			$config = $db[0];
-			static::$write = new Static($config[0],$config[1],$config[2]);  
+			$config = $db[$default];
+			static::$write[$default] = new Static($config[0],$config[1],$config[2]);  
 		}
-		return static::$write;
+		return static::$write[$default];
 	}
 	
 	
@@ -258,8 +281,7 @@ class DB{
 			}
 		} else{
 			$value = $this->_one();
-		}
-	 
+		}  
 		return $value; 
 	}
 	function cache_key(){
@@ -286,6 +308,7 @@ class DB{
 		}else{
 			$value = $this->_all(); 
 		}
+		if(sizeof($value)==0) return null;
 		return $value;
 	}
 	/**
@@ -297,14 +320,17 @@ class DB{
 		$this->exec(); 
 		return $this;
 	}
+	
 	/**
 	* exec sql 
 	*/
-	protected function _query(){  
+	protected function _query($keep_ar = false){  
 		static::$_set_where = false;
 		$value = [];
 		if(!$this->ar['TABLE']) return $this;
 		$sql = "select ".($this->ar['SELECT']?:'*')." FROM ".$this->ar['TABLE'];
+		$s = $this->ar['SELECT'];
+		$t = $this->ar['TABLE'];
 		unset($this->ar['SELECT'],$this->ar['TABLE']); 
  		if($this->ar){
 			foreach($this->ar AS $key=>$condition){
@@ -326,7 +352,12 @@ class DB{
 			}
 		}   
 		//使用后要删除 $this->ar
-		unset($this->ar,$this->where); 
+		if(false === $keep_ar)
+			unset($this->ar,$this->where); 
+		else{
+			$this->ar['SELECT'] = "*";
+			$this->ar['TABLE'] = $t;
+		}
 		$this->sql = $sql;
 		$this->value = $value;  
 		try { 
