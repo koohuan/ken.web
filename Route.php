@@ -69,7 +69,7 @@ class Route{
 	static $app = [];
 	//相对URL
 	static $index;
-	static $r = 'module'; //默认路由模块
+	static $r = 'module'; //默认路由模块 
  	/** 
 	get('aa',function(){});
 	*/
@@ -78,20 +78,37 @@ class Route{
 	public $host;
 	public $class = [];
 	static $obj;
-	function init(){
+	static function init(){
 		if(!isset(static::$obj))
 			static::$obj = new Static;
 		return static::$obj;
 	}
+	static function uri(){
+		$uri = static::_uri();
+		if($uri!='/'){
+			$uri = substr($uri,1);
+		}
+		return $uri;
+	}
+	static function _uri(){
+		//解析URL $uri 返回 /app/public/ 或  / 
+		$uri = $_SERVER['REQUEST_URI']; 
+		$uri = str_replace(static::host(),'',$uri);
+		if(strpos($uri,'?')!==false)
+			$uri = substr($uri,0,strpos($uri,'?'));
+		return $uri;
+	}
 	function __construct(){
 		//请求方式 GET POST
- 		$this->method = $_SERVER['REQUEST_METHOD'];  
+ 		$this->method = $_SERVER['REQUEST_METHOD'];   
+ 		$this->host = static::host();  
+ 	}  
+ 	static function host(){
  		$top = 'http';
  		if($_SERVER['SERVER_PORT'] == 443 || $_SERVER['HTTPS'] == 1 ||$_SERVER['HTTPS'] == 'on')
  			$top = 'https';
- 		$this->host = $top."://".$_SERVER['SERVER_NAME']; 
- 	 
- 	}  
+ 		return $top."://".$_SERVER['SERVER_NAME']; 
+ 	}
  	/**
  	* 取得控制器的 model id action
  	[_id] => module/admin/admin
@@ -193,11 +210,8 @@ class Route{
 		执行解析URL 到对应namespace 或 closure 
 	*/
 	protected function exec(){  
-		//解析URL $uri 返回 /app/public/ 或  / 
-		$uri = $_SERVER['REQUEST_URI']; 
-		$uri = str_replace($this->host,'',$uri);
-		if(strpos($uri,'?')!==false)
-			$uri = substr($uri,0,strpos($uri,'?'));
+		//解析URL $uri 返回 /app/public/ 或  /  
+		$uri = static::_uri(); 
 		//取得入口路径
 		$index = $_SERVER['SCRIPT_NAME'];
 		$index = substr($index,0,strrpos($index,'/')); 

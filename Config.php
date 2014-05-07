@@ -1,6 +1,9 @@
 <?php
 /**
-  读取配置
+    读取配置
+	Config::path(base_path().'/../api/');
+ 
+    Config::get('app.error_reporting'); 
 
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
@@ -10,6 +13,11 @@ namespace Ken\Web;
 class Config{ 
 	
 	static $_config;
+	static $path;
+	static function path($path){
+		if(!isset(static::$path))
+			static::$path = $path; 
+	}
 	static function get($alias){
 		return static::load($alias);
 	}
@@ -33,7 +41,8 @@ class Config{
 			$alias = substr($alias,0,strpos($alias , '.'));   
 		}
 		if(!isset(static::$_config[$id])){
-			$file = base_path().'/config/'.str_replace('.','/',$alias).'.php';  
+			$path = static::$path?:base_path(); 
+			$file = $path.'/config/'.str_replace('.','/',$alias).'.php';  
 			if(file_exists($file)){ 
 				static::$_config[$id] = include $file;
 			}  

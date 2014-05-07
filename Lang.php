@@ -1,7 +1,7 @@
 <?php  
 /** 
 	 
-	Lang::init()->load('app');
+	Lang::init($path)->load('app');
 	
 	function __($key,$alias='app'){ 
 		return Lang::get($key,$alias); 
@@ -18,9 +18,13 @@ class Lang
  	static $lang = 'zh_CN';
  	static $obj;
  	static $init;
-	function __construct(){
-	 	$this->dir = public_path().'/../messages';			
+	function __construct($path = null){
+		if(!$path)
+	 		$this->dir = public_path().'/../messages';			
+	 	else
+	 		$this->dir = $path;
 	}
+ 
 	/**
 		加载文件
 	*/
