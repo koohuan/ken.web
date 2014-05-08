@@ -7,7 +7,7 @@
  	
  	return  [
 	
-		["mongodb://localhost:27017","api-teebik-com" ,[]],
+		'w'=>["mongodb://localhost:27017","api-teebik-com" ,[]],
 		'log'=> ["mongodb://localhost:27017","teebik-log" ,[]],
 	];
 	
@@ -47,7 +47,7 @@ class Mo{
 		$this->db = $this->pdo->$db;
 		return $this;
 	}  
-	static function w($default = 0){
+	static function w($default = 'w'){
 		if(!isset(static::$write)){
 			$db = Config::load('mongo'); 
 			$config = $db[$default];

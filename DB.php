@@ -5,8 +5,10 @@
 	config/database.php
 	
 	return [
-		["mysql:dbname=wei;host=127.0.0.1","test","test"],
-		["mysql:dbname=wei2;host=127.0.0.1","test","test"],
+		'w'=>["mysql:dbname=api;host=127.0.0.1","test","test"],
+		'r'=>[
+			["mysql:dbname=wei2;host=127.0.0.1","test","test"],
+		],
 	]; 
  	以下为非F操作			
  	数据库操作,如果有返回值 全为对象。
@@ -157,23 +159,19 @@ class DB{
 	//数据库 从库
 	static function r(){
 		if(!isset(static::$read)){
-			$db = Config::load('database');  
-			if(count($db)>1){
-				unset($db[0]);
-				$i = array_rand ($db , 1);
-				$config = $db[$i];
-			}else{
-				$config = $db[0];
-			}
+			$db = Config::load('database.r');   
+			$i = array_rand ($db , 1);
+			$config = $db[$i];
+			if(!$config)
+				$config = $db[0]; 
 			static::$read = new Static($config[0],$config[1],$config[2]); 
 		}
 		return static::$read;
 	}
 	
-	static function w($default=0){
+	static function w($default='w'){
 		if(!isset(static::$write[$default])){
-			$db = Config::load('database'); 
-			$config = $db[$default];
+			$config = Config::load('database.'.$default);  
 			static::$write[$default] = new Static($config[0],$config[1],$config[2]);  
 		}
 		return static::$write[$default];
