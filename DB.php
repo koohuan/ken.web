@@ -255,8 +255,9 @@ class DB{
 		return $this;
 	} 
  	function cache($time=0){ 
-		$this->cache_time = $time;
-		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->cache_time;
+		$this->cache_time = $time; 
+		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->sql.$this->cache_time;
+		 
 		return $this;
 	}  
 	protected function _one(){
@@ -270,12 +271,17 @@ class DB{
 	*/
 	function one(){  
 		if(isset($this->cache_time)){
-			$id = md5($this->cache_id.'one');
+			$id = "DB_".md5($this->cache_id.'one');
 			static::$_cache_key[$id] = true;
 			$value = Cache::get($id); 
 			if(!$value){
 				$value = $this->_one();
-				Cache::set($id,$value);  
+				if($value){
+					Log::mo([
+						'id'=>$id,
+					],'db_cache_one');
+					Cache::set($id,$value);  
+				}
 			}
 		} else{
 			$value = $this->_one();
@@ -296,12 +302,17 @@ class DB{
 	*/
 	function all(){  
 		if(isset($this->cache_time)){
-			$id = md5($this->cache_id.'all');
+			$id = "DB_".md5($this->cache_id.'all');
 			static::$_cache_key[$id] = true;
 			$value = Cache::get($id); 
-			if(!$value){ 
-				$value = $this->_all(); 
-				Cache::set($id,$value);  
+			if(!$value){  
+				$value = $this->_all();   
+				if($value){
+					Log::mo([
+						'id'=>$id,
+					],'db_cache_all');
+					Cache::set($id,$value);  
+				}
 			}
 		}else{
 			$value = $this->_all(); 

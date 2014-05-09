@@ -33,7 +33,7 @@ namespace Ken\Web;
 class Log{
 	static $path;  
 	//是否开启日志 ，默认开启
-	static $log = true;
+	static $open = true;
 	//系统级日志，记录到Mongo DB中
  	static function mo( $arr = [] , $leavel = 0){
  		if(true === Mo::w('log')->active)
@@ -74,6 +74,7 @@ class Log{
  	}
  	//写文件
  	static function write($type = 'info',$str){
+ 		if(static::$open !== true) return ;
  		$type = ucfirst($type);
  		if(is_array($str)) {
  			unset($new);
@@ -81,8 +82,7 @@ class Log{
  				$new .= $k."=".$v."\n";
  			}
  			$str = $new;
- 		}
- 		if(static::$log !== true) return ;
+ 		} 
  		if(!$str) return;
  		$str = $str."   ".date('H:i:s',time())."\n";
  		$dir = static::$path.'/'.$type.'/'.date("Y").'/'.date('m');

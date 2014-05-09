@@ -31,6 +31,14 @@ function refresh(){
 	´´½¨URL
 */
 function url($url , $par = []){
+	$url = str_replace('.','/',$url);
+	$n = substr_count($url,'/');
+	if($n==2){
+		$ar = explode('/',$url);
+		if($ar[2]=='index'){
+			$url = substr($url,0,strrpos($url,'/'));
+		}
+	}
 	return Route::url($url,$par);
 }
 /**

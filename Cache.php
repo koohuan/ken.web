@@ -70,7 +70,7 @@ class Cache{
 		if( $minutes > 0) {
 			$minutes = time() + $minutes;
 		} 
-		if($this->type == 'memcache')
+		if(static::init()->type == 'memcache')
 			static::init()->cache->set( $key, $value,false, $minutes ); 
 		else
 			static::init()->cache->set( $key, $value, $minutes ); 

@@ -4,7 +4,7 @@
   
     使用方法
     
-     Mail::init()->from(['youraddress@a.com'=>'yourname'])
+     Mail::init()->from()
     	->to(['youaddress@a.com'=>'user'])
     	->title('标题')
     	->body("content内容<hr>不错")

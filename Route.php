@@ -13,7 +13,7 @@
  	配置route 第三个参数 $name 此时不能有
  	$route->all('paypal','app\pay\paypal@index');
  	
- 	use PHP\Classes\Route;
+ 	use Ken\Web\Route;
  
 	
 	Route::get('/',function(){
@@ -31,7 +31,7 @@
 	Route::get('payadmin/<page:\d+>','app\pay\admin@list');
 
 	生成URL
-	echo Route::url('post',['id'=>1,'d'=>3]);
+	echo url('post',['id'=>1,'d'=>3]);
 	
 	//执行路由
 	
