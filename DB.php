@@ -49,6 +49,8 @@
 	$r = $db->table('posts')
 		->where('name=?',['abc'])  
 		->one();  
+	分页[该方法不支持cache()]
+	$db->page($url ,$per_page = 10 ,$count = "count(*) num")
 	
 	$connect 属性 [
 	    	'dsn'=>$dsn,
@@ -120,7 +122,7 @@ class DB{
 	/**
 	* 与table 方法相同
 	*/
-	function from($table){
+	function from($table){  
 		$this->table($table);
 		return $this;
 	}
@@ -257,7 +259,6 @@ class DB{
  	function cache($time=0){ 
 		$this->cache_time = $time; 
 		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->sql.$this->cache_time;
-		 
 		return $this;
 	}  
 	protected function _one(){
@@ -282,6 +283,8 @@ class DB{
 					],'db_cache_one');
 					Cache::set($id,$value);  
 				}
+			}else{
+				unset($this->ar,$this->where);  
 			}
 		} else{
 			$value = $this->_one();
@@ -313,6 +316,8 @@ class DB{
 					],'db_cache_all');
 					Cache::set($id,$value);  
 				}
+			}else{
+				unset($this->ar,$this->where);  
 			}
 		}else{
 			$value = $this->_all(); 
@@ -361,9 +366,9 @@ class DB{
 			}
 		}   
 		//使用后要删除 $this->ar
-		if(false === $keep_ar)
+		if(false === $keep_ar){
 			unset($this->ar,$this->where); 
-		else{
+		}else{
 			$this->ar['SELECT'] = "*";
 			$this->ar['TABLE'] = $t;
 		}
