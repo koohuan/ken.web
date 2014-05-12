@@ -64,9 +64,9 @@ class Str
 			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
 		);
 	}
-	static function order_id()
+	static function uid()
 	{
-	 	return static::uuid(null);
+	 	return static::uuid("");
 	}
 	
 	/**

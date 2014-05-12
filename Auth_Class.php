@@ -262,7 +262,7 @@ class Auth_Class
 		}
 		$arr = [ 
 				$this->email => trim($email),
-				'uid' => Str::id(),
+				'uid' => Str::uid(),
 				$this->password => static::passwordHash(trim($password)),
 				$this->create_at => date('Y-m-d H:i:s'), 
 			];
