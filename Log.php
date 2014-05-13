@@ -38,6 +38,8 @@ class Log{
  	static function mo( $arr = [] , $leavel = 0){
  		if(true === Mo::w('log')->active)
  			Mo::w('log')->insert('log_'.$leavel , $arr);
+ 		else
+ 			static::write('mo_'.$leavel,$arr,true);
  	}
  	static function init(){
  		static::$path = Config::get('app.log');  
@@ -73,21 +75,35 @@ class Log{
  		static::write('error',$str);
  	}
  	//写文件
- 	static function write($type = 'info',$str){
- 		if(static::$open !== true) return ;
+ 	static function write($type = 'info',$str ,$w = false){
+ 		if(false === $w && static::$open !== true) return ;
  		$type = ucfirst($type);
- 		if(is_array($str)) {
- 			unset($new);
- 			foreach($str as $k=>$v){
- 				$new .= $k."=".$v."\n";
- 			}
- 			$str = $new;
- 		} 
- 		if(!$str) return;
- 		$str = $str."   ".date('H:i:s',time())."\n";
  		$dir = static::$path.'/'.$type.'/'.date("Y").'/'.date('m');
  		if(!is_dir($dir)) mkdir($dir,0775,true);
   		$filename = $dir.'/'.date("dH").".log";
+  		
+ 		if(is_array($str)) {
+ 			unset($new);
+ 			foreach($str as $k=>$v){
+ 				$k1[] = $k;
+ 				$v1[] = $v; 
+ 			}
+ 			if(!file_exists($filename)){
+	 			foreach($k1 as $v){
+	 				$new .= $v."\t"; 
+	 			}
+	 			$new .= "\r";
+ 			}
+ 			foreach($v1 as $v){
+ 				$new .= $v."\t"; 
+ 			} 
+ 			$str = $new;
+ 		} else{
+ 			$str = $str."\t".date('i:s');
+ 		}
+ 		if(!$str) return;
+ 		$str = $str."\r";
+ 		
  		try{
  			$fh = fopen($filename, "a+");
 			fwrite($fh, $str);
