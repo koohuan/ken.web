@@ -36,6 +36,7 @@ class Mo{
 	public $cache_id;  
 	static $write;
 	public function __construct($connection = 'mongodb://localhost:27017' ,$db = 'user' , $arr = []){ 
+		if(!class_exists('MongoClient')) return false;
 		try { 
  		    $this->pdo = new \MongoClient($connection,$arr);  
 		    $this->active = true; 
