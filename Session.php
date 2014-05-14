@@ -1,14 +1,9 @@
 <?php 
 /** 
-	依赖 F.php 与 Crypt.php
+	 
 	需要先session_start();
 	使用方法
-	需先注册crypt到F中
-	
-	F::set('crypt',function() use ($crypt){ 
-		return new Crypt('abc');  
-	});
-	
+	 
     Session 
     
  	@auth Kang Sun <68103403@qq.com>
