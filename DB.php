@@ -1,22 +1,22 @@
 <?php
 /** 
-	pdo æ“ä½œï¼ŒMYSQLç»è¿‡æµ‹è¯•
-	æ•°æ®åº“è®¾ç½®ï¼Œç¬¬ä¸€ä¸ªä¸ºä¸»åº“
+	pdo ²Ù×÷£¬MYSQL¾­¹ý²âÊÔ
+	Êý¾Ý¿âÉèÖÃ£¬µÚÒ»¸öÎªÖ÷¿â
 	config/database.php
-	 
+	
 	return [
 		'w'=>["mysql:dbname=api;host=127.0.0.1","test","test"],
 		'r'=>[
 			["mysql:dbname=wei2;host=127.0.0.1","test","test"],
 		],
 	]; 
- 	ä»¥ä¸‹ä¸ºéžFæ“ä½œ			
- 	æ•°æ®åº“æ“ä½œ,å¦‚æžœæœ‰è¿”å›žå€¼ å…¨ä¸ºå¯¹è±¡ã€‚
- 	æ”¯æŒmysql æ•°æ®åº“ã€‚å¦‚order by ,è¯·åœ¨ $db->table('table')->order_by('id desc');
- 	å…¶ä»–æ–¹æ³•ä¾æ¬¡ç±»æŽ¨
- 	//ä¸»åº“
+ 	ÒÔÏÂÎª·ÇF²Ù×÷			
+ 	Êý¾Ý¿â²Ù×÷,Èç¹ûÓÐ·µ»ØÖµ È«Îª¶ÔÏó¡£
+ 	Ö§³Ömysql Êý¾Ý¿â¡£Èçorder by ,ÇëÔÚ $db->table('table')->order_by('id desc');
+ 	ÆäËû·½·¨ÒÀ´ÎÀàÍÆ
+ 	//Ö÷¿â
  	$db = DB::w();
- 	//ä»Žåº“
+ 	//´Ó¿â
  	$db = DB::r();
  	echo $db->insert('posts',['name'=>'test']);
  	
@@ -49,10 +49,10 @@
 	$r = $db->table('posts')
 		->where('name=?',['abc'])  
 		->one();  
-	åˆ†é¡µ[è¯¥æ–¹æ³•ä¸æ”¯æŒcache()]
+	·ÖÒ³[¸Ã·½·¨²»Ö§³Öcache()]
 	$db->page($url ,$per_page = 10 ,$count = "count(*) num")
 	
-	$connect å±žæ€§ [
+	$connect ÊôÐÔ [
 	    	'dsn'=>$dsn,
 	    	'user'=>$user,
 	    	'pwd'=>$pwd,
@@ -69,7 +69,7 @@ class DB{
 	public $pdo; 
 	public $query;
 	protected $ar;
-	// sql debug é»˜è®¤å…³é—­
+	// sql debug Ä¬ÈÏ¹Ø±Õ
 	public $debug = false;
 	static $log;
 	protected $sql;
@@ -83,14 +83,14 @@ class DB{
 	public $connect;
 	public $cache_time;
 	public $cache_id;
-	//ä¸»ä»Ž
+	//Ö÷´Ó
 	static $read;
 	static $write;
-	//where æ¡ä»¶ 
+	//where Ìõ¼þ 
 	static $_set_where;
 	static $_cache_key;
 	/**
-	* åˆ†é¡µ
+	* ·ÖÒ³
 	*/
 	function page($url ,$per_page = 10 ,$count = "count(*) num"){ 
 		$this->count($count); 
@@ -100,33 +100,33 @@ class DB{
 		$paginate->url = $url;
 		$limit = $paginate->limit;
 		$offset = $paginate->offset;  
-		//æ˜¾ç¤ºåˆ†é¡µæ¡ï¼Œç›´æŽ¥è¾“å‡º $paginate
+		//ÏÔÊ¾·ÖÒ³Ìõ£¬Ö±½ÓÊä³ö $paginate
 		$pages = $paginate->show();    
 	 	$this->limit($limit);
 		$this->offset($offset);  
 		$this->_query(true);
 		$posts = $this->query->fetchAll();
 		unset($this->ar,$this->where);  
-		return [
+		return (object)[
 			'posts'=>$posts,
 			'pages'=>$pages
 		];
 	}
 	/**
-	* å¦‚In (?,?)
+	* ÈçIn (?,?)
 	*
 	*/
 	static function in($name){
 		return str_repeat ('?, ',  count ($name) - 1) . '?';
 	}
 	/**
-	* ä¸Žtable æ–¹æ³•ç›¸åŒ
+	* Óëtable ·½·¨ÏàÍ¬
 	*/
 	function from($table){  
 		$this->table($table);
 		return $this;
 	}
-	//ç›´æŽ¥è¿”å›žä¸»é”®ä¸€è¡Œå¯¹è±¡
+	//Ö±½Ó·µ»ØÖ÷¼üÒ»ÐÐ¶ÔÏó
 	function pk($id){
 		return $this->where('id=?',[$id])->one();
 	}
@@ -158,7 +158,7 @@ class DB{
 		} 
 	} 
 	
-	//æ•°æ®åº“ ä»Žåº“
+	//Êý¾Ý¿â ´Ó¿â
 	static function r(){
 		if(!isset(static::$read)){
 			$db = Config::load('database.r');   
@@ -180,12 +180,12 @@ class DB{
 	}
 	
 	
-	//è¿”å›žSQL ä¿¡æ¯
+	//·µ»ØSQL ÐÅÏ¢
 	function log(){
 		 return static::$log;
 	}
 	/**
-		select æŸ¥å¯»å­—æ®µ
+		select ²éÑ°×Ö¶Î
 	*/
 	function select($str = "*"){
 		$this->ar['SELECT'] = $str;
@@ -193,15 +193,15 @@ class DB{
 	}
 	
 	/**
-		ç»Ÿè®¡ 
+		Í³¼Æ 
 	*/
 	function count($str = "count(*) num"){
 		$this->ar['SELECT'] = $str;
 		return $this;
 	}
 	/**
-	 å°† ['username'=>'admin','email'=>'test@msn.com'] 
-	 è½¬æ¢æˆ "username = ? ,email = ? " ,['admin' , 'test@msn.com']
+	 ½« ['username'=>'admin','email'=>'test@msn.com'] 
+	 ×ª»»³É "username = ? ,email = ? " ,['admin' , 'test@msn.com']
 	*/
 	protected function _to_sql($arr){
 		foreach($arr as $k=>$v){
@@ -235,10 +235,10 @@ class DB{
 	/**
 	   $db->update('posts',['name'=>'abc2'],'id=?',[1]); 
 		
-	   $table æ•°æ®åº“è¡¨å
-	   $set æ•°ç»„ï¼Œéœ€è¦æ›´æ–°çš„ [å­—æ®µ=>å€¼]
-	   $condition å­—ç¬¦ä¸²   å¿…é¡»ä½¿ç”¨å ä½ç¬¦ `?` å¦‚ 'id = ?'
-	   $value æ•°ç»„ å¦‚ [1] 
+	   $table Êý¾Ý¿â±íÃû
+	   $set Êý×é£¬ÐèÒª¸üÐÂµÄ [×Ö¶Î=>Öµ]
+	   $condition ×Ö·û´®   ±ØÐëÊ¹ÓÃÕ¼Î»·û `?` Èç 'id = ?'
+	   $value Êý×é Èç [1] 
 	   
 	*/
 	function update($table,$set = [] ,$condition=null,$value=[]){
@@ -326,7 +326,7 @@ class DB{
 		return $value;
 	}
 	/**
-		æ”¯æŒçº¯SQL
+		Ö§³Ö´¿SQL
 	*/
 	function query($sql,$value=[]){
 		$this->sql = $sql;
@@ -365,7 +365,7 @@ class DB{
 			 	}
 			}
 		}   
-		//ä½¿ç”¨åŽè¦åˆ é™¤ $this->ar
+		//Ê¹ÓÃºóÒªÉ¾³ý $this->ar
 		if(false === $keep_ar){
 			unset($this->ar,$this->where); 
 		}else{
@@ -385,7 +385,7 @@ class DB{
 		execute sql
 	*/
 	protected function exec($insert = false){
-		//è®°å½•æ—¥å¿—
+		//¼ÇÂ¼ÈÕÖ¾
 		if($this->debug === true){
 			$log = ['sql'=>$this->sql,'value'=>$this->value];
 			static::$log[] = $log;
