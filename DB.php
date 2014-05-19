@@ -83,6 +83,7 @@ class DB{
 	public $connect;
 	public $cache_time;
 	public $cache_id;
+	public $key_batch;
 	//主从
 	static $read;
 	static $write;
@@ -157,7 +158,7 @@ class DB{
 		    return false;
 		} 
 	} 
-	
+
 	//数据库 从库
 	static function r(){
 		if(!isset(static::$read)){
@@ -170,7 +171,7 @@ class DB{
 		}
 		return static::$read;
 	}
-	
+
 	static function w($default='w'){
 		if(!isset(static::$write[$default])){
 			$config = Config::load('database.'.$default);  
@@ -178,8 +179,8 @@ class DB{
 		}
 		return static::$write[$default];
 	}
-	
-	
+
+
 	//返回SQL 信息
 	function log(){
 		 return static::$log;
@@ -191,7 +192,7 @@ class DB{
 		$this->ar['SELECT'] = $str;
 		return $this;
 	}
-	
+
 	/**
 		统计 
 	*/
@@ -211,6 +212,65 @@ class DB{
 		$value = array_values($arr); 
 		$this->key = $key;
 		$this->value = $value;
+	}
+	
+	/**
+	 	insert_batch('user',[
+	 		['username'=>'admin','email'=>'test@msn.com'],
+	 		['username'=>'admin','email'=>'test@msn.com'],
+	 	])
+	*/
+	function insert_batch($table,$arr = []){ 
+		$this->_to_sql_batch($arr);
+		$this->sql = "INSERT INTO $table ($this->key) $this->key_batch";   
+		return $this->exec(true);
+	}  
+	protected function _to_sql_batch($arrs){ 
+		$set_value = false;
+		foreach($arrs as $arr){
+			unset($vo,$vs);
+			foreach($arr as $k=>$v){
+				$key[$k] = "`".$k."`";   
+				$vo[] = "?";
+				$value[] = $v; 
+			}   
+			if(false === $set_value ) $vs = "values"; 
+			$this->key_batch[] = "$vs(".implode(',',$vo).") ";
+			$set_value = true;
+		}
+		$key = implode(",",$key);   
+		$this->key = $key;
+		$this->key_batch = implode(",",$this->key_batch);   
+		$this->value = $value;  
+	}
+	/**
+	DB::w()->load_file('test',public_path().'/1.csv',[
+		'body'
+	]); 
+	如果要避免重复，需要设置唯一索引
+	*/
+	function load_file($table,$file,$data = [],$arr = [
+		'FIELDS'=>',',
+		'ENCLOSED'=>'\"',
+		'LINES'=>'\r\n',
+		'CHARACTER'=>"utf8",
+		//'IGNORE'=>1,
+	]){
+		$file = str_replace('\\','/',$file);
+		if($data){
+			$filed = "(`".implode('`,',$data);
+			$filed .="`)";
+		}
+		foreach($arr as $k=>$v){
+			$arr[strtoupper($k)] = $v;
+		}
+		$this->sql = "LOAD DATA INFILE '".$file."' REPLACE INTO  TABLE ".$table."
+		  CHARACTER SET ".$arr['CHARACTER']."
+		  FIELDS TERMINATED BY '".$arr['TERMINATED']."' ENCLOSED BY '".$arr['ENCLOSED']."'
+		  LINES TERMINATED BY '".$arr['LINES'] ."' ".$filed;
+		if($arr['IGNORE'])
+			$this->sql .= " IGNORE ".$arr['IGNORE']." LINES;"; 
+		return $this->exec(true); 
 	}
 	/**
 	 	insert('user',['username'=>'admin','email'=>'test@msn.com'])
@@ -251,7 +311,7 @@ class DB{
 		}  
 		return $this->exec();
 	}
-	
+
 	function table($table){ 
 		$this->ar['TABLE'] = $table; 
 		return $this;
@@ -334,7 +394,7 @@ class DB{
 		$this->exec(); 
 		return $this;
 	}
-	
+
 	/**
 	* exec sql 
 	*/
@@ -405,7 +465,7 @@ class DB{
 	    }  
 	    return $id?:false; 
 	}
-	
+
 	function __call ($name ,$arg = [] ){
 		$name = strtoupper($name);
 		$key = $arg[0];
@@ -429,9 +489,9 @@ class DB{
 		}else if($key){  
 			$this->ar[$name] = $key;
 		}
-	 
+
 		return $this;
 	} 
-	
-	
+
+
 }
