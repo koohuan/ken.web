@@ -14,10 +14,11 @@
         }
     ],
     "require": {
-        "php": ">=5.4"
+        "php": ">=5.4",
+	"codeguy/upload": "*"
     },    
     "autoload": { 
-	"files": ["./alias.php","./functions.php"],
+	"files": ["./functions.php"],
         "psr-4":{
             "Ken\\Web\\": ""
         } 

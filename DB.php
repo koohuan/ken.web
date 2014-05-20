@@ -52,13 +52,15 @@
 	分页[该方法不支持cache()]
 	$db->page($url ,$per_page = 10 ,$count = "count(*) num")
 	
-	$connect 属性 [
-	    	'dsn'=>$dsn,
-	    	'user'=>$user,
-	    	'pwd'=>$pwd,
-	    	'active'=>$active, 
-	    ];
- 	
+	insert_batch('user',[
+	 		['username'=>'admin','email'=>'test@msn.com'],
+	 		['username'=>'admin','email'=>'test@msn.com'],
+	 	])
+	如果要避免重复，需要设置唯一索引 	
+ 	DB::w()->load_file('test',public_path().'/1.csv',[
+		'body'
+	]); 
+	
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014
