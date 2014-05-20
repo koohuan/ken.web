@@ -9,7 +9,11 @@
     	->title('标题')
     	->body("content内容<hr>不错")
     	->send();
-    
+    	
+    //附件
+	attach($file)
+	//addPart
+	part($html)
     
  	@auth Kang Sun <68103403@qq.com>
 	@license BSD

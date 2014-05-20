@@ -91,11 +91,11 @@ class ResponseCode
 	*/
 	function set($key,$value){
 		$this->header[$key] = $value;
-	}
+	} 
 	/**
 		发送header 头信息
 	*/
-	function status($code = 200 ,$txt = null){
+	function code($code = 200 ,$txt = null){
 		if(!$txt)
 			$txt = $this->code[$code];
 		header("HTTP/{$this->version} $code {$txt}");

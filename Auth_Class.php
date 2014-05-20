@@ -147,7 +147,7 @@ class Auth_Class
 			__('password error')
 		];
 		if(!$username || !$password) {
-			Response::status(500 , $e[0]);
+			Response::code(500 , $e[0]);
 			return $e[0];
 		}
 		if($this->username!=null){
@@ -161,14 +161,14 @@ class Auth_Class
 			->where($a,$b)
 			->one();
 		if(!$one){
-			Response::status(500 ,$e[1]);
+			Response::code(500 ,$e[1]);
 			return $e[1];
 		}
 		if(!static::validatePassword($password , $one->password)){
-			Response::status(500 ,$e[2]);
+			Response::code(500 ,$e[2]);
 			return $e[2];
 		}
-		Response::status(200);
+		Response::code(200);
 		$this->set($one);
 		return true; 
 	}
@@ -182,7 +182,7 @@ class Auth_Class
 			->where("id=?",[$id])
 			->one();
 		if(!$one){
-			Response::status(500,__('Update user not exists'));
+			Response::code(500,__('Update user not exists'));
 			return false;
 		}
 		if($par['password']){
@@ -191,13 +191,13 @@ class Auth_Class
 			],$par['password']);  
 			$vali = Validate::message();
 			if($vali) {
-				Response::status(500 , $vali[0]);
+				Response::code(500 , $vali[0]);
 				return ['msg'=>$vali];
 			} 
 			$par['password'] = static::passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
-		Response::status(200);
+		Response::code(200);
 		return true;
 	}
 	/**
@@ -210,18 +210,18 @@ class Auth_Class
 			__("Old password not right")
 		];
 		if(!$old_password || !$id) {
-			Response::status(500 ,$e[0]);
+			Response::code(500 ,$e[0]);
 			return  $e[0];
 		}
 		$one = DB::w()->table($this->table)
 			->where("id=?",[$id])
 			->one();
 		if(!$one){
-			Response::status(500 , $e[1]);
+			Response::code(500 , $e[1]);
 			return $e[1];
 		} 
 		if(!static::validatePassword($old_password , $one->password)){
-			Response::status(500 , $e[2]);
+			Response::code(500 , $e[2]);
 			return $e[2];
 		}
 		if($par['password']){
@@ -230,11 +230,11 @@ class Auth_Class
 			],$par['password']);  
 			$vali = Validate::message();
 			if($vali) {
-				Response::status(500 , $vali[0]);
+				Response::code(500 , $vali[0]);
 				return ['msg'=>$vali];
 			} 
 			
-			Response::status(200);
+			Response::code(200);
 			$par['password'] = static::passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
@@ -257,7 +257,7 @@ class Auth_Class
 			__('user had exists'),
 		];
 		if(!$email || !$password) {
-			Response::status(500 , $e[0]);
+			Response::code(500 , $e[0]);
 			return $e[0];
 		}
 		$arr = [ 
@@ -288,7 +288,7 @@ class Auth_Class
 		}  
 		$vali = Validate::message();
 		if($vali) {
-			Response::status(500 , $vali[0]);
+			Response::code(500 , $vali[0]);
 			return ['msg'=>$vali];
 		} 
 		
@@ -296,11 +296,11 @@ class Auth_Class
 			->where($a,$b)
 			->one();
 		if($one){
-			Response::status(500 ,$e[1]);
+			Response::code(500 ,$e[1]);
 			return ['msg'=>$e[1]]; 
 		}
 		if(!$one){ 
-			Response::status(200);
+			Response::code(200);
 			$id = DB::w()->insert($this->table,$arr);
 			$this->login($email,$password);
 		}

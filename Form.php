@@ -71,6 +71,10 @@ class Form
  			case 'input': 
  				return static::element($name,'input');
  				break;
+ 			case 'file': 
+ 				static::$par['type'] = 'file'; 
+ 				return static::element($name,'input');
+ 				break;	 
  			case 'password':
  				static::$par['type'] = 'password';
  				return static::element($name,'input');

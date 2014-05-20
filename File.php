@@ -9,6 +9,7 @@ namespace Ken\Web;
 class File
 {  
  	static $obj = []; 
+ 	
 	/**
 		复制整个目录到 $to 下	
 		没有返回值
@@ -96,8 +97,8 @@ class File
 	/**
 		返回后缀 如.jpg 
 	*/
-	static function ext($name){
-		return '.'.static::extension($name);
+	static function ext($url){
+		return substr($url,strrpos($url,'.')+1);
 	}
 	/**
 		文件目录

@@ -390,7 +390,7 @@ class DB{
 	/**
 		Ö§³Ö´¿SQL
 	*/
-	function query($sql,$value=[]){
+	function sql($sql,$value=[]){
 		$this->sql = $sql;
 		$this->value = $value;   
 		$this->exec(); 
