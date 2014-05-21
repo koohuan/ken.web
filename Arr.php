@@ -10,6 +10,19 @@ namespace Ken\Web;
 class Arr
 { 
  	static $deep;
+ 	
+ 	static function get($arr = [] , $leep = 1){
+  		if(!$arr) return ;
+  		$i = 0;
+  		foreach($arr as $v){
+  			$i++;
+  			$vo[] = $v;
+  			if($leep == $i){
+  				return $vo;
+  			} 
+  		}
+  	}
+  	
   	static function first($arr = []){
   		if(!$arr) return ;
   		foreach($arr as $v){

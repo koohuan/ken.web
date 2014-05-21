@@ -52,6 +52,12 @@
 	分页[该方法不支持cache()]
 	$db->page($url ,$per_page = 10 ,$count = "count(*) num")
 	
+	IN 操作
+	$in = [1,2];
+	\DB::w()->from('files')->where('id in ('.\DB::in($in).')',$in)->all(); 
+	按值排序
+	\DB::w()->from('files')->where('id in ('.\DB::in($in).')',$in)->order_by("FIELD ( id ,".implode(',' , $in).") ")->all(); 
+	
 	insert_batch('user',[
 	 		['username'=>'admin','email'=>'test@msn.com'],
 	 		['username'=>'admin','email'=>'test@msn.com'],
@@ -472,19 +478,11 @@ class DB{
 		$name = strtoupper($name);
 		$key = $arg[0];
 		$vo = $arg[1];
+		if($name=='WHERE') $name = "AND_WHERE";
 		$name = str_replace('_',' ',$name);  
 		if(strpos($name,'WHERE')!==false){  
 			$arr = explode(' ',$name);
-			if(!$this->where){
-				$key = "AND ".$key;
-				$this->where = true;
-			}else{
-				if($arr[1]){ 
-					$key = $arr[0]." ".$key;
-				}else{
-					$key = "AND ".$key;
-				}
-			}
+			 $key = $arr[0]." ".$key;
 		}
 		if($vo){
 			$this->ar[$name][$key] = $vo;

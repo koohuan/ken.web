@@ -87,4 +87,13 @@
 	//输出SQL日志
 	dump(DB::w()->log());
 
+特殊的in查寻
+	
+	$in = [1,2];
+	\DB::w()->from($table)->where('id in ('.\DB::in($in).')',$in)->all();  
+
+按值排序
+
+	\DB::w()->from('files')->where('id in ('.\DB::in($in).')',$in)
+		->order_by("FIELD ( id ,".implode(',' , $in).") ")->all(); 
  
