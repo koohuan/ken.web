@@ -49,24 +49,21 @@ class Str
 	        /* 3-byte counter, starting with a random value. */
 	        $i = $i > 0xFFFFFE ? 1 : $i + 1
 	    );
-	}
-	 
- 
-
- 	//生成不重复的ID
-	static function uuid($flag="-")
-	{
-	 	return sprintf( '%04x%04x'.$flag.'%04x'.$flag.'%04x'.$flag.'%04x'.$flag.'%04x%04x%04x',
-			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
-			mt_rand( 0, 0xffff ),
-			mt_rand( 0, 0x0fff ) | 0x4000,
-			mt_rand( 0, 0x3fff ) | 0x8000,
-			mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
-		);
-	}
+	}  
+	/**
+	* 生成用户唯一ID
+	*/
 	static function uid()
 	{
-	 	return static::uuid("");
+	 	return static::id();
+	}
+	/**
+	* 生成不重复订单ID
+	*/
+	static function order_id()
+	{
+		mt_srand((double) microtime() * 1000000);  
+        return date('Ymdhis') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT).\User::get()['id'];   
 	}
 	
 	/**

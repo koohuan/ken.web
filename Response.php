@@ -1,7 +1,9 @@
 <?php 
 /** 
- 	Response::status(500);
- 	Response::status(200);
+ 	Response::code(500);
+ 	Response::code(200);
+    //È¡µÃä¯ÀÀÆ÷×´Ì¬ 
+    \Response::get_code() == 200
     
  	@auth Kang Sun <68103403@qq.com>
 	@license BSD

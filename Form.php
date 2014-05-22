@@ -88,7 +88,9 @@ class Form
  				unset(static::$par['option']);
  				foreach($option as $v=>$label){ 
  					$selected = null;
- 					if($v==$value)  $selected = "selected";
+ 					if(is_array($value) && in_array($v,$value))
+ 						$selected = "selected";	
+ 					elseif($v==$value)  $selected = "selected";
  					$str .= "<option value='".$v."' $selected >".$label."</option>";
  				}
  				return static::element($name,'select',true,$str);

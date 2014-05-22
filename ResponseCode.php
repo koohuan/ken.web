@@ -92,10 +92,14 @@ class ResponseCode
 	function set($key,$value){
 		$this->header[$key] = $value;
 	} 
+	function get_code(){
+		return $_SERVER['KEN_WEB_CODE'];
+	}
 	/**
 		发送header 头信息
 	*/
 	function code($code = 200 ,$txt = null){
+		$_SERVER['KEN_WEB_CODE'] = $code;
 		if(!$txt)
 			$txt = $this->code[$code];
 		header("HTTP/{$this->version} $code {$txt}");

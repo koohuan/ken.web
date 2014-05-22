@@ -235,6 +235,7 @@ class DB{
 	}  
 	protected function _to_sql_batch($arrs){ 
 		$set_value = false;
+		unset($this->key_batch);
 		foreach($arrs as $arr){
 			unset($vo,$vs);
 			foreach($arr as $k=>$v){
@@ -242,7 +243,7 @@ class DB{
 				$vo[] = "?";
 				$value[] = $v; 
 			}   
-			if(false === $set_value ) $vs = "values"; 
+			if(false === $set_value ) $vs = "values";  
 			$this->key_batch[] = "$vs(".implode(',',$vo).") ";
 			$set_value = true;
 		}
