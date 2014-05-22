@@ -1,28 +1,16 @@
 <?php 
 /** 
 	登录
-	Auth::login(\Input::post('username'),\Input::post('password'));
+	login(\Input::post('username'),\Input::post('password'));
+	
+	create_full($username,$email,$password)
 	
 	修改密码
-	$t = Auth::update($id,\Input::post('old_password'),$par=['password'=>\Input::post('password')]);
-	if(true === $t){
-	    \Session::flash('success','change password success!');
-	    $this->redirect(url('admin/user/index'));
-	}else{
-	    $error =  'old password is failed!'; 
+	Auth::update($id,\Input::post('old_password'),$par=['password'=>\Input::post('password')]); 
+	
+	if(Response::get_code()==200){
+		
 	}
-	
-	创建管理员
-	$id = Auth::create(
-        \Input::post('username'),
-        \Input::post('email'),
-        \Input::post('password'));
-
-	$id = Auth::create_email(\Input::post('email'),\Input::post('password'));
-	
-	
-	$id = Auth::create(\Input::post('name'),\Input::post('email'),\Input::post('password'));
-	
 	
 	纯AJAX 方法
 	
@@ -89,34 +77,46 @@ class Auth_Class
 			$id = Cookie::get('id');
 			$username = Cookie::get('username');
 			$email = Cookie::get('email');
+			$phone = Cookie::get('phone');
 			$uid = Cookie::get('uid'); 
+			$method = Cookie::get('method');   
 		}else{ 
 			$id = Session::get('id');
 			$username = Session::get('username');
 			$email = Session::get('email');
+			$phone = Session::get('phone');
 			$uid = Session::get('uid'); 
+			$method = Session::get('method');
+			if(!$method)
+				$method = Cookie::get('method');
 		} 
 		if($id) $out['id'] = $id;
 	 	if($username) $out['username'] = $username;
 	 	if($email) $out['email'] = $email;
+	 	if($phone) $out['phone'] = $phone;
 	 	if($uid) $out['uid'] = $uid;
+	 	if($method) $out['method'] = $method;
 	    return $out;
 	}
 	/**
 		设置登录的COOKIE 或 SESSION
 	*/
-	protected function set($one){
+	protected function set($one){ 
 		if(true === $this->cookie){
 			Cookie::set('id',$one->id,0);
 			if($one->username)
 				Cookie::set('username',$one->username,0);
 			Cookie::set('email',$one->email,0);
 			Cookie::set('uid',$one->uid,0);
+			Cookie::set('phone',$one->phone,0);
+			Cookie::set('method','system',0); 
 		}else{
 			Session::set('id',$one->id);
 			if($one->username)
 				Session::set('username',$one->username);
 			Session::set('email',$one->email);
+			Session::set('phone',$one->phone,0);
+			Session::set('method','system',0);
 			Session::set('uid',$one->uid);
 		}
 		
@@ -141,6 +141,20 @@ class Auth_Class
 		登录 
 	*/
 	function login($username , $password){ 
+		//如果是手机号 
+		if(Validate::phone($username)){
+			$this->email = 'phone';
+		}else{
+			Validate::set($this->email,[
+					[$this->email,'message'=>__('Must be email address')], 
+			],$username); 
+			$vali = Validate::message();
+			if($vali) {
+				Response::code(500 , $vali[0]);
+				return ['msg'=>$vali];
+			} 
+		}
+		
 		$e = [
 			__('login fields requied'),
 			__('user not exists'),
@@ -163,12 +177,12 @@ class Auth_Class
 		if(!$one){
 			Response::code(500 ,$e[1]);
 			return $e[1];
-		}
+		} 
 		if(!static::validatePassword($password , $one->password)){
 			Response::code(500 ,$e[2]);
 			return $e[2];
 		}
-		Response::code(200);
+		Response::code(200); 
 		$this->set($one);
 		return true; 
 	}
@@ -241,17 +255,17 @@ class Auth_Class
 		return true;
 	}
 	/**
-		创建用户
-		如果是 false 说明 用户已存在
-		判断以 $c = Auth::create($user,$email,$pwd);
-		if($c['id']){ //成功
-			
-		}
+	 
+		$id = Auth::create($user,$pwd);
+		
 	*/
-	function create_email($email,$password){
-		return $this->create(null,$email,$password);
+	function create($email,$password){
+		return $this->_create(null,$email,$password);
+	} 
+	function create_full($username,$email,$password){
+		return $this->_create($username,$email,$password);
 	}
-	function create($username=null,$email,$password){
+	function _create($username=null,$email,$password){
 		$e = [
 			__('create fields requied'),
 			__('user had exists'),
@@ -260,16 +274,20 @@ class Auth_Class
 			Response::code(500 , $e[0]);
 			return $e[0];
 		}
+		//如果是手机号 
+		if(Validate::phone($email)){
+			$this->email = 'phone';
+		}else{
+			Validate::set($this->email,[
+					[$this->email,'message'=>__('Must be email address')], 
+			],$email); 
+		}
 		$arr = [ 
 				$this->email => trim($email),
 				'uid' => Str::uid(),
 				$this->password => static::passwordHash(trim($password)),
 				$this->create_at => date('Y-m-d H:i:s'), 
 			];
-		Validate::set($this->email,[
-				['email','message'=>__('Must be email address')], 
-		],$email); 
-		
 		Validate::set($this->password,[
 				['min_length',6,'message'=>__('Password min lenght 6')], 
 		],$password); 
@@ -298,7 +316,7 @@ class Auth_Class
 		if($one){
 			Response::code(500 ,$e[1]);
 			return ['msg'=>$e[1]]; 
-		}
+		} 
 		if(!$one){ 
 			Response::code(200);
 			$id = DB::w()->insert($this->table,$arr);
@@ -320,7 +338,7 @@ class Auth_Class
         return $hash;
     }
   	public static function validatePassword($password, $hash)
-    {
+    { 
             if (!is_string($password) || $password === '') {
                     throw new \Exception('Password must be a string and cannot be empty.');
             }

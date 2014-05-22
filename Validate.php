@@ -21,17 +21,7 @@
 			['not_empty','message'=>'not empty'], 
 		]); 
 		if(Validate::run()){  
-			$id = F::get('auth')->login(Input::post('username'),Input::post('password'));
-		 	if(true !== $id) {
-		 		switch($id){
-		 			case 1:
-		 				$error = 'not exists username'; 
-		 				break;
-		 			case 2:
-		 				$error = 'password is error';
-		 				break;
-		 		} 
-		 	}  
+		 	
 		} 
  	}
   	$vali = Validate::message();
