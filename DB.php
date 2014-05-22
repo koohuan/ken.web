@@ -350,7 +350,7 @@ class DB{
 					Log::mo([
 						'id'=>$id,
 					],'db_cache_one');
-					Cache::set($id,$value);  
+					Cache::set($id,$value ,$this->cache_time);  
 				}
 			}else{
 				unset($this->ar,$this->where);  
@@ -383,7 +383,7 @@ class DB{
 					Log::mo([
 						'id'=>$id,
 					],'db_cache_all');
-					Cache::set($id,$value);  
+					Cache::set($id,$value , $this->cache_time);  
 				}
 			}else{
 				unset($this->ar,$this->where);  
