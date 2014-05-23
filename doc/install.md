@@ -9,189 +9,243 @@
     
 
 
-独立安装
-========
  
-composer.json
-
-	{
-	 
-		"require": {
-			"php": ">=5.4"  
-		} ,
-		"config": {
-			"preferred-install": "dist"
-		}, 
-		"autoload": { 
-		    "files": ["libraries/alias.php","libraries/functions.php"],
-		    "psr-4":{
-			    "Ken\\Web\\":"libraries/",
-		            "module\\": "module/",  
-			    "widget\\": "widget/",
-			    "tool\\": "tool/",
-			    "third\\": "third/", 
-			    "event\\": "event/" 	
-		    }
-		}
-	}
-
-执行 `php composer.phar dump-autoload`
-
-public/index.php
+ 
+ 
+SQL:
 
 
-	<?php 
-	/**
-	 	入口文件
-		@auth Kang Sun <68103403@qq.com>
-		@license BSD
-		@date 2014 
-	*/ 
-	 
-	session_start();
-	header("Content-type: text/html; charset=utf-8");
-	ini_set('error_reporting',1);
-	error_reporting(E_ALL & ~(E_STRICT | E_NOTICE));   
-	require __DIR__.'/../vendor/autoload.php';   
-	$local_config = __DIR__."/../config.local.php";
-	$product_config = __DIR__."/../config.php";
-	if(file_exists($local_config)){ 
-		include $local_config; 
-	}else
-		include $product_config;  
-	use Ken\Web\F;
-	//日志
-	Ken\Web\Log::start($log); 
-	/**
-		挂件
-	*/
-	F::set('widget',function(){ 
-		 return new Ken\Web\Widget(__DIR__.'/assets' ,base_url().'assets');
-	});
-
-	F::set('lang',function(){ 
-		 $lang =  new Ken\Web\Lang(__DIR__.'/../messages');
-		 $lang->load();
-		 return $lang;
-	});
-	/**
-		缓存
-	*/
-	F::set('cache',function() use ($cache){ 
-		return new Ken\Web\Cache($cache);  
-	});
-	 
-	/**
-		HTTP header 设置
-	*/
-	F::set('response',function(){ 
-		return new Ken\Web\Response();
-	});
-	/**
-		后台管理权限
-	*/
-	F::set('auth',function(){ 
-		return new Ken\Web\Auth;
-	});	
-	F::set('user',function(){ 
-		$user =  new Ken\Web\User($cache);  
-		$user->username = null;
-		return $user;
-	});	
-	/**
-		视图
-	*/
-	F::set('view',function() use( $minify ){
-		 $view_dir = base_path().'/view';
-		 $theme_dir = public_path().'/themes';
-		 $view = new Ken\Web\View($view_dir , $theme_dir);
-		 $view->minify = $minify;
-		 return $view;
-	});
-	/**
-		主数据库
-	*/
-	F::set('db',function() use ($db){
-		$config = $db[0];
-		return new Ken\Web\DB($config[0],$config[1],$config[2]);  
-	});
-	/**
-		从数据库
-	*/
-	F::set('db2',function() use ($db){
-		if(count($db)>1){
-			unset($db[0]);
-			$i = array_rand ($db , 1);
-			$config = $db[$i];
-		}else{
-			$config = $db[0];
-		}
-		return new Ken\Web\DB($config[0],$config[1],$config[2]); 
-	}); 
-	/**
-		路由
-	*/
-	F::set('route',function(){ 
-		return new Ken\Web\Route;
-	});
-	/**
-		自动加载 route
-	*/
-	$route = F::get('route');  
-	/**
-		加载route目录下的路由文件
-	*/
-	$route_dir = realpath(__DIR__.'/../route');
-	$rlist = scandir($route_dir); 
-	foreach($rlist as $v){ 
-		if($v=='.' || $v=='..' || $v=='.svn' || $v=='.git') continue; 
-		include $route_dir."/$v";
-	}  
-	try { 
-		$route->run(); 
-	}catch (Exception $e) { 
-		F::get('view')->make('/error',['message'=>$e->getMessage(),'code'=>$e->getCode()]);  
-	} 
-	/**
-		项目物理路径
-	*/
-	function base_path(){ 
-		return realpath(__DIR__.'/../'); 
-	}  
-	/**
-		web可访问的 public 目录
-	*/
-	function public_path(){ 
-		return __DIR__; 
-	}
-
-
-
-config.php 如存在 config.local.php 将使用 `config.local.php`
-
-	<?php 
-
-	date_default_timezone_set('Asia/Shanghai');  
-	/**
-		memcache 设置
-	*/
-	$cache = [
-		['host'=>'127.0.0.1','port'=>11211,'weight'=>60]
-	];
-	/**
-		数据库设置，第一个为主库
-	*/
-	$db = [
-		["mysql:dbname=ljftaichi;host=127.0.0.1","ljftaichi","ljftaichi258963."],
 		 
-	];
-	//日志目录
-	$log = __DIR__.'/temp/logs';
 
-	//加密解密KEY
-	Crypt::key('abc');
+	SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+	SET time_zone = "+00:00";
 	 
-	//是否合并VIEW html代码
-	$minify = false;
 
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `admin`
+	--
+
+	CREATE TABLE IF NOT EXISTS `admin` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `username` varchar(50) NOT NULL,
+	  `password` varchar(64) NOT NULL,
+	  `email` varchar(50) NOT NULL,
+	  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	  `uid` varchar(64) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ 
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `admin_access`
+	--
+
+	CREATE TABLE IF NOT EXISTS `admin_access` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `access` varchar(200) NOT NULL COMMENT '权限真实控制',
+	  `name` varchar(200) NOT NULL COMMENT '权限名称',
+	  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `admin_group`
+	--
+
+	CREATE TABLE IF NOT EXISTS `admin_group` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `name` int(11) NOT NULL,
+	  `memo` varchar(200) NOT NULL,
+	  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户组' AUTO_INCREMENT=1 ;
+
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `admin_group_access`
+	--
+
+	CREATE TABLE IF NOT EXISTS `admin_group_access` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `group_id` int(11) NOT NULL,
+	  `access_id` int(11) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `admin_group_bind`
+	--
+
+	CREATE TABLE IF NOT EXISTS `admin_group_bind` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `admin_id` int(11) NOT NULL COMMENT '管理员ID',
+	  `group_id` int(11) NOT NULL COMMENT '用户组ID',
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户绑定组' AUTO_INCREMENT=1 ;
+
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `files`
+	--
+
+	CREATE TABLE IF NOT EXISTS `files` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `name` varchar(200) NOT NULL,
+	  `url` varchar(255) NOT NULL,
+	  `ext` varchar(50) NOT NULL,
+	  `mime` varchar(100) NOT NULL,
+	  `size` int(11) NOT NULL,
+	  `md5` varchar(32) NOT NULL DEFAULT '',
+	  `memo` varchar(200) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ 
+	--
+	-- 表的结构 `node_field`
+	--
+
+	CREATE TABLE IF NOT EXISTS `node_field` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `table_id` int(11) NOT NULL,
+	  `label` varchar(50) NOT NULL,
+	  `memo` varchar(200) NOT NULL COMMENT '提示信息',
+	  `slug` varchar(200) NOT NULL COMMENT 'users.site_id:sites.name',
+	  `field` varchar(50) NOT NULL,
+	  `widget` varchar(50) NOT NULL,
+	  `validate` varchar(255) NOT NULL,
+	  `is_form` tinyint(1) NOT NULL DEFAULT '0',
+	  `is_index` tinyint(1) NOT NULL DEFAULT '0',
+	  `is_search` tinyint(1) NOT NULL DEFAULT '0',
+	  `sort` int(11) NOT NULL,
+	  `values` varchar(255) NOT NULL COMMENT '默认值',
+	  `is_m_value` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否多值，大于1时，为值的数量',
+	  `top` int(11) NOT NULL DEFAULT '0' COMMENT '是否置顶',
+	  `is_report` tinyint(4) NOT NULL DEFAULT '0',
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+	 
+
+	--
+	-- 表的结构 `node_table`
+	--
+
+	CREATE TABLE IF NOT EXISTS `node_table` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `name` varchar(20) NOT NULL,
+	  `slug` varchar(20) NOT NULL,
+	  `load` varchar(20) NOT NULL COMMENT 'classes\\content中自动加载的页面',
+	  `memo` varchar(20) NOT NULL,
+	  `display` tinyint(1) NOT NULL DEFAULT '1',
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ 
+
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `oauth_config`
+	--
+
+	CREATE TABLE IF NOT EXISTS `oauth_config` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `name` varchar(200) NOT NULL,
+	  `app_id` varchar(255) NOT NULL,
+	  `app_secret` varchar(255) NOT NULL,
+	  `create_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+	  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	  `display` tinyint(1) NOT NULL DEFAULT '1',
+	  `sort` int(11) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ 
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `oauth_users`
+	--
+
+	CREATE TABLE IF NOT EXISTS `oauth_users` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `oid` varchar(255) NOT NULL COMMENT '来自第三方的用户ID',
+	  `name` varchar(255) NOT NULL,
+	  `email` varchar(50) DEFAULT NULL,
+	  `oauth_id` int(11) NOT NULL COMMENT 'oauth_config中主键ID，登录方',
+	  `access_token` varchar(255) NOT NULL,
+	  `uid` varchar(64) NOT NULL COMMENT '真实会员ID',
+	  `par` varchar(255) DEFAULT NULL COMMENT '其他信息',
+	  `create_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+	  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `query_build`
+	--
+
+	CREATE TABLE IF NOT EXISTS `query_build` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `slug` varchar(200) NOT NULL,
+	  `memo` varchar(200) NOT NULL,
+	  `sql` text NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ 	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `users`
+	--
+
+	CREATE TABLE IF NOT EXISTS `users` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `email` varchar(255) NOT NULL COMMENT '会员EMAIL',
+	  `password` varchar(200) NOT NULL,
+	  `token_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	  `active` tinyint(1) NOT NULL DEFAULT '0',
+	  `create_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+	  `uid` varchar(64) NOT NULL COMMENT '唯一标识',
+	  `site_id` int(11) NOT NULL DEFAULT '1',
+	  `phone` varchar(50) NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='会员' AUTO_INCREMENT=1 ;
+
+ 	-- --------------------------------------------------------
+
+	--
+	-- 表的结构 `user_oauth`
+	--
+
+	CREATE TABLE IF NOT EXISTS `user_oauth` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `user_id` int(11) NOT NULL COMMENT '用户ID',
+	  `oauth_user_id` int(11) NOT NULL COMMENT '第三方ID',
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='用户绑定第三方登录' AUTO_INCREMENT=1 ;
+
+	/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+	/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+	/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+	
+ 
+
+
+ 
 	 

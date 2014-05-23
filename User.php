@@ -19,6 +19,7 @@ class User
     	static::$obj->table = 'users';
     	static::$obj->cookie = true;
     	static::$obj->username = null;
+    	static::$obj->named = 'Auth';
     	return call_user_func_array( array(static::$obj , $name) , $arguments);  
     }  
    

@@ -58,6 +58,7 @@ class Auth_Class
 	public $create_at = 'create_at';
 	public $update_at = 'update_at';
 	public $logined;
+	public $named;
 	/**
 		判断是否登录
 	*/
@@ -140,26 +141,28 @@ class Auth_Class
 	/**
 		登录 
 	*/
-	function login($username , $password){ 
+	function login($username , $password){  
 		//如果是手机号 
 		if(Validate::phone($username)){
 			$this->email = 'phone';
 		}else{
-			Validate::set($this->email,[
-					[$this->email,'message'=>__('Must be email address')], 
-			],$username); 
-			$vali = Validate::message();
-			if($vali) {
-				Response::code(500 , $vali[0]);
-				return ['msg'=>$vali];
-			} 
+			if($this->named != 'Auth'){
+				Validate::set($this->email,[
+						[$this->email,'message'=>__('Must be email address')], 
+				],$username); 
+				$vali = Validate::message(); 
+				if($vali) {
+					Response::code(500 , $vali);
+					return ['msg'=>$vali];
+				} 
+			}
 		}
 		
 		$e = [
 			__('login fields requied'),
 			__('user not exists'),
 			__('password error')
-		];
+		]; 
 		if(!$username || !$password) {
 			Response::code(500 , $e[0]);
 			return $e[0];
