@@ -30,6 +30,14 @@ $menu = [
 ];
 $file = $dir.$i.'.md';
 $content = Parsedown::instance()->parse(file_get_contents($file));
+
+$menu2 = [
+  	'field_cck'=>"自定义内容",
+	'field_image'=>"图片字段",
+ 	'field_relation'=>"关联字段",
+ 	'field_yaml'=>"YAML字段",
+];
+
 ?>
 
 <!DOCTYPE html>
@@ -72,6 +80,12 @@ $content = Parsedown::instance()->parse(file_get_contents($file));
  			 <div class="col-md-4">
  				<div class="list-group">
  				<?php  foreach($menu as $k=>$v){?>
+				  <a href="doc.php?i=<?php echo $k;?>" class="list-group-item <?php if($i==$k){?> active<?php }?>"><?php echo $v;?></a>
+				<?php }?>
+				</div>
+					
+				<div class="list-group">
+ 				<?php  foreach($menu2 as $k=>$v){?>
 				  <a href="doc.php?i=<?php echo $k;?>" class="list-group-item <?php if($i==$k){?> active<?php }?>"><?php echo $v;?></a>
 				<?php }?>
 				</div>

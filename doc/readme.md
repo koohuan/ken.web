@@ -2,7 +2,16 @@
 ========
 #PHP	5.4+
 #Apache rewrite
+
+常用功能说明
+============
+
+菜单选中
+
+	Menu::set($name);
+	if(Menu::active($name)){
 	
+	}
 
 对图片进行缩放等处理
 ========
@@ -27,6 +36,9 @@
 	$op = ['quality'=>75];
 	Image::init($op)->load($a)->output($b); 
 	Image::init($op)->load($a)->save($b);
+
+
+
     
     
  

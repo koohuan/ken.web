@@ -2,9 +2,9 @@
 /**
   	菜单
 
-	\classes\menu::set($name);
+	Menu::set($name);
 	
-	\classes\menu::active($name);
+	Menu::active($name);
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014 
