@@ -91,6 +91,7 @@ class DB{
 	public $connect;
 	public $cache_time;
 	public $cache_id;
+	public $cache = false;
 	public $key_batch;
 	//Ö÷´Ó
 	static $read;
@@ -144,7 +145,7 @@ class DB{
 		$user = 'dbuser';
 		$password = 'dbpass'; 
 	*/ 
-	public function __construct($dsn,$user,$pwd){ 
+	public function __construct($dsn,$user,$pwd){  
 		try {
 			$this->dsn = $dsn;
 			$this->user = $user;
@@ -177,6 +178,7 @@ class DB{
 				$config = $db[0]; 
 			static::$read = new Static($config[0],$config[1],$config[2]); 
 		}
+		static::$write[$default]->cache = false;
 		return static::$read;
 	}
 
@@ -184,7 +186,8 @@ class DB{
 		if(!isset(static::$write[$default])){
 			$config = Config::load('database.'.$default);  
 			static::$write[$default] = new Static($config[0],$config[1],$config[2]);  
-		}
+		} 
+		static::$write[$default]->cache = false;
 		return static::$write[$default];
 	}
 
@@ -327,7 +330,8 @@ class DB{
 	} 
  	function cache($time=0){ 
 		$this->cache_time = $time; 
-		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->sql.$this->cache_time;
+		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->sql.$this->cache_time; 
+		$this->cache = true;
 		return $this;
 	}  
 	protected function _one(){
@@ -340,8 +344,8 @@ class DB{
 			->one(); 
 	*/
 	function one(){  
-		if(isset($this->cache_time)){
-			$id = "DB_".md5($this->cache_id.'one');
+		if( true === $this->cache ){
+			$id = "DB_".md5($this->cache_id.'one'); 
 			static::$_cache_key[$id] = true;
 			$value = Cache::get($id); 
 			if(!$value){
@@ -358,6 +362,7 @@ class DB{
 		} else{
 			$value = $this->_one();
 		}  
+		
 		return $value; 
 	}
 	function cache_key(){
@@ -373,8 +378,8 @@ class DB{
 			->all(); 
 	*/
 	function all(){  
-		if(isset($this->cache_time)){
-			$id = "DB_".md5($this->cache_id.'all');
+		if(true === $this->cache){
+			$id = "DB_".md5($this->cache_id.'all'); 
 			static::$_cache_key[$id] = true;
 			$value = Cache::get($id); 
 			if(!$value){  
