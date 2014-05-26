@@ -1,6 +1,14 @@
 图片处理
 ========
 
+取数据库文件
+
+	$vo = Img::file_id($file_id);
+
+- $vo->url;//为图片地址
+- 显示图片 base_url().$vo->url;
+
+
 http://www.fuelphp.com/docs/classes/image.html
 	
 	$a = public_path().'/upload/1.png';
@@ -8,6 +16,7 @@ http://www.fuelphp.com/docs/classes/image.html
 	$op = ['quality'=>75];
  
 	Image::init($op)->load($a)->save($b);
+
 
 可选设置
 	
