@@ -17,6 +17,7 @@ abstract class AdminController extends Controller
  	public $allow = []; 
   	public $db;
   	public $login_url = 'admin/admin/login';
+  	protected $admin_id;//管理员ID
  	/**
  		判断是否有权限
  	*/

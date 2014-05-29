@@ -9,21 +9,51 @@
 namespace Ken\Web;
 abstract class AuthController extends AdminController 
 { 
- 	 
+ 	public $access; //模块 控制器 动作
+ 	protected $_access; //权限列表
+ 	static $public_access;//权限列表,判断菜单显示
+ 	
  	/**
  	＊　判断具体权限
  	*/
 	function init(){
  		 parent::init();  
- 		 $user_id = \Auth::get()['id'];
- 		 $bind = \DB::w()->from('admin_group_bind')->where('admin_id=?',$user_id)->all(); 
- 		 dump($bind);
+ 		 $this->admin_id = \Auth::get()['id'];
+ 		 $bind = \DB::w()->from('admin_group_bind')->where('admin_id=?',$this->admin_id)->all(); 
+ 		 if($bind){
+ 		 	foreach($bind as $v){
+ 		 		$g[] = $v->group_id;
+ 		 	}
+ 		 }
+ 		 static::$public_access = $this->_access = $this->get_access_by_group_ids($g);
+ 		 $this->access = $this->module.'.'.$this->id.'.'.$this->action; 
  	} 
+ 	/**
+ 	* 判断菜单是否显示  
+ 	* if(\AuthController::check_access_menu('content.node.index.'.$v->id.'.r')){
+ 	* }
+ 	*/
+ 	static function check_access_menu($id){  
+ 		if(!static::$public_access || !in_array($id,static::$public_access) )
+ 		 		 return false;
+ 		return true;
+ 	}
+ 	/**
+ 	* 在渲染视图前验证权限
+ 	*/
+ 	function view($view,$data = []){ 
+ 		if($this->admin_id != 1){  
+ 		 	if(!$this->_access || !in_array($this->access,$this->_access) )
+ 		 		 throw new \Exception(__('Access Deny!'),500); 
+ 		 }
+ 		 parent::view($view,$data);
+ 	}
  	/**
 	* 返回用户组的权限列表。
 	* 组ID可以为数组
 	*/
 	function get_access_by_group_ids($gid){
+		if(!$gid) return [];
 		if(!is_array($gid)) $gid = [$gid];
 		$posts = \DB::w()->from('admin_group_access')->where('group_id in ('.\DB::in($gid).')',$gid)->all(); 
   		if($posts){
@@ -47,6 +77,7 @@ abstract class AuthController extends AdminController
  	 			$group_id[] = $v->group_id;
  	 		} 
  	 	} 
+ 	 	if(!$group_id) return null;
  	 	$all = \DB::w()->from('admin_group')->where('id in ('.\DB::in($group_id).')',$group_id)->all(); 
  	 	if($all){
  	 		foreach($all as $v){
