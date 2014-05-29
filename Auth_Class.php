@@ -93,7 +93,7 @@ class Auth_Class
 		} 
 		if($id) $out['id'] = $id;
 	 	if($username) $out['username'] = $username;
-	 	if($email) $out['email'] = $email;
+	 	$out['email'] = $email?:$phone;
 	 	if($phone) $out['phone'] = $phone;
 	 	if($uid) $out['uid'] = $uid;
 	 	if($method) $out['method'] = $method;

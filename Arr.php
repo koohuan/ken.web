@@ -14,15 +14,15 @@ class Arr
  		多维数组转成字符串
  		\Arr::to_str([]);
  	*/
- 	static function to_str($arr , $rest = false){ 
+ 	static function to_str($arr ,$suffix = "\n", $rest = false){ 
  		if(false === $rest) static::$to_str = null;
  		if(!is_array($arr)) return $arr;
  		foreach($arr as $v){  
- 			if(!is_array($v)) static::$to_str .= $v;
+ 			if(!is_array($v)) static::$to_str .= $v . $suffix;
  			if(is_array($v) && static::deep($v)==1){ 
- 				static::$to_str .= implode("\n",$v);
+ 				static::$to_str .= implode($suffix,$v);
  			}else{
- 				static::to_str($v , true);
+ 				static::to_str($v , $suffix , true);
  			} 			
  		} 
  		return  static::$to_str; 
