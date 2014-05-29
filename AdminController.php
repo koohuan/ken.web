@@ -1,14 +1,7 @@
 <?php 
 /**
-	依赖 Controller.php  
-	
-	F::set('auth',function(){ 
-		return new Auth;
-	});
-	
-    管理员权限控制器
-    
-    该控制器依然为非必须的
+	普通管理员，没登录就跳至登录页。　
+    并没有具体权限控制　
  
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
