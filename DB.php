@@ -300,6 +300,7 @@ class DB{
 		if($condition)
 			$this->sql .= "WHERE $condition ";
 		if($value){
+			if(!is_array($value)) $value = [$value];
 			$this->_to_sql($value); 
 		}   
 		return $this->exec();
@@ -319,7 +320,8 @@ class DB{
 		if($condition)
 			$this->sql .= "WHERE $condition ";
 		if($value){
-			$this->value = array_merge($this->value,$value);
+			if(!is_array($value)) $value = [$value];
+ 			$this->value = array_merge($this->value,$value);
 		}  
 		return $this->exec();
 	}
@@ -480,7 +482,7 @@ class DB{
 	    return $id?:false; 
 	}
 
-	function __call ($name ,$arg = [] ){
+	function __call ($name ,$arg = [] ){ 
 		$name = strtoupper($name);
 		$key = $arg[0];
 		$vo = $arg[1];
@@ -488,8 +490,9 @@ class DB{
 		$name = str_replace('_',' ',$name);  
 		if(strpos($name,'WHERE')!==false){  
 			$arr = explode(' ',$name);
-			 $key = $arr[0]." ".$key;
-		}
+			$key = $arr[0]." ".$key;
+			if(!is_array($vo)) $vo = [$vo];
+		} 
 		if($vo){
 			$this->ar[$name][$key] = $vo;
 		}else if($key){  
