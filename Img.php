@@ -37,14 +37,14 @@ class Img
  	* 本地的图片
  	* 如果存在返回图片的URL
  	*/
-	static function local_one($str){
+	static function get_local_one($str){
 		return static::local($str , false);
 	}
 	/**
  	* 本地的所有图片
  	* 返回数组，元素为URL
  	*/
-	static function local_all($str){
+	static function get_local_all($str){
 		return static::local($str , true);
 	}
 	/**
@@ -73,7 +73,7 @@ class Img
 	* 图片的宽高
 	*/
 	static function wh($img){
-		$a = getimagesize(root_path().$img);
+		$a = getimagesize($img);
 		return array('w'=>$a[0],'h'=>$a[1]);
 	}
  

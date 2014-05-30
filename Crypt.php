@@ -1,6 +1,6 @@
 <?php 
 /** 
- 	可使用F注册
+ 	 
     http://phpseclib.sourceforge.net/crypt/examples.html
     
     

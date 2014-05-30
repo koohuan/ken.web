@@ -41,6 +41,7 @@ class CleanVendor
 		'readme.git',
 		'.travis.yml',
 		'readme.md',
+		'phpunit.xml',
 		'phpunit.xml.dist',
 		'license', 
 	];
@@ -60,7 +61,7 @@ class CleanVendor
  		$file = $li['file'];
  		foreach($file as $v){
  			$name = substr($v,strrpos($v,'/')+1);
- 			$name = strtolower($name); 
+ 			$name = strtolower($name);  
  			if(file_exists($name) && in_array($name,$this->file)){ 
  				unlink($v);
  				if(substr($v,-4) =='.git')

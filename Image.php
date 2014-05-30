@@ -41,13 +41,16 @@ class Image extends \Ken\Web\Vendor\FuelImages{
  	*/
  	static function set($url , $op = []){ 
  		$u = substr($url,0,strrpos($url,'/'));
+ 		$name = substr($url,strrpos($url,'/')+1);
+ 		$name = substr($name,0,strrpos($name,'.'));
  		$real = 'upload/image'.substr($u,strpos($u,'/'));
  		$dir = public_path().'/'.$real;
  		if(!is_dir($dir)) mkdir($dir,0775,true);
- 		$file_name = md5(json_encode($op).$url).".".File::ext($url);
+ 		$file_name = $name.'_'.substr(md5(json_encode($op).$url),8,16).".".File::ext($url);
  		$a = public_path().'/'.$url; 
+ 		if(!file_exists($a)) return null;
  		$b = $dir.'/'.$file_name; 
- 		$c = $real.'/'.$file_name; 
+ 		$c = $real.'/'.$file_name;   
  		if(!file_exists($b)){
  			$ac = $op['actions'];
  			unset( $op['actions'] );
@@ -58,5 +61,13 @@ class Image extends \Ken\Web\Vendor\FuelImages{
  			$im->save($b); 
  		}
  		return $c;
+ 	}
+ 	//取得经缩放等处理图片URL的原URL
+ 	static function get($url){ 
+ 		$u = substr($url,0,strrpos($url,'/')+1);
+ 		$u = str_replace('/image/','/',$u);  
+ 		$name = substr($url,strrpos($url,'/')+1);
+ 		$name = substr($name,0,strrpos($name,'_')); 
+ 		return $u.$name.'.'.File::ext($url);
  	}
 }
