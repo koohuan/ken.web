@@ -59,6 +59,12 @@
 	
 	Image::get($img);
 
+当图片不存在时请加`.htaccess`
+
+	RewriteCond %{REQUEST_FILENAME} !\.(jpg|jpeg|png|gif|bmp)$ 	
+	RewriteRule /upload/image/(.*)$ /admin/image?id=upload/image/$1 [NC,R,L]  
+
+
     
     
  

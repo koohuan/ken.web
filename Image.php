@@ -40,6 +40,7 @@ class Image extends \Ken\Web\Vendor\FuelImages{
 	$u = \Image::set($url,$op);  
  	*/
  	static function set($url , $op = []){ 
+ 		$set = $op; //保存到image_cache
  		$u = substr($url,0,strrpos($url,'/'));
  		$name = substr($url,strrpos($url,'/')+1);
  		$name = substr($name,0,strrpos($name,'.'));
@@ -59,8 +60,28 @@ class Image extends \Ken\Web\Vendor\FuelImages{
  				$im = call_user_func_array([$im,$k],$v);
  			}
  			$im->save($b); 
- 		}
+ 			// md5 name
+	 		$name = md5($c);
+	 	    if(!\DB::w()->from('image_cache')->where('name=?',$name)->one()){
+	 	    	\DB::w()->insert('image_cache',[
+	 	    		'name'=>$name,
+	 	    		'set'=>serialize($set),
+	 	    		'url'=>$url,
+	 	    	]);
+	 	    }
+ 		} 
+ 		
  		return $c;
+ 	}
+ 	//从数据库中取得配置，再次生成图片
+ 	static function cache($c){
+ 		$name = md5($c); 
+	 	$one = \DB::w()->from('image_cache')->where('name=?',$name)->cache()->one();
+	 	if(!$one) return;
+	 	$set = unserialize($one->set); 
+	 	$url = $one->url;  
+	 	$id = static::set($url,$set); 
+	 	echo @file_get_contents(public_path().'/'.$id);
  	}
  	//取得经缩放等处理图片URL的原URL
  	static function get($url){ 
