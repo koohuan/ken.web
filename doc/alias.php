@@ -1,6 +1,9 @@
 <?php
  
 $alias = [  
+	'Ken\Web\AuthController'=>'AuthController',
+	'Ken\Web\Upload'=>'Upload',
+	'Ken\Web\Json'=>'Json',
 	'Ken\Web\Curl'=>'Curl',
 	'Ken\Web\Mo'=>'Mo',
 	'Ken\Web\Config'=>'Config',
