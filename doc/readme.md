@@ -67,7 +67,12 @@
 
     
     
- 
+查看开发手册
+
+	Route::get('doc',function(){ 
+		//路径为框架所在doc目录下的doc.php文件路径
+		echo include("../vendor/ken/web/doc/doc.php");
+	}); 
 
 
  

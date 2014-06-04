@@ -1,5 +1,10 @@
 <?php 
-$dir = "../core/doc/";
+/**
+Route::get('doc',function(){ 
+	 echo include( "../core/doc/doc.php");
+}); 
+*/
+$dir = __DIR__.'/';
 error_reporting(0);
 $i = $_GET['i']?:'readme';
 $menu = [
@@ -80,13 +85,13 @@ $menu2 = [
  			 <div class="col-md-4">
  				<div class="list-group">
  				<?php  foreach($menu as $k=>$v){?>
-				  <a href="doc.php?i=<?php echo $k;?>" class="list-group-item <?php if($i==$k){?> active<?php }?>"><?php echo $v;?></a>
+				  <a href="doc?i=<?php echo $k;?>" class="list-group-item <?php if($i==$k){?> active<?php }?>"><?php echo $v;?></a>
 				<?php }?>
 				</div>
 					
 				<div class="list-group">
  				<?php  foreach($menu2 as $k=>$v){?>
-				  <a href="doc.php?i=<?php echo $k;?>" class="list-group-item <?php if($i==$k){?> active<?php }?>"><?php echo $v;?></a>
+				  <a href="doc?i=<?php echo $k;?>" class="list-group-item <?php if($i==$k){?> active<?php }?>"><?php echo $v;?></a>
 				<?php }?>
 				</div>
  			</div>

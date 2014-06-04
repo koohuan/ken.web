@@ -39,11 +39,11 @@
 namespace Ken\Web;
 abstract class Controller
 { 
-	public $id;
-	public $action;
+	protected $id;
+	protected $action;
 	public $theme = 'default';
  	public $info = [];
-	public $module;
+	protected $module;
 	static $_view;
 	protected $_id;
 	function __construct(){ 

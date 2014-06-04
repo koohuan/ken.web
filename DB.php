@@ -472,6 +472,7 @@ class DB{
 	        if(!$this->query->execute( $this->value )){ 
 	        	$info = $this->query->errorInfo()[2]; 
 	        	$info = 'SQL ERROR:'.$info."<br>SQL:".$this->sql;
+	        	\Response::code(500,'SQL ERROR');
 	        	throw new \Exception($info,500); 
 	        }
 	        $id = $this->pdo->lastInsertId();

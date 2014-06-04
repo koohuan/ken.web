@@ -124,4 +124,14 @@ function load($file){
 	import($file);
 }
 
+//生成cck hook列表链接
+function hook_action($nid=null,$name,$method){
+	$data = $_GET;
+	$data['nid'] = $nid;
+	$data['action'] = $name.'.'.$method;
+	if($nid)
+		return url('content/node/do',$data);
+	unset($_GET['nid'],$_GET['action']);
+	return url('content/node/index',$_GET);
+}
  
