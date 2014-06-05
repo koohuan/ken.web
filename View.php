@@ -29,7 +29,7 @@ namespace Ken\Web;
 class View
 {  
 	//默认theme
-	public $theme = 'default';
+	static $theme = 'default';
 	//BLOCK
  	public $block;
 	public $block_id;   
@@ -43,10 +43,14 @@ class View
 	public $view;
 	public $info;
 	static $default; 
-	static $obj;  
+	static $obj;   
+	static $minify = false;
+	static function set_theme($name){ 
+		static::$theme = $name;
+	}
 	function __construct(){    
 		$this->view_dir = base_path().'/view'; 
-		$this->theme_dir = public_path().'/themes/default';  
+		$this->theme_dir = public_path().'/themes/'.static::$theme;  
 		static::$default = ['view'=>$this->view_dir,'theme'=>$this->theme_dir];
 	}
 	
@@ -76,12 +80,10 @@ class View
 	}
 	
 	//返回theme所在的url
-	function theme(){
-		return Route::init()->base_url.'themes/'.$this->theme.'/';
+	static function theme(){
+		return Route::init()->base_url.'themes/'.static::$theme;
 	}
-	function set_theme($theme){
-		$this->theme_dir = $theme_dir.'/'.$theme; 
-	}
+ 
 	/**
 	 	查找文件是否存在，存在后直接include 
 	*/
@@ -100,7 +102,7 @@ class View
 	}
 	static function make($name, $par = [])
 	{ 
-		$view = new Static;
+		$view = new Static; 
 		return $view->render($name, $par); 
 	}
 	/**
@@ -113,7 +115,7 @@ class View
 			$this->view_dir = static::$default['view'];
 			$this->theme_dir = static::$default['theme'];
 			$name = substr($name,1);
-		} 
+		}  
 		$this->__ex($name);
 		$this->block['content'] = $this->find([$this->theme_file,$this->view_file]);    
 		ob_start();
@@ -124,7 +126,7 @@ class View
   		}
 		$data = trim(ob_get_contents());   
 		ob_end_clean();
-		if(true === Config::get('app.minify'))
+		if(true === static::$minify)
 			$data =  preg_replace(array('/ {2,}/','/<!--.*?-->|\t|(?:\r?\n[\t]*)+/s'),array(' ',''),$data);  
 		echo $data;  
 	}
@@ -142,7 +144,7 @@ class View
 		//上一层是否存在layout,目的是多个模块共用同一个theme下的laout
 		$pre = substr($this->theme_dir,0,strrpos($this->theme_dir,'/')).'/'.$name.'.layout.php';
 		//加载view下的layout
-		$default_layout = base_path().'/view/'.$this->theme.'/'.$d.'.layout.php';   
+		$default_layout = base_path().'/view/'.static::$theme.'/'.$d.'.layout.php';   
 		$this->block['layout'] = $this->find([$theme,$view,$pre,$default_layout]);
 	}
 	

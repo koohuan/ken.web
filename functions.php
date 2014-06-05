@@ -8,6 +8,9 @@ function query_all(){
 function query_page(){  
 	return call_user_func_array(['\classes\query','page'],func_get_args() ); 
 }
+function theme_url(){
+	return View::theme();
+}
 /**
   ≈–∂œ «∑ÒAjax«Î«Û
 */

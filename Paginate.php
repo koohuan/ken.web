@@ -65,6 +65,7 @@ class Paginate{
 	function show($class='pagination'){   
 		$str = '<ul class="'.$class.'">';
 		$pre = $this->page-1; 
+		$p = $_GET;
 		$p['page'] = $pre>0?$pre:1; 
 		if($pre>0)
 			$str .= '<li><a href="'.$this->url($this->url,$p).'">&laquo;</a></li>'; 

@@ -23,6 +23,8 @@ abstract class AdminController extends Controller
  	*/
 	function init(){
  		 parent::init(); 
+ 		 View::$minify = false;
+ 		 View::set_theme('admin');
  		 if( $this->allow && in_array($this->module.'.'.$this->id.'.'.$this->action,$this->allow )){
  		 	goto NEXT;
  		 }

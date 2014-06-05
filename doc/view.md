@@ -1,5 +1,12 @@
 视图
 ========
+	
+	//是否合并HTML
+	View::$minify = true;  
+	//VIEW theme
+	View::set_theme('wap');
+
+
 `app`这个namespace下可直接使用 `$this->view(name,[])`
 
 layout 视图使用
