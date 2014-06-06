@@ -29,21 +29,18 @@ Ken\Web 使用说明
 
 composer.json
 
-	{ 
+	{
 	    "require": {
-	        "php": ">=5.4" ,
-		"alfaproject/omnipay-skrill": "dev-master",
-		"omnipay/paypal": "2.x",
-		"omnipay/common":"2.x"
-	    },    
+		"php": ">=5.4" ,
+	        "ken/web": "dev-master"   
+	    },
 	    "autoload": {  
-		"files": ["core/alias.php","core/functions.php"],
-	        "psr-4":{
-		    "Ken\\Web\\":"core/",
-	            "module\\": "module/",  
-	 	    "widget\\": "widget/",
-	 	    "classes\\": "classes/",
-	 	    "third\\": "third/"
+	   	"files": ["alias.php"],
+	        "psr-4":{ 
+			"module\\": "module/",  
+		        "widget\\": "widget/",
+		        "classes\\": "classes/",
+		        "third\\": "third/"
 	        } 
 	    }  
 	}
