@@ -51,7 +51,7 @@ class View
 	function __construct(){    
 		$this->view_dir = base_path().'/view'; 
 		$this->theme_dir = public_path().'/themes/'.static::$theme;  
-		static::$default = ['view'=>$this->view_dir,'theme'=>$this->theme_dir];
+		static::$default = ['view'=>$this->view_dir,'theme'=>$this->theme_dir]; 
 	}
 	
 	/**
@@ -96,7 +96,13 @@ class View
 	}
 	protected function __ex($name){
 		$this->view_file = $this->view_dir.'/'.$name.'.php';
-		if($this->theme_dir){
+		//文件不存在，加载框架内核中的view 
+		if(!file_exists($this->view_file)){
+			$a = str_replace(base_path(),'',core_module());
+			$b = str_replace(base_path(),'',$this->view_file); 
+		 	$this->view_file = base_path().$a.$b;
+		}
+ 		if($this->theme_dir){
 			$this->theme_file = $this->theme_dir.'/'.$name.'.php';
 		} 
 	}

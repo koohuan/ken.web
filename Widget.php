@@ -63,6 +63,7 @@ class Widget
     	显示widget
     */
     static function init($class,$par = []){ 
+    	if(!class_exists($class)) $class = "\Ken\\Web\\doc\\".$class;
     	$obj  = new $class();
     	if($par){
     		foreach($par as $k=>$v)

@@ -119,6 +119,12 @@ function import($file){
 		$statics[$file] = true;
 	} 
 }
+function core_path(){
+ 	return __DIR__;
+}
+function core_module(){
+ 	return __DIR__.'/doc';
+}
 //从项目目录加载文件
 function load($file){
 	$file = str_replace('.','/',$file);

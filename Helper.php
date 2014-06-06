@@ -82,5 +82,48 @@ class Helper
 	        }
 	        return $cookies;
 	}
+	
+	static function cookie($array = []){
+		foreach ($array as $key => $value) { 
+			$cookie.= $value.';'; 
+		}
+		return $cookie;
+	}
+	/**
+ 
+  	[0] => webwx_data_ticket=AQZhwuyPUklM7pHP47HFExi9; Domain=.qq.com; Path=/; Expires=Sat, 07-Jun-2014 09:23:50 GMT
+    [1] => wxuin=13179485; Domain=.qq.com; Path=/; Expires=Sat, 07-Jun-2014 09:23:50 GMT
+    [2] => wxsid=VSEEI2seluytxAQ8; Domain=.qq.com; Path=/; Expires=Sat, 07-Jun-2014 09:23:50 GMT
+    [3] => wxloadtime=1402046630; Domain=.qq.com; Path=/; Expires=Sat, 07-Jun-2014 09:23:50 GMT
+    [4] => mm_lang=zh_CN; Domain=.qq.com; Path=/; Expires=Sat, 07-Jun-2014 09:23:50 GMT
+	
+	·µ»Ø 
+	Array
+	(
+	    [webwx_data_ticket] => AQa8pNrTz50uxL83r4q4q6AS
+	    [Domain] => .qq.com
+	    [Path] => /
+	    [Expires] => Sat, 07-Jun-2014 09:33:06 GMT
+	    [wxuin] => 13179485
+	    [wxsid] => 0dxnINOufM0i06cM
+	    [wxloadtime] => 1402047186
+	    [mm_lang] => zh_CN
+	)	   
+		  	
+	*/
+	static function cookie_array($cookie){
+		$arr = explode(';',$cookie);
+		$cookie = array();
+		foreach($arr as $vo) {
+			$k = explode('=',trim($vo));
+			if (count($k)>1) {
+				$key = trim($k[0]);
+				$val = trim($k[1]);
+				if (!empty($val)) $cookie[$key] = $val;
+			}
+		}
+		return $cookie;
+	}
+	
    
 }
