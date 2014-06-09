@@ -59,6 +59,11 @@ class Auth_Class
 	public $update_at = 'update_at';
 	public $logined;
 	public $named;
+	public $encode = true;
+ 
+	function md5(){
+		$this->encode = false;
+	}
 	/**
 		判断是否登录
 	*/
@@ -181,7 +186,7 @@ class Auth_Class
 			Response::code(500 ,$e[1]);
 			return $e[1];
 		} 
-		if(!static::validatePassword($password , $one->password)){
+		if(!$this->password_verify($password , $one->password)){
 			Response::code(500 ,$e[2]);
 			return $e[2];
 		}
@@ -211,7 +216,7 @@ class Auth_Class
 				Response::code(500 , $vali[0]);
 				return ['msg'=>$vali];
 			} 
-			$par['password'] = static::passwordHash($par['password']);
+			$par['password'] = $this->passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
 		Response::code(200);
@@ -237,7 +242,7 @@ class Auth_Class
 			Response::code(500 , $e[1]);
 			return $e[1];
 		} 
-		if(!static::validatePassword($old_password , $one->password)){
+		if(!$this->password_verify($old_password , $one->password)){
 			Response::code(500 , $e[2]);
 			return $e[2];
 		}
@@ -252,7 +257,7 @@ class Auth_Class
 			} 
 			
 			Response::code(200);
-			$par['password'] = static::passwordHash($par['password']);
+			$par['password'] = $this->passwordHash($par['password']);
 			DB::w()->update($this->table,$par,'id=?',[$id]);
 		}
 		return true;
@@ -288,7 +293,7 @@ class Auth_Class
 		$arr = [ 
 				$this->email => trim($email),
 				'uid' => Str::uid(),
-				$this->password => static::passwordHash(trim($password)),
+				$this->password => $this->passwordHash(trim($password)),
 				$this->create_at => date('Y-m-d H:i:s'), 
 			];
 		Validate::set($this->password,[
@@ -327,80 +332,21 @@ class Auth_Class
 		}
 		return $id; 
 	}
-	/**
-		以下代码来源yii2.0
-		yii2.0	yii\helpers\BaseSecurity
-	*/
-	public static function passwordHash($password, $cost = 13)
+ 
+ 
+	public function passwordHash($password)
     {
-        $salt = static::generateSalt($cost);
-        $hash = crypt($password, $salt); 
-        if (!is_string($hash) || strlen($hash) < 32) {
-                throw new \Exception('Unknown error occurred while generating hash.');
-        } 
-        return $hash;
+    	if($this->encode===true)
+         	return password_hash($password,PASSWORD_BCRYPT); 
+        return sha1(substr(md5($password),5,22));
     }
-  	public static function validatePassword($password, $hash)
-    { 
-            if (!is_string($password) || $password === '') {
-                    throw new \Exception('Password must be a string and cannot be empty.');
-            }
-
-            if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
-                    throw new \Exception('Hash is invalid.');
-            }
-
-            $test = crypt($password, $hash);
-            $n = strlen($test);
-            if ($n < 32 || $n !== strlen($hash)) {
-                    return false;
-            }
-
-            // Use a for-loop to compare two strings to prevent timing attacks. See:
-            // http://codereview.stackexchange.com/questions/13512
-            $check = 0;
-            for ($i = 0; $i < $n; ++$i) {
-                    $check |= (ord($test[$i]) ^ ord($hash[$i]));
-            }
-
-            return $check === 0;
+   
+    function  password_verify($password,$hash){ 
+    	if($this->encode===true)
+    		return password_verify($password,$hash);
+    	return sha1(substr(md5($password),5,22))==$hash;
     }
 
-    /**
-     * Generates a salt that can be used to generate a password hash.
-     *
-     * The PHP [crypt()](http://php.net/manual/en/function.crypt.php) built-in function
-     * requires, for the Blowfish hash algorithm, a salt string in a specific format:
-     * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
-     * from the alphabet "./0-9A-Za-z".
-     *
-     * @param integer $cost the cost parameter
-     * @return string the random salt value.
-     * @throws InvalidParamException if the cost parameter is not between 4 and 31
-     */
-    protected static function generateSalt($cost = 13)
-    {
-            $cost = (int)$cost;
-            if ($cost < 4 || $cost > 31) {
-                    throw new InvalidParamException('Cost must be between 4 and 31.');
-            }
-
-            // Get 20 * 8bits of pseudo-random entropy from mt_rand().
-            $rand = '';
-            for ($i = 0; $i < 20; ++$i) {
-                    $rand .= chr(mt_rand(0, 255));
-            }
-
-            // Add the microtime for a little more entropy.
-            $rand .= microtime();
-            // Mix the bits cryptographically into a 20-byte binary string.
-            $rand = sha1($rand, true);
-            // Form the prefix that specifies Blowfish algorithm and cost parameter.
-            $salt = sprintf("$2y$%02d$", $cost);
-            // Append the random salt data in the required base64 format.
-            $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
-            return $salt;
-    }
     
  
 }

@@ -1,7 +1,7 @@
 <?php 
 /**
     会员权限
- 	 
+ 	User::md5(); 快速加密 
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014 

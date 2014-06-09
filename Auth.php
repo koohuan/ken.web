@@ -1,8 +1,7 @@
 <?php 
 /**  
 	Auth
-	
-	
+	User::md5(); ¿ìËÙ¼ÓÃÜ 
 	
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
