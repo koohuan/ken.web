@@ -1,6 +1,6 @@
 <?php
 /**
- 	可使用F注册
+  
  	URI Route 路由 restful 格式 
  	对结构为
  	app

@@ -38,16 +38,25 @@ abstract class AuthController extends AdminController
  		 		 return false;
  		return true;
  	}
+ 	//判断有没有权限
+ 	function has_access($access = null){
+ 		if(!$access)
+ 			$access = $this->access; 
+ 		$flag = true;
+ 		if($this->acl === false){
+	 		if($this->admin_id != 1){  
+	 		 	if(!$this->_access || !in_array($access,$this->_access) )
+	 		 		 $flag = false;
+	 		 }
+ 		}
+ 		return $flag;
+ 	}
  	/**
  	* 在渲染视图前验证权限
  	*/
  	function view($view,$data = []){ 
- 		if($this->acl === false){
-	 		if($this->admin_id != 1){  
-	 		 	if(!$this->_access || !in_array($this->access,$this->_access) )
-	 		 		 throw new \Exception(__('Access Deny!'),500); 
-	 		 }
- 		}
+ 		if(true !== $this->has_access())
+ 			throw new \Exception(__('Access Deny!'),500);  
  		 parent::view($view,$data);
  	}
  	/**

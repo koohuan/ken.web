@@ -143,4 +143,5 @@ function hook_action($nid=null,$name,$method){
 	unset($_GET['nid'],$_GET['action']);
 	return url('content/node/index',$_GET);
 }
+
  

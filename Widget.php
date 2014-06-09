@@ -52,7 +52,12 @@ class Widget
     	$r = new \ReflectionClass($this);
     	$n = str_replace('\\','/',$r->name);
     	$n = substr($n,0,strrpos($n,'/'));
-		$file = base_path().'/'.$n."/view/$view.php"; 
+    	if(strpos($n,'Ken/Web/doc')!==false){
+    		$n = str_replace('Ken/Web/doc',core_module(),$n);
+    	}else{
+    		$n = base_path().'/'.$n;
+    	}
+		$file = $n."/view/$view.php";  
     	if(file_exists($file)){
 			extract($par, EXTR_OVERWRITE); 
 			include $file;

@@ -108,11 +108,11 @@ $_action = content::hook_exists($slug);
 				 	<?php }?>
 				 <?php }?>
 				 	 
-				 
-						<a    href="<?php echo url('content/node/delete',['id'=>$id,'fid'=>$vo->id]);?>" title="<?php echo __('Delete');?>" onclick="return confirm('<?php echo __('Remove item?');?>');">				
-							<i class="fa fa-trash-o"></i>
-						</a>
-				 
+			 
+					<a    href="<?php echo url('content/node/delete',['id'=>$id,'fid'=>$vo->id]);?>" title="<?php echo __('Delete');?>" onclick="return confirm('<?php echo __('Remove item?');?>');">				
+						<i class="fa fa-trash-o"></i>
+					</a>
+		 
 								
 			
 	        </td>

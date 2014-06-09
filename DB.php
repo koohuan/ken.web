@@ -461,11 +461,9 @@ class DB{
 		execute sql
 	*/
 	protected function exec($insert = false){
-		//记录日志
-		if($this->debug === true){
-			$log = ['sql'=>$this->sql,'value'=>$this->value];
-			static::$log[] = $log;
-		} 
+		//记录时间
+		$start =  Debug::mtime();
+		
 		try {  
 			$this->query = $this->pdo->prepare($this->sql , [\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY]);  
 	        $this->pdo->beginTransaction();  
@@ -480,6 +478,12 @@ class DB{
 	    } catch(PDOExecption $e) {   
  	        $this->pdo->rollback();  
 	    }  
+	    //记录日志
+		if($this->debug === true){
+			$log = ['sql'=>$this->sql,'value'=>$this->value,'time'=>Debug::rtime((Debug::mtime()-$start)*1000)];
+			static::$log[] = $log;
+		} 
+		
 	    return $id?:false; 
 	}
 

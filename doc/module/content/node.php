@@ -38,10 +38,7 @@ class node extends \AuthController{
  		$cls::$method($this->table,$id);
  	}
  	function deleteAction(){ 
- 		if(\Auth::get()['id']!=1){
- 			\Session::flash('error',__('Access Deny!')); 
- 			$this->redirect(url('content/node/index',['id'=>$this->gid]));
- 		}
+ 		$this->access .= "d"; 
  		\DB::w()->delete($this->table,'id=?',$this->fid);
  		\Session::flash('success',__('Delete Success')); 
  		$this->redirect(url('content/node/index',['id'=>$this->gid]));
