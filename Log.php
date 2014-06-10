@@ -68,7 +68,7 @@ class Log{
 			foreach($list['file'] as $v){
 				$k = str_replace(static::$path,'',$v);
 				$content = file_get_contents($v); 
-				$out .= $k."\n".$content;
+				$out .= "<h3>".$k."</h3>".$content."\n\n";
 			}
 		}
  		return $out;
