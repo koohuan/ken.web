@@ -45,6 +45,7 @@ class Log{
 	static $open = true;
 	//系统级日志，记录到Mongo DB中
  	static function mo( $arr = [] , $leavel = 0){
+ 		if(!implode('',$arr)) return;
  		if(true === Mo::w('log')->active)
  			Mo::w('log')->insert('log_'.$leavel , $arr);
  		else
@@ -86,6 +87,7 @@ class Log{
 				unlink($v);
 			}
 		}
+		File::rmdir($dir);
  	}
  	//写info
  	static function info($str){
@@ -97,6 +99,7 @@ class Log{
  	}
  	//写文件
  	static function write($type = 'info',$str ,$w = false){
+ 		if(!$str) return ;
  		if(false === $w && static::$open !== true) return ;
  		$type = ucfirst($type);
  		$dir = static::$path.'/'.$type.'/'.date("Y").'/'.date('m');
@@ -119,14 +122,12 @@ class Log{
  				$new .= $v."\t"; 
  			} 
  			$str = $new;
- 		} else{
- 			$str = $str."\t".date('i:s');
- 		}
+ 		}  
  		if(!$str) return;
- 		$str = $str."\r";
- 		
+ 		$str = $str; 
  		try{
  			$fh = fopen($filename, "a+");
+ 			$str = $str."\t runtime:".date('i:s')."\n";
 			fwrite($fh, $str);
 			fclose($fh);
  		}catch(Exception $e) { 
