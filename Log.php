@@ -72,7 +72,7 @@ class Log{
  		} 
  		$list = File::find($dir);
 		if($list['file']){
-			foreach($list['file'] as $v){
+			foreach(array_reverse($list['file']) as $v){
 				$k = str_replace(static::$path,'',$v);
 				$content = file_get_contents($v); 
 				$out .= "<h3>".$k."</h3>".$content."\n\n";
@@ -109,7 +109,7 @@ class Log{
 		    }
  		}
   		$filename = $dir.'/'.date("dH").".log";
-  		
+  		if(is_object($str )) $str  = Arr::object2array($str) ;
  		if(is_array($str)) {
  			unset($new);
  			foreach($str as $k=>$v){

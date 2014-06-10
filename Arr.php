@@ -61,5 +61,14 @@ class Arr
         return $max; 
 	}
 	
+	//对象转数组
+	static function object2array($obj){
+	 	$arr = is_object($obj) ? get_object_vars($obj) : $obj;
+		foreach ($arr as $key => $val){
+			  $val = (is_array($val) || is_object($val)) ? static::object2array($val) : $val;
+		  	  $output[$key] = $val;
+		}
+	 	return $output;
+	} 
  
 }
