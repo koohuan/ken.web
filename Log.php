@@ -2,8 +2,7 @@
 /**
   	Log
  	
- 	系统级别重要日志
- 	
+ 	系统级别重要日志 
  	\Log::system([
 		'uri' =>$_SERVER['REQUEST_URI'], 
 		'create_at' => date('Y-m-d H:i:s')
@@ -23,6 +22,16 @@
 	Log::info('test');
  	Log::error('test');
  	Log::read();
+ 	
+ 	Route:
+ 	Route::get('log',function(){
+		$r = Log::read();
+		dump($r);
+	});
+	Route::get('clean',function(){
+		Log::clean();
+		 
+	});
 
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
@@ -42,27 +51,39 @@ class Log{
  			static::write('mo_'.$leavel,$arr,true);
  	}
  	static function init(){
- 		static::$path = Config::get('app.log');  
+ 		$path = Config::get('app.log');
+ 		if(!$path) $path = base_path().'/temp/logs'; 
+ 		static::$path = realpath($path);    
  		if(!is_dir(static::$path)) mkdir(static::$path , 777 ,true); 
  	}  
  	//读取所有日志
- 	static function read(){
- 		$list = scandir(static::$path);
-		foreach($list as $vo){   
-			if($vo !="."&& $vo !=".." && $vo !=".svn" )
-			{ 
-				$out[$vo] = @file_get_contents(static::$path.'/'.$vo);
+ 	static function read($name = null){
+ 		$dir = static::$path;
+ 		if($name){
+ 			$name = ucfirst($name);
+ 			$dir = $dir.'/'.$name;
+ 		} 
+ 		$list = File::find($dir);
+		if($list['file']){
+			foreach($list['file'] as $v){
+				$k = str_replace(static::$path,'',$v);
+				$content = file_get_contents($v); 
+				$out .= $k."\n".$content;
 			}
 		}
  		return $out;
  	}
  	//清空日志
- 	static function clean(){
- 		$list = scandir(static::$path);
-		foreach($list as $vo){   
-			if($vo !="."&& $vo !=".." && $vo !=".svn" )
-			{ 
-				@unlink(static::$path.'/'.$vo);
+ 	static function clean($name = null){
+ 		$dir = static::$path;
+ 		if($name){
+ 			$name = ucfirst($name);
+ 			$dir = $dir.'/'.$name;
+ 		} 
+ 		$list = File::find($dir);
+		if($list['file']){
+			foreach($list['file'] as $v){
+				unlink($v);
 			}
 		}
  	}
