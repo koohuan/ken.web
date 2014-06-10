@@ -53,8 +53,14 @@ class Log{
  	}
  	static function init(){
  		$path = Config::get('app.log');
- 		if(!$path) $path = base_path().'/temp/logs';  
- 		if(!is_dir($path)) mkdir($path , 777 ,true); 
+ 		if(!$path) $path = base_path().'/temp/logs'; 
+ 		if(!is_writable($path)){
+	 		$root = substr($path,0,strrpos($path,'/'));
+	 		exec("chmod 777 $root");
+ 		}  
+ 		if(!is_dir($path)) { 
+ 			mkdir($path, 0777, true);
+ 		} 
  		static::$path = realpath($path);  
  	}  
  	//读取所有日志
@@ -97,7 +103,11 @@ class Log{
  		if(false === $w && static::$open !== true) return ;
  		$type = ucfirst($type);
  		$dir = static::$path.'/'.$type.'/'.date("Y").'/'.date('m');
- 		if(!is_dir($dir)) mkdir($dir,0775,true);
+ 		if(!is_dir($dir)) {
+ 			if (!mkdir($dir, 0777, true)) { 
+ 				static::init(); 
+		    }
+ 		}
   		$filename = $dir.'/'.date("dH").".log";
   		
  		if(is_array($str)) {
