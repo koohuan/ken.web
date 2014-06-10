@@ -53,9 +53,9 @@ class Log{
  	}
  	static function init(){
  		$path = Config::get('app.log');
- 		if(!$path) $path = base_path().'/temp/logs'; 
- 		static::$path = realpath($path);    
- 		if(!is_dir(static::$path)) mkdir(static::$path , 777 ,true); 
+ 		if(!$path) $path = base_path().'/temp/logs';  
+ 		if(!is_dir($path)) mkdir($path , 777 ,true); 
+ 		static::$path = realpath($path);  
  	}  
  	//读取所有日志
  	static function read($name = null){
@@ -80,13 +80,7 @@ class Log{
  		if($name){
  			$name = ucfirst($name);
  			$dir = $dir.'/'.$name;
- 		} 
- 		$list = File::find($dir);
-		if($list['file']){
-			foreach($list['file'] as $v){
-				unlink($v);
-			}
-		}
+ 		}  
 		File::rmdir($dir);
  	}
  	//写info
