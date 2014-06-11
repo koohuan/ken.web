@@ -30,20 +30,20 @@ Ken\Web 使用说明
 composer.json
 
 	"require": {
-        "php": ">=5.4",
-	"ken/web": "dev-master",
-	"ken/module": "dev-master",
-	"ken/widget": "dev-master"
-   },
-   "autoload": {   
-          "psr-4":{
-            "module\\": "module/",  
- 	    "widget\\": "widget/",
- 	    "tool\\": "tool/",
-	    "classes\\": "classes/",
- 	    "third\\": "third/"
-          } 
-    }  
+		"php": ">=5.4",
+		"ken/web": "dev-master",
+		"ken/module": "dev-master",
+		"ken/widget": "dev-master"
+	},
+	"autoload": {   
+		  "psr-4":{
+		    "module\\": "module/",  
+		    "widget\\": "widget/",
+		    "tool\\": "tool/",
+		    "classes\\": "classes/",
+		    "third\\": "third/"
+	  } 
+	}  
 
  
 ----------
