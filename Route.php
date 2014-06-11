@@ -61,6 +61,8 @@
 namespace Ken\Web;
 use Closure;
 class Route{
+	//是否加载内核模块 
+	static $core = true;
 	//基础URL
 	public $base_url;
 	protected $method;
@@ -70,8 +72,7 @@ class Route{
 	//相对URL
 	static $index;
 	static $r = 'module'; //默认路由模块 
-	public $core_module = "Ken\\Web\\doc\\"; //框架内的模块 namespace
-	static $core_module_dir;
+	public $core_module = "Ken\\Web\\Module"; //框架内的模块 namespace 
  	/** 
 	get('aa',function(){});
 	*/
@@ -80,7 +81,7 @@ class Route{
 	public $host;
 	public $class = [];
 	static $obj;
-	
+	static $current_class;//当前使用的CLASS
 	static function init(){
 		if(!isset(static::$obj))
 			static::$obj = new Static;
@@ -104,8 +105,7 @@ class Route{
 	function __construct(){
 		//请求方式 GET POST
  		$this->method = $_SERVER['REQUEST_METHOD'];   
- 		$this->host = static::host();  
- 		static::$core_module_dir  = __DIR__.'/doc/module/';
+ 		$this->host = static::host();   
  	}  
  	static function host(){
  		$top = 'http';
@@ -271,7 +271,7 @@ class Route{
  			} 
  			$ac = $cls[1];
  			return $this->load_route($class,$ac,$data);
-	 	} 
+	 	}  
  	 	//加载app\admin\login.php 这类的自动router 
 	 	try{
 	 		$action = trim(str_replace('/',' ',$action));
@@ -281,17 +281,20 @@ class Route{
 		 	return $this->load_route($class,$ac,$data);
 	 	}catch (Exception $e){  
 	 		throw new \Exception('404 page not find',404);
-	 	}
-	 
+	 	} 
+	}
+	static function get_class(){
+		return static::$current_class;
 	}
 	/**
 	* 支持框架内部框架
 	*/
 	protected function load_route($class,$ac,$data){  
 		$this->class = [$class,$ac];
-		if(!class_exists($class)){
-			$class = $this->core_module.$class;
-		} 
+		if(true === static::$core && !class_exists($class)){ 
+			$class = $this->core_module.substr($class,strpos($class,'\\'));
+		}    
+		static::$current_class = $class;
 		$this->class_exists($class,$ac);
 		$obj = new $class;  
 		return call_user_func_array([$obj,$ac."Action"],$data);   

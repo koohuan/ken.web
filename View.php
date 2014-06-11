@@ -13,14 +13,7 @@
 	
 	<?php echo $this->start('content');?>
 	test
-	<?php echo $this->end();?>
-
-    
-    
-    
-     
-
-    
+	<?php echo $this->end();?> 
  	@auth Kang Sun <68103403@qq.com>
 	@license BSD
 	@date 2014 
@@ -95,13 +88,20 @@ class View
 		throw new \Exception("view not exists:\n".implode("\n",$arr)); 
 	}
 	protected function __ex($name){
-		$this->view_file = $this->view_dir.'/'.$name.'.php';
+		$this->view_file = $this->view_dir.'/'.$name.'.php'; 
+		 
 		//文件不存在，加载框架内核中的view 
-		if(!file_exists($this->view_file)){
-			$a = str_replace(base_path(),'',core_module());
-			$b = str_replace(base_path(),'',$this->view_file); 
-		 	$this->view_file = base_path().$a.$b;
-		}
+		if(true === Route::$core && 
+				Route::get_class() && 
+				 !file_exists($this->view_file
+			)){   
+		 	$reflector = new \ReflectionClass(Route::get_class());
+			$fn = $reflector->getFileName();
+			$a = str_replace(base_path(),'',$fn);
+			$a = str_replace('\\','/',$a);
+			$a = substr($a,0,strrpos($a,'/')); 
+		 	$this->view_file = base_path().$a."/view/".$name.'.php';
+		} 
  		if($this->theme_dir){
 			$this->theme_file = $this->theme_dir.'/'.$name.'.php';
 		} 
@@ -109,7 +109,7 @@ class View
 	static function make($name, $par = [])
 	{ 
 		$view = new Static; 
-		return $view->render($name, $par); 
+		return $view->render($name, $par);  
 	}
 	/**
 		渲染视图
@@ -121,8 +121,8 @@ class View
 			$this->view_dir = static::$default['view'];
 			$this->theme_dir = static::$default['theme'];
 			$name = substr($name,1);
-		}  
-		$this->__ex($name);
+		} 
+		$this->__ex($name); 
 		$this->block['content'] = $this->find([$this->theme_file,$this->view_file]);    
 		ob_start();
 		extract($par, EXTR_OVERWRITE); 

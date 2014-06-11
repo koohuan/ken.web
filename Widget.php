@@ -1,18 +1,9 @@
 <?php  
 /** 
 	依赖 File 类
-	必须定义 base_path  public_path 这两个函数
-	
-	composer.json 如下 对应 widget 目录
-	
-	"autoload": {  
-	    "psr-4":{ 
-	        "app\\": "app/",
-		    "lib\\": "lib/",
-		    "widget\\": "widget/",
-		    "event\\": "event/" 	
-	    }
-	}
+	必须定义 base_path  public_path 这两个函数 
+	composer.json 如下 对应 widget 目录 
+ 
  	Widget实现    
 	@auth Kang Sun <68103403@qq.com>
 	@license BSD
@@ -21,6 +12,7 @@
 namespace Ken\Web;  
 class Widget
 { 
+	static $core = true;
 	//要发布到的目录
 	static $to;
 	//相对URL
@@ -51,24 +43,29 @@ class Widget
     function view($view,$par = []){
     	$r = new \ReflectionClass($this);
     	$n = str_replace('\\','/',$r->name);
-    	$n = substr($n,0,strrpos($n,'/'));
-    	if(strpos($n,'Ken/Web/doc')!==false){
-    		$n = str_replace('Ken/Web/doc',core_module(),$n);
+    	$n = substr($n,0,strrpos($n,'/'));  
+    	if(strpos($n,'Ken/Web/Widget')!==false && true === static::$core ){
+    		$new = $n.substr($n,strrpos($n,'/'));
+    		$new = str_replace('/','\\',$new);
+    		$reflector = new \ReflectionClass($new);
+			$fn  =  $reflector->getFileName(); 
+			$a = str_replace('\\','/',$fn);
+			$a = substr($a,0,strrpos($a,'/')); 
+		 	$file = $a."/view/".$view.'.php';  
     	}else{
     		$n = base_path().'/'.$n;
-    	}
-		$file = $n."/view/$view.php";  
+    		$file = $n."/view/$view.php";  
+    	} 
     	if(file_exists($file)){
 			extract($par, EXTR_OVERWRITE); 
 			include $file;
-		}
-    	 
+		} 
     }
     /**
     	显示widget
     */
     static function init($class,$par = []){ 
-    	if(!class_exists($class)) $class = "\Ken\\Web\\doc\\".$class;
+    	if(!class_exists($class)) $class = "\Ken\\Web\\".ucfirst($class);
     	$obj  = new $class();
     	if($par){
     		foreach($par as $k=>$v)

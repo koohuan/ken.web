@@ -107,7 +107,11 @@ function ip() {
 	}
     return $ip;
 }
-
+//取得类所在的物理路径
+function file_name($class){
+	$reflector = new \ReflectionClass($class);
+	return  $reflector->getFileName();
+}
 function widget($name , $par = []){ 
 	return Widget::init("widget\\".$name."\\".$name,$par);
 }
@@ -122,9 +126,7 @@ function import($file){
 function core_path(){
  	return __DIR__;
 }
-function core_module(){
- 	return __DIR__.'/doc';
-}
+ 
 //从项目目录加载文件
 function load($file){
 	$file = str_replace('.','/',$file);
