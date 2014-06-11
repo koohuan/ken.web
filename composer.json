@@ -5,7 +5,7 @@
     "keywords": [
         "small php library" 
     ],
-    "homepage": "https://github.com/nonetaichi/ken.web",
+    "homepage": "https://github.com/mincms/ken.web",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -18,7 +18,7 @@
 	"codeguy/upload": "*"
     },    
     "autoload": { 
-	"files": ["./functions.php"],
+	"files": ["./alias.php","./functions.php"],
         "psr-4":{
             "Ken\\Web\\": ""
         } 

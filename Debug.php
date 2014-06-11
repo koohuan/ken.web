@@ -44,8 +44,8 @@ class Debug
 	}
 
 	public function __construct() {
-		import(__DIR__.'/vendor/PHP-Quick-Profiler/classes/Console.php'); 
-		import(__DIR__.'/vendor/PHP-Quick-Profiler/classes/PhpQuickProfiler.php'); 
+		import(__DIR__.'/Vendor/PHP-Quick-Profiler/classes/Console.php'); 
+		import(__DIR__.'/Vendor/PHP-Quick-Profiler/classes/PhpQuickProfiler.php'); 
         $this->profiler = new \PhpQuickProfiler(\PhpQuickProfiler::getMicroTime());
         DB::w()->debug = true;
         static::$log = true;
