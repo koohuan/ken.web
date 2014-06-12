@@ -62,7 +62,7 @@ class CleanVendor
  		foreach($file as $v){
  			$name = substr($v,strrpos($v,'/')+1);
  			$name = strtolower($name);  
- 			if(file_exists($name) && in_array($name,$this->file)){ 
+ 			if(file_exists($v) && in_array($name,$this->file)){ 
  				unlink($v);
  				if(substr($v,-4) =='.git')
  					File::rmdir($v);

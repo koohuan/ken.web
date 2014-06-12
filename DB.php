@@ -470,6 +470,7 @@ class DB{
 	        if(!$this->query->execute( $this->value )){ 
 	        	$info = $this->query->errorInfo()[2]; 
 	        	$info = 'SQL ERROR:'.$info."<br>SQL:".$this->sql;
+	        	\Log::mysql_error($info);
 	        	\Response::code(500,'SQL ERROR');
 	        	throw new \Exception($info,500); 
 	        }
