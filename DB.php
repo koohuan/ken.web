@@ -460,10 +460,7 @@ class DB{
 	/**
 		execute sql
 	*/
-	protected function exec($insert = false){
-		//记录时间
-		$start =  Debug::mtime();
-		
+	protected function exec($insert = false){ 
 		try {  
 			$this->query = $this->pdo->prepare($this->sql , [\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY]);  
 	        $this->pdo->beginTransaction();  
@@ -481,7 +478,7 @@ class DB{
 	    }  
 	    //记录日志
 		if($this->debug === true){
-			$log = ['sql'=>$this->sql,'value'=>$this->value,'time'=>Debug::rtime((Debug::mtime()-$start)*1000)];
+			$log = ['sql'=>$this->sql,'value'=>$this->value];
 			static::$log[] = $log;
 		} 
 		
