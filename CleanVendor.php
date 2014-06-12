@@ -52,6 +52,9 @@ class CleanVendor
  		$li = File::find($this->find);
  		$dir = $li['dir'];
  		foreach($dir as $v){
+ 			$git = $v.'/.git';
+ 			if(file_exists($git))
+ 				File::rmdir($git);
  			$name = substr($v,strrpos($v,'/')+1);
  			$name = strtolower($name);
  			if(is_dir($v) && in_array($name,$this->dir))
@@ -63,12 +66,10 @@ class CleanVendor
  			$name = substr($v,strrpos($v,'/')+1);
  			$name = strtolower($name);  
  			if(file_exists($v) && in_array($name,$this->file)){ 
- 				unlink($v);
- 				if(substr($v,-4) =='.git')
- 					File::rmdir($v);
+ 				unlink($v); 
  			}
  		}
- 		echo "Clean Up Vendor Finished!";
+ 	 
  	} 
 	
  

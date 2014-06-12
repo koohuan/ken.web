@@ -60,9 +60,13 @@ class Auth_Class
 	public $logined;
 	public $named;
 	public $encode = true;
- 
-	function md5(){
+ 	static $a = 5,
+ 	static $b = 20;
+ 	//快速加密
+	function fast($a = 5,$b = 20){
 		$this->encode = false;
+		static::$a = $a;
+		static::$b = $b;
 	}
 	/**
 		判断是否登录
@@ -338,13 +342,13 @@ class Auth_Class
     {
     	if($this->encode===true)
          	return password_hash($password,PASSWORD_BCRYPT); 
-        return sha1(substr(md5($password),5,22));
+        return sha1(substr(md5($password),static::$a,static::$b));
     }
    
     function  password_verify($password,$hash){ 
     	if($this->encode===true)
     		return password_verify($password,$hash);
-    	return sha1(substr(md5($password),5,22))==$hash;
+    	return sha1(substr(md5($password),static::$a,static::$b))==$hash;
     }
 
     
