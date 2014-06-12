@@ -11,36 +11,7 @@ namespace Ken\Web\Vendor;
  *              $array =  xml2array(file_get_contents('feed.xml', 1, 'attribute')); 
  */ 
 class xml2array{
-	static $deep = 0;
-	static $value;
-	static $n;
-	/**
-	* 只拿到最后一个数组
-	*/
-	static function one($arr){
-		if(!$arr)  return ;
-		static::$n = static::deep($arr);  
-		static::each($arr); 
-		return static::$value; 
-	}
-	static function each($arr){
-		foreach($arr as $value){
-			static::$value = $value;
-		}
-		static::$n--;
-		if(static::$n>2)
-			static::each(static::$value);
-	}
-	static function deep($arr = array()){
-		foreach($arr as $v){
-			static::$deep++;
-			if(is_array($v))
-				static::deep($v);
-			return static::$deep;
-		}
-		 
-		return static::$deep;
-	}
+	 
 	static function run($contents, $get_attributes=1, $priority = 'tag') { 
 	    if(!$contents) return array(); 
 
