@@ -150,7 +150,12 @@ class Auth_Class
 	/**
 		登录 
 	*/
-	function login($username , $password){  
+	function login($username , $password){
+		if($username && $password) { 
+			$cache_id = 'login_'.$username;
+			$one = Cache::get($cache_id);
+			if($one) goto ENDLOGIN;
+		}
 		//如果是手机号 
 		if(Validate::phone($username)){
 			$this->email = 'phone';
@@ -183,13 +188,18 @@ class Auth_Class
 			$a = $this->email."=?";
 			$b = [$username];
 		} 
-		$one = DB::w()->table($this->table)
-			->where($a,$b)
-			->one();
+		
+		if(!$one){
+			$one = DB::w()->table($this->table)
+				->where($a,$b)
+				->one();
+			Cache::set($cache_id,$one);
+		}
 		if(!$one){
 			Response::code(500 ,$e[1]);
 			return $e[1];
 		} 
+		ENDLOGIN:
 		if(!$this->password_verify($password , $one->password)){
 			Response::code(500 ,$e[2]);
 			return $e[2];
@@ -342,13 +352,22 @@ class Auth_Class
     {
     	if($this->encode===true)
          	return password_hash($password,PASSWORD_BCRYPT); 
-        return sha1(substr(md5($password),static::$a,static::$b));
+        return sha1(substr(md5($password),5,22));
     }
    
     function  password_verify($password,$hash){ 
-    	if($this->encode===true)
-    		return password_verify($password,$hash);
-    	return sha1(substr(md5($password),static::$a,static::$b))==$hash;
+    	$id = 'password_verify_'.md5($password.$hash);
+    	$data = Cache::get($id);
+    	
+    	if($this->encode===true){ 
+    		if(!$data){
+	    		$data =  password_verify($password,$hash);
+	    		Cache::set($id,$data);
+    		}
+    		return $data;
+    	}
+    	
+    	return  sha1(substr(md5($password),5,22))==$hash;
     }
 
     
