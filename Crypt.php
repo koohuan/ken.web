@@ -3,8 +3,13 @@
  	 
     http://phpseclib.sourceforge.net/crypt/examples.html
     
+    …Ë÷√
+    config/app.php
     
-    Crypt::key('abcd');
+    crypt_key ƒ¨»œ abc
+    crypt_type ƒ¨»œ AES
+    
+  
 	echo Crypt::encode('abc');
 	
     echo Crypt::decode(value);

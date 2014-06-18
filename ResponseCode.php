@@ -95,11 +95,15 @@ class ResponseCode
 	function get_code(){
 		return $_SERVER['KEN_WEB_CODE'];
 	}
+	function get_txt(){
+		return $_SERVER['KEN_WEB_CODE_TXT'];
+	}
 	/**
 		发送header 头信息
 	*/
 	function code($code = 200 ,$txt = null){
 		$_SERVER['KEN_WEB_CODE'] = $code;
+		$_SERVER['KEN_WEB_CODE_TXT'] = $txt;
 		if(!$txt)
 			$txt = $this->code[$code];
 		header("HTTP/{$this->version} $code {$txt}");

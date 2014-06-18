@@ -42,22 +42,50 @@ class Session
 	/**
  		设置SESSION
 	*/
-	static function set($name,$value){  
+	static function set($name,$value = null){  
+		/**
+		* 对数组或对象直接设置COOKIE
+		*/
+		if(!$value && (is_array($name) || is_object($name))){
+			foreach($name as $k=>$v){
+				$v = Crypt::encode($v);
+				$_SESSION[$k] = $v; 
+			} 
+			return $name;
+		}
 		$value = Crypt::encode($value);
 		$_SESSION[$name] = $value;
 	}
 	/**
 		取回SESSION
 	*/
-	static function get($name){ 
+	static function get($name = null){
+		if(!$name) {
+			if($_SESSION){
+				foreach($_SESSION as $k=>$v){
+					$data[$k] = Crypt::decode($v);
+				}
+			}
+			return  $data;
+		} 
 		$value = $_SESSION[$name];
 		if($value)
-			return trim(Crypt::decode($value));		 
+			return Crypt::decode($value);		 
 	}
 	/**
 		 删除SESSION，只能删除一个SESSION
 	*/
-	static function delete($name){
+	static function delete($name = null){
+		if(!$name)
+			$values = $_SESSION;
+		elseif(is_array($name))
+			$values = $name;
+		if($values){
+			foreach($values as $name=>$value){
+				unset($_SESSION[$name]); 
+			}
+			return;
+		}  
 		unset($_SESSION[$name]); 
 	}
 	

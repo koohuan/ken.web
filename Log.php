@@ -118,11 +118,15 @@ class Log{
  			}
  			if(!file_exists($filename)){
 	 			foreach($k1 as $v){
+	 				if(is_object($v)) $v= (array)$v;
+	 				if(is_array($v)) $v = json_encode($v);
 	 				$new .= $v."\t"; 
 	 			}
 	 			$new .= "\r";
  			}
  			foreach($v1 as $v){
+ 				if(is_object($v)) $v= (array)$v;
+ 				if(is_array($v)) $v = json_encode($v);
  				$new .= $v."\t"; 
  			} 
  			$str = $new;

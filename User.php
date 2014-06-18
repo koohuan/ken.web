@@ -18,8 +18,7 @@ class User
     		 static::$obj = new \Ken\Web\Auth_Class;   
     	static::$obj->table = 'users';
     	static::$obj->cookie = true;
-    	static::$obj->username = null;
-    	static::$obj->named = 'Auth';
+     	static::$obj->uid = true;
     	return call_user_func_array( array(static::$obj , $name) , $arguments);  
     }  
    
