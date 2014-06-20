@@ -161,7 +161,7 @@ class Log{
  	
  	static function __callStatic ($name ,$arg = [] ){ 
  		 if(strtolower(substr($name,0,4))=='json'){ 
- 		 	$name = substr(substr($name,4)); 
+ 		 	$name = substr($name,4); 
  		 	static::json($arg[0],$name);
  		 	return ;
  		 }

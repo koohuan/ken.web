@@ -149,6 +149,7 @@ class Str
 		组织URL query string		
 	*/
 	function query_build($arr = []){
+		if(!is_array($arr) || !implode('',$arr)) return;
 		foreach($arr as $k=>$v){
 			$str .="$k=$v&";
 		}
