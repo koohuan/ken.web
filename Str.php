@@ -63,7 +63,7 @@ class Str
 	static function order_id()
 	{
 		mt_srand((double) microtime() * 1000000);  
-        return date('Ymdhis') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT).\User::get()['id'];   
+        return date('Ymdhis') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);   
 	}
 	
 	/**
