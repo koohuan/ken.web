@@ -2,23 +2,16 @@
 /**
   	Log
  	
- 	系统级别重要日志 
- 	\Log::system([
+ 	//启用日志,无参数时将启用所有级别的日志，如为数组将只启用对应的日志
+	Log::enable(['test']);  
+
+ 	系统级别重要日志  mongodb 日志
+ 	\Log::mo([
 		'uri' =>$_SERVER['REQUEST_URI'], 
 		'create_at' => date('Y-m-d H:i:s')
-	],'request');
-	
-	\Log::system([
-		'order_id' => $this->order_id,
-		'payment_method'  => $this->id,
-		'amount'			=> $this->amount,
-		'create_at'	    => date('Y-m-d H:i:s'),
-	],"payment");
-	
+	],'request'); 
  	 
-	//普通文本日志
-	Log::init(); 
-
+ 
 	Log::info('test');
  	Log::error('test');
  	Log::read();
@@ -42,14 +35,33 @@ namespace Ken\Web;
 class Log{
 	static $path;  
 	//是否开启日志 ，默认开启
-	static $open = true;
+	static $open = false;
+	static $enable;
+	static $object;
+	static function disable(){
+		static::$open = false;
+	}
+	/**
+	* 启用日志
+	*/
+	static function enable($arr = null ){
+		if(!isset(static::$object)){
+			static::init();
+			static::$object = true;
+		}
+		static::$open = true;
+		if($arr)
+			static::$enable = $arr;
+	}
 	//系统级日志，记录到Mongo DB中
  	static function mo( $arr = [] , $leavel = 0){
  		if(!implode('',$arr)) return;
  		if(true === Mo::w('log')->active)
  			Mo::w('log')->insert('log_'.$leavel , $arr);
- 		else
+ 		else{
+ 			static::$enable['mo_'.$leavel] = 'mo_'.$leavel;
  			static::write('mo_'.$leavel,$arr,true);
+ 		}
  	}
  	static function init(){
  		$path = Config::get('app.log');
@@ -97,10 +109,14 @@ class Log{
  	static function error($str){
  		static::write('error',$str);
  	}
+ 	static function json($arr , $name = null){
+ 		static::write($name,json_encode($arr));
+ 	}
  	//写文件
- 	static function write($type = 'info',$str ,$w = false){
- 		if(!$str) return ;
+ 	static function write($type = 'info',$str ,$w = false){ 
+ 		if(!$str) return ; 
  		if(false === $w && static::$open !== true) return ;
+ 		if(static::$enable && !in_array(strtolower($type),static::$enable)) return; 
  		$type = ucfirst($type);
  		$dir = static::$path.'/'.$type.'/'.date("Y").'/'.date('m');
  		if(!is_dir($dir)) {
@@ -109,7 +125,7 @@ class Log{
 		    }
  		}
   		$filename = $dir.'/'.date("dH").".log";
-  		if(is_object($str )) $str  = Arr::object2array($str) ;
+  		if(is_object($str )) $str  = Arr::object2array($str) ; 
  		if(is_array($str)) {
  			unset($new);
  			foreach($str as $k=>$v){
@@ -131,22 +147,25 @@ class Log{
  			} 
  			$str = $new;
  		}  
- 		if(!$str) return;
- 		$str = $str; 
+ 		if(!$str) return;  
  		try{
  			$fh = fopen($filename, "a+");
  			$str = $str."\t runtime:".date('i:s')."\n";
 			fwrite($fh, $str);
 			fclose($fh);
  		}catch(Exception $e) { 
-		    throw new \Exception('write log failed');
+		    
 		} 
 		 
  	}
  	
- 	static function __callStatic ($name ,$arg = [] ){
- 		 $str = implode("\n",$arg); 
- 		 static::write($name , $str);
+ 	static function __callStatic ($name ,$arg = [] ){ 
+ 		 if(strtolower(substr($name,0,4))=='json'){ 
+ 		 	$name = substr(substr($name,4)); 
+ 		 	static::json($arg[0],$name);
+ 		 	return ;
+ 		 }
+ 		 static::write($name , $arg[0]);
 	}
  	  
 }
