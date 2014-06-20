@@ -110,6 +110,7 @@ class Log{
  		static::write('error',$str);
  	}
  	static function json($arr , $name = null){
+ 		if(!$name) $name = 'json';
  		static::write($name,json_encode($arr));
  	}
  	//写文件
