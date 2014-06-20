@@ -3,7 +3,7 @@
   	Log
  	
  	//启用日志,无参数时将启用所有级别的日志，如为数组将只启用对应的日志
-	Log::enable(['test']);  
+	Log::open(['test']);  
 
  	系统级别重要日志  mongodb 日志
  	\Log::mo([
@@ -38,13 +38,13 @@ class Log{
 	static $open = false;
 	static $enable;
 	static $object;
-	static function disable(){
+	static function colose(){
 		static::$open = false;
 	}
 	/**
 	* 启用日志
 	*/
-	static function enable($arr = null ){
+	static function open($arr = null ){
 		if(!isset(static::$object)){
 			static::init();
 			static::$object = true;
