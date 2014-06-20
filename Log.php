@@ -101,14 +101,7 @@ class Log{
  		}  
 		File::rmdir($dir);
  	}
- 	//写info
- 	static function info($str){
- 		static::write('info',$str);
- 	}
- 	//写错误信息
- 	static function error($str){
- 		static::write('error',$str);
- 	}
+ 	 
  	static function json($arr , $name = null){
  		if(!$name) $name = 'json';
  		static::write($name,json_encode($arr));
@@ -162,11 +155,13 @@ class Log{
  	
  	static function __callStatic ($name ,$arg = [] ){ 
  		 if(strtolower(substr($name,0,4))=='json'){ 
- 		 	$name = substr($name,4); 
+ 		 	$name = substr(substr($name,4)); 
  		 	static::json($arg[0],$name);
  		 	return ;
  		 }
- 		 static::write($name , $arg[0]);
+ 		 $str = $arg[0];
+ 		 if(is_array($arg) && count($arg)>1){$str = implode(" ",$arg);}
+ 		 static::write($name , $str);
 	}
  	  
 }
