@@ -63,7 +63,10 @@ class Session
 		if(!$name) {
 			if($_SESSION){
 				foreach($_SESSION as $k=>$v){
-					$data[$k] = Crypt::decode($v);
+					if(Crypt::decode($v))
+						$data[$k] = Crypt::decode($v);
+					else
+						$data[$k] = $v;
 				}
 			}
 			return  $data;

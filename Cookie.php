@@ -56,7 +56,10 @@ class Cookie
 	static function get($name = null){
 		if(!$name && $_COOKIE) { 
 			foreach($_COOKIE as $k=>$v){
-				$data[$k] = Crypt::decode($v);
+				if(Crypt::decode($v))
+					$data[$k] = Crypt::decode($v);
+				else
+					$data[$k] = $v;
 			} 
 			return  $data;
 		}  
