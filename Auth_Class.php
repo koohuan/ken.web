@@ -22,6 +22,27 @@ class Auth_Class
 	public $cookie = false;  
 	public $logined;   
 	public $uid = false;
+	public $account = 'email';
+	public $mi  = false;//email phone 这2个字段都支持
+
+	/**
+	* 判断当前字段是email 还是 phone 
+	*/
+	function email_phone($email){
+		if(Validate::email($email))
+			$this->account = 'email';
+		else if(Validate::phone($email)){
+			$this->account = 'phone'; 
+			$this->mi = true;
+		}
+	}
+	function is_guest(){
+		if(true === $this->cookie){
+			return Cookie::get('id')?false:true; 
+		}else{
+			return Session::get('id')?false:true; 
+		}  
+	}
 	/**
 		判断是否登录
 	*/
@@ -38,11 +59,16 @@ class Auth_Class
 	function get(){
 		$out = null;
 		if(true === $this->cookie){  
-			return Cookie::get();
+			$obj = (object)Cookie::get();
 			
 		}else{ 
-			return Session::get(); 
+			$obj = (object)Session::get(); 
 		}  
+		$obj->account = $obj->email;
+		if(true === $this->mi){
+			$obj->account = $obj->phone; 
+		}
+		return $obj;
 	}
 	/**
 		设置登录的COOKIE 或 SESSION
@@ -58,8 +84,8 @@ class Auth_Class
 		安全退出
 	*/
 	function logout(){
-		$array = ['id','email','uid'];
-		if(true === $this->cookie){
+		$array = ['id','name','method'];
+		if(true === $this->cookie){  
 			Cookie::delete($array); 
 		}else{
 			Session::delete($array); 
@@ -69,11 +95,7 @@ class Auth_Class
 		登录 
 	*/
 	function login($email , $password){
-		if($username && $password) { 
-			$cache_id = 'login_'.$username;
-			$one = Cache::get($cache_id);
-			if($one) goto ENDLOGIN;
-		} 
+		
 		$e = [
 			__('login fields requied'),
 			__('user not exists'),
@@ -82,9 +104,14 @@ class Auth_Class
 		if(!$email || !$password) {
 			return ['code'=>500,'msg'=>$e[0]]; 
 		} 
+		$this->email_phone($email);
+		$cache_id = 'login_'.$email;
+		$one = Cache::get($cache_id);
+		if($one) goto ENDLOGIN; 
+
 		if(!$one){
 			$one = DB::w()->table($this->table)
-				->where("email=?",$email)
+				->where($this->account."=?",$email)
 				->one();
 			Cache::set($cache_id,$one);
 		}
@@ -107,10 +134,12 @@ class Auth_Class
 		if(!$id) return 1;
 		$one = DB::w()->table($this->table)
 			->where("id=?",$id)
-			->one();
+			->one(); 
 		if(!$one){
 			return ['code'=>500,'msg'=>__('Update user not exists')]; 
 		}
+		//清除cache
+		$this->clear_cache($one);
 		if($par['password']){
 			Validate::set($this->password,[
 					['min_length',6,'message'=>__('Password min lenght 6')], 
@@ -123,6 +152,13 @@ class Auth_Class
 			DB::w()->update($this->table,$par,'id=?',$id);
 		}
 		return ['code'=>0,'msg'=>'OK']; 
+	}
+
+	function clear_cache($one){
+		//清除cache
+		Cache::delete($one->email);
+		if(true === $this->mi)
+			Cache::delete($one->phone);
 	}
 	/**
 		更新用户 
@@ -139,9 +175,12 @@ class Auth_Class
 		$one = DB::w()->table($this->table)
 			->where("id=?",[$id])
 			->one();
+
 		if(!$one){
 			return ['code'=>500,'msg'=>$e[1]]; 
 		} 
+		//清除cache
+		$this->clear_cache($one);
 		if(!$this->password_verify($old_password , $one->password)){
 			return ['code'=>500,'msg'=>$e[2]]; 
 		}
@@ -158,24 +197,23 @@ class Auth_Class
 		}
 		return ['code'=>0,'msg'=>'OK']; 
 	}
-	function create($email,$password){
+	function create($email,$password,$pars = []){
 		$e = [
-			__('create fields requied'),
-			__('user had exists'),
+			__('字段必须'),
+			__('用户已存在'),
 		];
 		if(!$email || !$password) {
 			return ['code'=>500,'msg'=>$e[0]];  
 		} 
+		$this->email_phone($email);
 		$arr = [ 
-			'email' => trim($email), 
+			$this->account => trim($email), 
 			'password' => $this->passwordHash(trim($password)),
 			'create_at' => date('Y-m-d H:i:s'), 
 		];
-		if($this->uid){
-			$arr['uid'] = Str::id();
-		}
+		if($pars) $arr = $arr+$pars;
 		Validate::set('password',[
-				['min_length',6,'message'=>__('Password min lenght 6')], 
+				['min_length',6,'message'=>__('密码至少6位！')], 
 		],$password); 
 		
 	
@@ -183,9 +221,9 @@ class Auth_Class
 		if($vali) {
 			return ['code'=>500,'msg'=>$vali[0]];  
 		} 
-		
+		 
 		$one = DB::w()->table($this->table)
-			->where("email=?",$email)
+			->where($this->account."=?",$email)
 			->one();
 		if($one){
 			return ['code'=>500,'msg'=>$e[1]];  
@@ -200,11 +238,11 @@ class Auth_Class
  
 	public function passwordHash($password)
     { 
-        return sha1(substr(md5($password),5,22));
+        return sha1(md5($password));
     }
    
     function  password_verify($password,$hash){  
-    	return  sha1(substr(md5($password),5,22))==$hash;
+    	return  sha1(md5($password))==$hash;
     }
 
     

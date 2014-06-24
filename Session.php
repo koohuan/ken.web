@@ -82,7 +82,7 @@ class Session
 		if(!$name)
 			$values = $_SESSION;
 		elseif(is_array($name))
-			$values = $name;
+			$values = array_flip($name);
 		if($values){
 			foreach($values as $name=>$value){
 				unset($_SESSION[$name]); 

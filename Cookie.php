@@ -74,12 +74,12 @@ class Cookie
 		if(!$name)
 			$values = $_COOKIE;
 		elseif(is_array($name))
-			$values = $name;
+			$values = array_flip($name);		
 		if($values){
 			foreach($values as $name=>$value){
 				unset($_COOKIE[$name]);
 				static::set($name,false,time()-20); 
-			}
+			} 
 			return;
 		} 
 		unset($_COOKIE[$name]);

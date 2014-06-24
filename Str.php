@@ -129,6 +129,13 @@ class Str
 		}
 		return $s;
 	}
+	function rand_number($j = 4 ){
+		$str = null;
+		for($i=0;$i<$j;$i++){
+			$str .= mt_rand(0,9);
+		}
+		return $str;
+	}
     /**
     	随机字符
     */

@@ -137,7 +137,7 @@ class Validate{
 	  			continue;
 	  		} 
 	  		if(!call_user_func_array([__CLASS__,$a],$v)){
-	  			static::$_errors[] = $name.' '.$message;
+	  			static::$_errors[] = $message;
 	  		} 
 	  	}  
 	} 
