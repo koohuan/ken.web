@@ -47,6 +47,7 @@ class Session
 		* 对数组或对象直接设置COOKIE
 		*/
 		if(!$value && (is_array($name) || is_object($name))){
+			$name = (array)$name;
 			foreach($name as $k=>$v){
 				$v = Crypt::encode($v);
 				$_SESSION[$k] = $v; 

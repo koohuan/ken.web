@@ -28,11 +28,12 @@ class Cookie
 		* 对数组或对象直接设置COOKIE
 		*/
 		if(!$value && (is_array($name) || is_object($name))){
+			$name = (array)$name; 
 			foreach($name as $k=>$v){
 				$v = Crypt::encode($v);
 				$_COOKIE[$k] = $v;
-				setcookie($k,$value,$expire,$path,$domain,$secure);
-			} 
+				setcookie($k,$v,$expire,$path,$domain,$secure);
+			}  
 			return $name;
 		}
 		

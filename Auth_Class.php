@@ -74,17 +74,24 @@ class Auth_Class
 		设置登录的COOKIE 或 SESSION
 	*/
 	protected function set($one){ 
+		$this->logout();
+		$data['id'] = $one->id;
+		$data['email'] = $one->email;
+		if(true === $this->mi)
+			$data['phone'] = $one->phone;
+		$data['method']='self';
+		$data['name'] = $one->phone?:$one->email;
 		if(true === $this->cookie){ 
-			Cookie::set($one); 
+			Cookie::set($data); 
 		}else{
-			Session::set($one); 
+			Session::set($data); 
 		} 
 	} 
 	/**
 		安全退出
 	*/
 	function logout(){
-		$array = ['id','name','method'];
+		$array = ['id','name','method','phone','email'];
 		if(true === $this->cookie){  
 			Cookie::delete($array); 
 		}else{
