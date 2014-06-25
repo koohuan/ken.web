@@ -8,6 +8,13 @@
 	修改密码
 	Auth::update($id,\Input::post('old_password'),$par=['password'=>\Input::post('password')]); 
  	
+ 	Auth::update_nopwd($id,['password'=>123456789]);
+	
+	查寻用户并更新密码
+	$rt = User::find($email);
+	if($rt['code']==0) 
+		 $rt = User::update_nopwd($rt['id'],['password'=>$password]);		 
+	echo json_encode($rt); 
 
 	Common Auth class
 	@auth Kang Sun <68103403@qq.com>
@@ -87,6 +94,20 @@ class Auth_Class
 			Session::set($data); 
 		} 
 	} 
+	//查找用户 返回主键
+	function find($email){
+		if(!$email) {
+			return ['code'=>500,'msg'=>__('not empty')]; 
+		} 
+		$this->email_phone($email);
+		$one = DB::w()->table($this->table)
+				->where($this->account."=?",$email)
+				->one();
+		if(!$one){
+			return ['code'=>500,'msg'=>__('user not exists')];
+		}
+		return ['code'=>0,'msg'=>'OK','id'=>$one->id];
+	}
 	/**
 		安全退出
 	*/
@@ -112,7 +133,7 @@ class Auth_Class
 			return ['code'=>500,'msg'=>$e[0]]; 
 		} 
 		$this->email_phone($email);
-		$cache_id = 'login_'.$email;
+		$cache_id = 'auth_class_user_login_'.$email;
 		$one = Cache::get($cache_id);
 		if($one) goto ENDLOGIN; 
 
@@ -163,9 +184,9 @@ class Auth_Class
 
 	function clear_cache($one){
 		//清除cache
-		Cache::delete($one->email);
+		Cache::delete('auth_class_user_login_'.$one->email);
 		if(true === $this->mi)
-			Cache::delete($one->phone);
+			Cache::delete('auth_class_user_login_'.$one->phone);
 	}
 	/**
 		更新用户 
