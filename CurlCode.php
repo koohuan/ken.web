@@ -130,10 +130,10 @@ class CurlCode{
  		return $this;
  	}   
  	
- 	private function get_data(){
+ 	public function get_data(){
  		return $this->data;
  	}
- 	private function get_info(){
+ 	public function get_info(){
  		return $this->info;
  	}
  	 
