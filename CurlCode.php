@@ -37,13 +37,13 @@ class CurlCode{
  	public $option;
 	public $agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36";
 	public $timeout = 300; 
-	public $curl;
+	private $curl;
 	public $data;
 	public $info;
 	public $connect = 120;
 	public $header = false;
 	public $cookie = false;
-	protected $cookie_file;
+	public $cookie_file;
 	public function __construct(){ 
 		if(!extension_loaded ('curl')){ 
     		throw new \Exception('CURL not installed');
@@ -78,10 +78,12 @@ class CurlCode{
  		return $this->_post($url,$data ,$options)->get_data();
  	}
  	function geth($url,$options = []){ 
- 		return $this->_get($url,$options)->get_info();
+ 		$this->header = true;
+ 		return $this->_get($url,$options)->get_data();
  	}
  	function posth($url,$data ,$options = []){ 
- 		return $this->_post($url,$data ,$options)->get_info();
+ 		$this->header = true; 
+ 		return $this->_post($url,$data ,$options)->get_data();
  	}
 
  	/**
