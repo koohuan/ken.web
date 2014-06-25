@@ -1,0 +1,25 @@
+<?php
+/**
+	清除vendor指定文件夹及文件
+
+	@auth Kang Sun <68103403@qq.com>
+	@license BSD
+	@date 2014 
+*/
+require __DIR__.'/vendor/autoload.php';  
+$dir = [
+ 'temp','public/assets','public/upload',
+ 'messages'
+];
+foreach($dir as $d){
+	$dr = __DIR__.'/'.$d;
+	if(!is_dir($dr)){
+		mkdir($dr,0777,true);
+	}
+}
+
+$dir = __DIR__.'/vendor';
+use Ken\Web\CleanVendor;
+$obj = new CleanVendor($dir);
+$obj->run();
+exit;
