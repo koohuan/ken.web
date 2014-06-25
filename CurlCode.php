@@ -71,10 +71,23 @@ class CurlCode{
  	public function set($type,$value){
  		$this->option[$type] = $value;
  	}
+ 	function get($url,$options = []){ 
+ 		return $this->_get($url,$options)->get_data();
+ 	}
+ 	function post($url,$data ,$options = []){ 
+ 		return $this->_post($url,$data ,$options)->get_data();
+ 	}
+ 	function geth($url,$options = []){ 
+ 		return $this->_get($url,$options)->get_info();
+ 	}
+ 	function posth($url,$data ,$options = []){ 
+ 		return $this->_post($url,$data ,$options)->get_info();
+ 	}
+
  	/**
  	 get curl
  	*/
- 	function get($url,$options = []){ 
+ 	private function _get($url,$options = []){ 
  		if($options){
  			foreach($options as $k=>$v){
  				$this->option[$k] = $v;
@@ -85,7 +98,7 @@ class CurlCode{
  	/**
  	  post curl
  	*/
- 	function post($url,$data ,$options = []){ 
+ 	private function _post($url,$data ,$options = []){ 
  		if($options){
  			foreach($options as $k=>$v){
  				$this->option[$k] = $v;
@@ -99,7 +112,7 @@ class CurlCode{
  		return $this->run($url);
  	} 
   
-    protected function run($url){ 
+    private function run($url){ 
     	if(true === $this->header)
     		$this->option[CURLOPT_HEADER] = 1;
  		curl_setopt($this->curl,CURLOPT_URL,trim($url));   
@@ -115,10 +128,10 @@ class CurlCode{
  		return $this;
  	}   
  	
- 	function get_data(){
+ 	private function get_data(){
  		return $this->data;
  	}
- 	function get_info(){
+ 	private function get_info(){
  		return $this->info;
  	}
  	 

@@ -4,7 +4,7 @@
  	$curl = \Curl::init();
  	$curl->header = true;
 	$g = $curl->get($url);
- 	$data = $g->get_data();
+ 
 	$info = \Helper::http_parse_headers($data);
  	foreach ($info['Set-Cookie'] as $key => $value) {
 	}
@@ -12,10 +12,9 @@
 	
 	//////////////////////////////////////////////
 	
-	Curl::get($url)->get_data();
-	Curl::post($url,$data)->get_data();
-	get_data();
-	get_info();
+	Curl::get($url);
+	Curl::post($url,$data);
+
 	set 设置参数紧跟Curl::
 	
 	
