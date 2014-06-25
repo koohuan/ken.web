@@ -4,8 +4,7 @@
 	$curl = \Curl::init();
  	$curl->header = true;
 	$g = $curl->get($url);
-	$info = $g->get_info();
-	$data = $g->get_data();
+	Curl::info();
 	
 	//////////////////////////////////////////////
 	
@@ -39,7 +38,7 @@ class CurlCode{
 	public $timeout = 300; 
 	private $curl;
 	public $data;
-	public $info;
+	static $info;
 	public $connect = 120;
 	public $header = false;
 	public $cookie = false;
@@ -79,10 +78,12 @@ class CurlCode{
  	}
  	function geth($url,$options = []){ 
  		$this->header = true;
+ 		$this->option[CURLOPT_NOBODY] = true; 
  		return $this->_get($url,$options)->get_data();
  	}
  	function posth($url,$data ,$options = []){ 
  		$this->header = true; 
+ 		$this->option[CURLOPT_NOBODY] = true;  
  		return $this->_post($url,$data ,$options)->get_data();
  	}
 
@@ -121,7 +122,7 @@ class CurlCode{
  		foreach($this->option as $k=>$v){  
  			curl_setopt ( $this->curl , $k, $v);
  		} 
- 		$this->info = curl_getinfo($this->curl);  
+ 		static::$info = curl_getinfo($this->curl);  
  		$this->data = curl_exec($this->curl);   
  		if (curl_errno($this->curl)) {
  			throw new \Exception(curl_error($this->curl)); 
@@ -133,8 +134,8 @@ class CurlCode{
  	public function get_data(){
  		return $this->data;
  	}
- 	public function get_info(){
- 		return $this->info;
+ 	static function info(){
+ 		return static::$info;
  	}
  	 
  	  
