@@ -270,15 +270,15 @@ class DB{
 	]){
 		$file = str_replace('\\','/',$file);
 		if($data){
-			$filed = "(`".implode('`,',$data);
-			$filed .="`)";
+			$filed = "(`".implode('`,`',$data);
+			$filed .="`)"; 
 		}
 		foreach($arr as $k=>$v){
 			$arr[strtoupper($k)] = $v;
 		}
 		$this->sql = "LOAD DATA INFILE '".$file."' REPLACE INTO  TABLE ".$table."
 		  CHARACTER SET ".$arr['CHARACTER']."
-		  FIELDS TERMINATED BY '".$arr['TERMINATED']."' ENCLOSED BY '".$arr['ENCLOSED']."'
+		  FIELDS TERMINATED BY '".$arr['FIELDS']."' ENCLOSED BY '".$arr['ENCLOSED']."'
 		  LINES TERMINATED BY '".$arr['LINES'] ."' ".$filed;
 		if($arr['IGNORE'])
 			$this->sql .= " IGNORE ".$arr['IGNORE']." LINES;"; 
@@ -466,10 +466,9 @@ class DB{
 	        $this->pdo->beginTransaction();  
 	        if(!$this->query->execute( $this->value )){ 
 	        	$info = $this->query->errorInfo()[2]; 
-	        	$info = 'SQL ERROR:'.$info."<br>SQL:".$this->sql;
+	        	$info = 'SQL ERROR:'.$this->sql;
 	        	\Log::mysql_error($info);
-	        	\Response::code(500,'SQL ERROR');
-	        	throw new \Exception($info,500); 
+	        	throw new \Exception($info,1000000); 
 	        }
 	        $id = $this->pdo->lastInsertId();
 	     	$this->pdo->commit();   
