@@ -43,10 +43,8 @@ class Swift{
 		$this->transport = \Swift_MailTransport::newInstance();
  	}
 	
-	function send(){
-	 
-		if(!$this->mailer->send($this->message)){
-			echo 'send mail failed';
+	function send(){ 
+		if(!$this->mailer->send($this->message)){ 
 			return false;
 		}
 		return true;
