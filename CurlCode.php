@@ -43,7 +43,8 @@ class CurlCode{
 	public $header = false;
 	public $cookie = false;
 	public $cookie_file;
-	public function __construct(){ 
+	public $nobdy = false;
+ 	public function __construct(){ 
 		if(!extension_loaded ('curl')){ 
     		throw new \Exception('CURL not installed');
     	}
@@ -51,8 +52,7 @@ class CurlCode{
  		$this->option[CURLOPT_TIMEOUT] = $this->timeout;
  		$this->option[CURLOPT_CONNECTTIMEOUT] = $this->connect;
  		$this->option[CURLOPT_SSL_VERIFYPEER] = false;
- 		$this->option[CURLOPT_SSL_VERIFYHOST] = false; 
- 		$this->option[CURLOPT_NOBODY] = false;   
+ 		$this->option[CURLOPT_SSL_VERIFYHOST] = false;   
  		$this->option[CURLOPT_SSLVERSION] = 3;  
  		$this->option[CURLOPT_USERAGENT] = $this->agent;  
  		//返回字符串，而非直接输出
@@ -78,12 +78,12 @@ class CurlCode{
  	}
  	function geth($url,$options = []){ 
  		$this->header = true;
- 		$this->option[CURLOPT_NOBODY] = true; 
+ 		$this->nobdy = true; 
  		return $this->_get($url,$options)->get_data();
  	}
  	function posth($url,$data ,$options = []){ 
- 		$this->header = true; 
- 		$this->option[CURLOPT_NOBODY] = true;  
+ 		$this->header = true;   
+ 		$this->nobdy = true; 
  		return $this->_post($url,$data ,$options)->get_data();
  	}
 
@@ -102,28 +102,29 @@ class CurlCode{
  	  post curl
  	*/
  	private function _post($url,$data ,$options = []){ 
- 		if($options){
- 			foreach($options as $k=>$v){
- 				$this->option[$k] = $v;
- 			}
- 		}
  		$this->option[CURLOPT_POST] = true;
  		$this->option[CURLOPT_POSTFIELDS] = $data;
  		$this->option[CURLOPT_CUSTOMREQUEST] = "POST"; 
  		//解决 POST 数据过长问题
  		$this->option[CURLOPT_HTTPHEADER] = ['Expect:'];   
+ 		if($options){
+ 			foreach($options as $k=>$v){
+ 				$this->option[$k] = $v;
+ 			}
+ 		} 
  		return $this->run($url);
  	} 
   
-    private function run($url){ 
+    private function run($url){      
     	if(true === $this->header)
-    		$this->option[CURLOPT_HEADER] = 1;
+    		$this->option[CURLOPT_HEADER] = 1; 
  		curl_setopt($this->curl,CURLOPT_URL,trim($url));   
  		foreach($this->option as $k=>$v){  
  			curl_setopt ( $this->curl , $k, $v);
- 		} 
+ 		}    
+ 		curl_setopt ( $this->curl , CURLOPT_NOBODY, $this->nobdy);
+ 		$this->data = curl_exec($this->curl);  
  		static::$info = curl_getinfo($this->curl);  
- 		$this->data = curl_exec($this->curl);   
  		if (curl_errno($this->curl)) {
  			throw new \Exception(curl_error($this->curl)); 
 		} 
