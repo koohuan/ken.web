@@ -329,10 +329,15 @@ class DB{
 	function table($table){ 
 		$this->ar['TABLE'] = $table; 
 		return $this;
-	} 
- 	function cache($time=0){ 
-		$this->cache_time = $time; 
-		$this->cache_id = 'mysql_'.json_encode($this->ar).$this->sql.$this->cache_time; 
+	}  
+ 	function cache($cache_id = null){ 
+		$this->cache_time = 0; 
+		if(!$cache_id)
+			$this->cache_id = 'mysql_'.json_encode($this->ar).$this->sql.$this->cache_time; 
+		else{
+			Log::cache_id($cache_id);
+			$this->cache_id = $cache_id;
+		}
 		$this->cache = true;
 		return $this;
 	}  
