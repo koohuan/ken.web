@@ -154,13 +154,13 @@ class Log{
  	}
  	
  	static function __callStatic ($name ,$arg = [] ){ 
+ 		 $str = $arg[0];  
+ 		 if(is_array($str) && count($str)>1){$str = implode(" ",$str);}  
  		 if(strtolower(substr($name,0,4))=='json'){ 
- 		 	$name = substr(substr($name,4)); 
- 		 	static::json($arg[0],$name);
+ 		 	$name = substr($name,4); 
+ 		 	static::json($str,$name);
  		 	return ;
  		 }
- 		 $str = $arg[0];
- 		 if(is_array($arg) && count($arg)>1){$str = implode(" ",$arg);}
  		 static::write($name , $str);
 	}
  	  
